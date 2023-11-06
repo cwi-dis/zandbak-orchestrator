@@ -9,6 +9,7 @@
   "author": "Thomas Röggla",
   "license": "BSD-2-Clause",
   "dependencies": {
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "ntp-client": "^0.5.3",
     "socket.io": "^4.7.2",
