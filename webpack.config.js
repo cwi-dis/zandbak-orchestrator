@@ -1,4 +1,5 @@
 const webpack = require("webpack");
+const nodeExternals = require("webpack-node-externals")
 
 const backend = {
   mode: process.env.NODE_ENV || "development",
@@ -6,6 +7,7 @@ const backend = {
   node: {
     __dirname: true
   },
+  externals: [nodeExternals()],
   entry: {
     build: "./app.ts",
   },
