@@ -7,9 +7,6 @@ declare module "ntp-client" {
   /** The default timeout for NTP replies in milliseconds. Defaults to 10000 */
   export let ntpReplyTimeout: number;
 
-  function NetworkTimeCallback(err: Error | string | null, date: Date | null): void;
-  type NullOrUndefined = null | undefined;
-
   /**
    * Tries to retrieve the current time and date from an NTP server.
    * This function contacts the given NTP server on the given port and tries to
@@ -27,7 +24,11 @@ declare module "ntp-client" {
    * an error has occurred and the param contains the error. If it is null, the second param contains
    * the current time that was retrieved from the NTP server
    */
-  export function getNetworkTime(server: string | NullOrUndefined, port: number | NullOrUndefined, callback: typeof NetworkTimeCallback): void;
+  export function getNetworkTime(
+    server: string | null | undefined,
+    port: number | null | undefined,
+    callback: (err: Error | string | null, date: Date | null) => void
+  ): void;
 
   /**
    * Requests the current time from the default NTP server on the default port.
@@ -39,5 +40,5 @@ declare module "ntp-client" {
    *
    * @param argv Parameter vector. This value is ignored
    */
-  export function demo(...argv: Array<any>): void;
+  export function demo(...argv: any[]): void;
 }
