@@ -6,7 +6,8 @@ module.exports = {
   "ignorePatterns": [
     "node_modules/",
     "bin/",
-    "webpack.config.js"
+    "webpack.config.js",
+    "*.d.ts"
   ],
   "extends": [
     "eslint:recommended",
