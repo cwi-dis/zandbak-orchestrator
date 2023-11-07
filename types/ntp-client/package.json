@@ -1,12 +1,12 @@
 {
     "private": true,
-    "name": "@types/node-ntp-client",
-    "version": "1.0.0",
+    "name": "@types/ntp-client",
+    "version": "0.5.9999",
     "projects": [
         "https://github.com/moonpyk/node-ntp-client"
     ],
     "devDependencies": {
-        "@types/node-ntp-client": "workspace:."
+        "@types/ntp-client": "workspace:."
     },
     "owners": [
         {
