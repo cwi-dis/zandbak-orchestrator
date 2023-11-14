@@ -38,6 +38,8 @@ module.exports = {
       "error",
       "always"
     ],
-    "no-trailing-spaces": "error"
+    "no-trailing-spaces": "error",
+    "@typescript-eslint/no-unused-vars": "error",
+    "no-unused-vars": "off"
   }
 };
