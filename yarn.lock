@@ -224,6 +224,11 @@
   dependencies:
     undici-types "~5.26.4"
 
+"@types/ntp-client@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@types/ntp-client/-/ntp-client-0.5.0.tgz#9556332e0696aba8302697d5abf7233c489753e6"
+  integrity sha512-MDKMQwt294nE496gJH7eOZL1jgWchp/QGwI+QvUvEKW5Trj0iGjmmgyKx9u6J4eN6gfGQM7znwUBvp1tvejE5g==
+
 "@types/qs@*":
   version "6.9.9"
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.9.tgz#66f7b26288f6799d279edf13da7ccd40d2fa9197"
