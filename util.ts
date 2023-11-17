@@ -1,3 +1,8 @@
+import ErrorCodes, { ErrorMessages } from "./endpoints/error_codes";
+
+export type Optional<T> = T | undefined;
+export type Object = { [key: string]: any };
+
 /**
  * Tries to extract the values of the keys given as parameters from the
  * environment and throws an excaption if one of them cannot be found.
@@ -16,4 +21,30 @@ export function getFromEnvironment(...keys: Array<string>): Array<string> {
 
     return values.concat(value);
   }, []);
+}
+
+export function log(logLevel: "disabled" | "debug", ...logData: Array<any>) {
+  if (logLevel == "disabled") {
+    return;
+  }
+
+  const date = new Date();
+  console.log(`[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`, ...logData);
+}
+
+
+export function createResponse(error: ErrorCodes, body: object = {}) {
+  return {
+    error, body,
+    message: ErrorMessages[error]
+  };
+}
+
+export function createCommandResponse(msg: Object, error: ErrorCodes, body: Object = {}) {
+  const { commandId } = msg;
+
+  return {
+    ...createResponse(error, body),
+    commandId
+  };
 }
