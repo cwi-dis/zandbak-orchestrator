@@ -5,6 +5,8 @@ import { Server } from "socket.io";
 dotenv.config();
 
 import { getFromEnvironment } from "./util";
+import installHandlers, { installLoginHandler } from "./endpoints/connection_management";
+import Orchestrator from "./app/orchestrator";
 
 const [ LOG_FOLDER, LOG_SERVER_PORT, PORT ] = getFromEnvironment(
   "LOG_FOLDER", "LOG_SERVER_PORT", "PORT"
@@ -13,6 +15,13 @@ const [ LOG_FOLDER, LOG_SERVER_PORT, PORT ] = getFromEnvironment(
 const io = new Server();
 io.listen(parseInt(PORT));
 console.log("Socket.io server listening on port", PORT);
+
+const orchestrator = new Orchestrator();
+
+io.on("connection", async (socket) => {
+  const user = await installLoginHandler(orchestrator, socket);
+  installHandlers(orchestrator, user);
+});
 
 const staticHttpServer = express();
 
