@@ -40,10 +40,12 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on(EndpointNames.LOGOUT, (data, callback) => {
     user.session.removeUser(user);
     orchestrator.removeUser(user);
+
+    callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
 
   // Handle disconnect
-  socket.on("disconnect", (data, callback) => {
+  socket.on("disconnect", () => {
     user.session.removeUser(user);
     orchestrator.removeUser(user);
   });
