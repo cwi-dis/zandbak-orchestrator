@@ -32,6 +32,9 @@ export function log(logLevel: "disabled" | "debug", ...logData: Array<any>) {
   console.log(`[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`, ...logData);
 }
 
+export function loadConfig(path: string): Object {
+  return require(path);
+}
 
 export function createResponse(error: ErrorCodes, body: object = {}) {
   return {
