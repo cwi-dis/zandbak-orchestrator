@@ -1,9 +1,9 @@
-import uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import User from "./user";
 import { Object } from "../util";
 
 class Session {
-  #id: string = uuid.v4();
+  #id: string = uuidv4();
   #users: Array<User> = [];
   #administrator: User;
 

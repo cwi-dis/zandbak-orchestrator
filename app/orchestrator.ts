@@ -1,11 +1,11 @@
-import uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 import Session from "./session";
 import User from "./user";
 import { Optional } from "../util";
 
 class Orchestrator {
-  public id: string = uuid.v4();
+  public id: string = uuidv4();
 
   private sessions: Array<Session> = [];
   private users: Array<User> = [];

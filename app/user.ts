@@ -1,9 +1,9 @@
-import uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import io from "socket.io";
 import Session from "./session";
 
 class User {
-  #id: string = uuid.v4();
+  #id: string = uuidv4();
   #loggedIn: boolean = false;
 
   public session: Session;
