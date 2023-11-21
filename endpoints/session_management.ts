@@ -12,7 +12,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on(EndpointNames.ADD_SESSION, (data, callback) => {
     const {
       sessionName, sessionDescription,
-      scenarioId, scenarioJson,
       sessionProtocol = "unknown"
     } = data;
 
@@ -21,25 +20,27 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     session.addUser(user);
     session.setAdministrator(user);
     orchestrator.addSession(session);
+
+    callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
 
-  socket.on(EndpointNames.DELETE_SESSION, (data, callback) => {
-
-  });
-
-  socket.on(EndpointNames.GET_SESSIONS, (data, callback) => {
-
-  });
-
-  socket.on(EndpointNames.GET_SESSION_INFO, (data, callback) => {
+  socket.on(EndpointNames.DELETE_SESSION, () => {
 
   });
 
-  socket.on(EndpointNames.JOIN_SESSION, (data, callback) => {
+  socket.on(EndpointNames.GET_SESSIONS, () => {
 
   });
 
-  socket.on(EndpointNames.LEAVE_SESSION, (data, callback) => {
+  socket.on(EndpointNames.GET_SESSION_INFO, () => {
+
+  });
+
+  socket.on(EndpointNames.JOIN_SESSION, () => {
+
+  });
+
+  socket.on(EndpointNames.LEAVE_SESSION, () => {
 
   });
 };

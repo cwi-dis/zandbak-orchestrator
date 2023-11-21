@@ -17,6 +17,10 @@ class Session {
     return this.#id;
   }
 
+  public get administrator() {
+    return this.#administrator;
+  }
+
   public setAdministrator(user: User) {
     this.#administrator = user;
   }
