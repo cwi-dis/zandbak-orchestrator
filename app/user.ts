@@ -1,10 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
 import io from "socket.io";
 import Session from "./session";
+import Serializable from "./serializable";
+import { Object } from "../util";
 
-class User {
+class User implements Serializable {
   #id: string = uuidv4();
   #loggedIn: boolean = false;
+  #userData: Object;
 
   public session: Session;
 
@@ -20,6 +23,14 @@ class User {
 
   public logout() {
     this.session.removeUser(this);
+  }
+
+  public serialize(): Object {
+    return {
+      userId: this.#id,
+      userName: this.name,
+      userData: this.#userData,
+    };
   }
 }
 

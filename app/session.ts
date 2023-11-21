@@ -1,11 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
-import User from "./user";
 import { Object } from "../util";
 
-class Session {
+import Serializable from "./serializable";
+import User from "./user";
+
+class Session implements Serializable {
   #id: string = uuidv4();
   #users: Array<User> = [];
   #administrator: User;
+  #master: User;
 
   public constructor(
     public name: string,
@@ -46,6 +49,19 @@ class Session {
     this.#users.forEach((u) => {
       u.socket.emit("SessionUpdated", message);
     });
+  }
+
+  public serialize(): Object {
+    return {
+      sessionId: this.#id,
+      sessionName: this.name,
+      sessionDescription: this.description,
+      sessionAdministrator: this.#administrator.id,
+      sessionMaster: this.#master && this.#master.id,
+      sessionUsers: this.#users.map((u) => u.id),
+      sessionUserDefinitions: this.#users.map((u) => u.serialize()),
+      sessionProtocol: this.sessionProtocol
+    };
   }
 }
 
