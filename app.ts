@@ -5,8 +5,11 @@ import { Server } from "socket.io";
 dotenv.config();
 
 import { getFromEnvironment } from "./util";
-import installHandlers, { installLoginHandler } from "./endpoints/connection_management";
 import Orchestrator from "./app/orchestrator";
+
+import installConnectionHandlers, { installLoginHandler } from "./endpoints/connection_management";
+import installSessionHandlers from "./endpoints/session_management";
+import installUtilHandlers from "./endpoints/util";
 
 const [ LOG_FOLDER, LOG_SERVER_PORT, PORT ] = getFromEnvironment(
   "LOG_FOLDER", "LOG_SERVER_PORT", "PORT"
@@ -20,7 +23,10 @@ const orchestrator = new Orchestrator();
 
 io.on("connection", async (socket) => {
   const user = await installLoginHandler(orchestrator, socket);
-  installHandlers(orchestrator, user);
+
+  installConnectionHandlers(orchestrator, user);
+  installSessionHandlers(orchestrator, user);
+  installUtilHandlers(orchestrator, user);
 });
 
 const staticHttpServer = express();
