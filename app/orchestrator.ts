@@ -51,6 +51,18 @@ class Orchestrator {
   public removeUser(user: User) {
     this.users = this.users.filter((u) => u.id != user.id);
   }
+
+  public addSession(session: Session) {
+    this.sessions.push(session);
+  }
+
+  public removeSession(session: Session) {
+    this.sessions = this.sessions.filter((s) => s.id != session.id);
+  }
+
+  public addScenario() {
+
+  }
 }
 
 export default Orchestrator;
