@@ -20,6 +20,10 @@ enum EndpointNames {
 
   SEND_SCENE_EVENT_TO_MASTER = "SceneEventToMaster",
   SEND_SCENE_EVENT_TO_USER = "SceneEventToUser",
+
+  GET_ORCHESTRATOR_VERSION = "GetOrchestratorVersion",
+  GET_NTP_TIME = "GetNTPTime",
+  EXIT_ORCHESTRATOR = "TerminateOrchestrator"
 }
 
 export default EndpointNames;
