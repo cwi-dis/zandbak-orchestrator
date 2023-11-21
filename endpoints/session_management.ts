@@ -16,8 +16,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       sessionProtocol = "unknown"
     } = data;
 
-    orchestrator.addScenario()
-
     const session = new Session(sessionName.trim(), sessionDescription, sessionProtocol);
 
     session.addUser(user);

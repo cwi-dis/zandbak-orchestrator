@@ -19,7 +19,9 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   });
 
   socket.on(EndpointNames.GET_NTP_TIME, (data, callback) => {
-    ntp.getNetworkTime(null, null, (err, date) => {
+    const ntpConfig = util.loadConfig("../config/ntp-config.json");
+
+    ntp.getNetworkTime(ntpConfig.server, ntpConfig.port, (err, date) => {
       if (!err) {
         callback(util.createCommandResponse(data, ErrorCodes.OK, {
           ntpDate: date,
