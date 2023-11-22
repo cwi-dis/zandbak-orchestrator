@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import ErrorCodes, { ErrorMessages } from "./endpoints/error_codes";
 
 export type Optional<T> = T | undefined;
@@ -32,8 +33,16 @@ export function log(logLevel: "disabled" | "debug", ...logData: Array<any>) {
   console.log(`[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`, ...logData);
 }
 
-export function loadConfig(path: string): Object {
-  return require(path);
+export async function loadConfig(path: string): Promise<Object> {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, (err, data) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve(JSON.parse(data.toString()));
+    });
+  });
 }
 
 export function createResponse(error: ErrorCodes, body: object = {}) {

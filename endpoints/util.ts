@@ -18,8 +18,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     });
   });
 
-  socket.on(EndpointNames.GET_NTP_TIME, (data, callback) => {
-    const ntpConfig = util.loadConfig("../config/ntp-config.json");
+  socket.on(EndpointNames.GET_NTP_TIME, async (data, callback) => {
+    const ntpConfig = await util.loadConfig("../config/ntp-config.json");
 
     ntp.getNetworkTime(ntpConfig.server, ntpConfig.port, (err, date) => {
       if (!err) {
