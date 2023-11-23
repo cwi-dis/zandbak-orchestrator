@@ -5,6 +5,7 @@ import Serializable from "./serializable";
 import User from "./user";
 import Transport from "transport/transport";
 import TransportManager, { TransportType } from "transport/transport_manager";
+import Scenario from "./scenario";
 
 class Session implements Serializable {
   #id: string = uuidv4();
@@ -16,7 +17,8 @@ class Session implements Serializable {
   public constructor(
     public name: string,
     public description: string,
-    public sessionProtocol: TransportType
+    public sessionProtocol: TransportType,
+    public scenario: Scenario
   ) {
     this.#transport = TransportManager.instantiate(sessionProtocol);
   }
