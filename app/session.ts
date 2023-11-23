@@ -3,18 +3,23 @@ import { Object } from "../util";
 
 import Serializable from "./serializable";
 import User from "./user";
+import Transport from "transport/transport";
+import TransportManager, { TransportType } from "transport/transport_manager";
 
 class Session implements Serializable {
   #id: string = uuidv4();
   #users: Array<User> = [];
   #administrator: User;
   #master: User;
+  #transport: Transport;
 
   public constructor(
     public name: string,
     public description: string,
-    public sessionProtocol: string
-  ) {}
+    public sessionProtocol: TransportType
+  ) {
+    this.#transport = TransportManager.instantiate(sessionProtocol);
+  }
 
   public get id() {
     return this.#id;
