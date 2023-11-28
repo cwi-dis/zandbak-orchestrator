@@ -3,8 +3,8 @@ import { Object } from "../util";
 
 import Serializable from "./serializable";
 import User from "./user";
-import Transport from "transport/transport";
-import TransportManager, { TransportType } from "transport/transport_manager";
+import Transport from "../transport/transport";
+import TransportManager, { TransportType } from "../transport/transport_manager";
 import Scenario from "./scenario";
 
 class Session implements Serializable {

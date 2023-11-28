@@ -5,7 +5,7 @@ import Orchestrator from "../app/orchestrator";
 import User from "../app/user";
 import ErrorCodes  from "./error_codes";
 import Session from "../app/session";
-import Scenario from "app/scenario";
+import Scenario from "../app/scenario";
 
 const installHandlers = (orchestrator: Orchestrator, user: User) => {
   const { socket } = user;
