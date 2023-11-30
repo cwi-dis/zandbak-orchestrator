@@ -35,14 +35,31 @@ class Session implements Serializable {
     return this.#administrator;
   }
 
+  /**
+   * Sets the given user to be the administrator of the session.
+   *
+   * @param user The user to be the session's administrator
+   */
   public setAdministrator(user: User) {
     this.#administrator = user;
   }
 
+  /**
+   * Checks whether the session is empty, i.e. has no users that have currently
+   * joined the session.
+   *
+   * @returns True if the session is empty, false otherwise
+   */
   public isEmpty(): boolean {
     return this.#users.length == 0;
   }
 
+  /**
+   * Adds the given user to the session and notifies all currently joined users
+   * of the new user.
+   *
+   * @param user User to add to the session
+   */
   public addUser(user: User) {
     this.notifyUsers({
       "eventId": "USER_JOINED_SESSION",
@@ -56,6 +73,12 @@ class Session implements Serializable {
     user.session = this;
   }
 
+  /**
+   * Removes the given user to the session and notifies all currently joined
+   * users of the change.
+   *
+   * @param user User to remove from the session
+   */
   public removeUser(user: User) {
     this.notifyUsers({
       "eventId": "USER_LEAVED_SESSION",
@@ -68,6 +91,12 @@ class Session implements Serializable {
     user.session = undefined;
   }
 
+  /**
+   * Retrieves a user identified by the given ID from the session.
+   *
+   * @param userId ID of the user to retrieve
+   * @returns The user identified by the given ID, undefined if no such user
+   */
   public getUser(userId: string): Optional<User> {
     return this.#users.find((u) => u.id == userId);
   }

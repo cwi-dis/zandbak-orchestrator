@@ -10,8 +10,6 @@ class Orchestrator {
   #sessions: Array<Session> = [];
   #users: Array<User> = [];
 
-  public constructor() {}
-
   /**
    * Adds a new user to the orchestrator.
    *
@@ -48,22 +46,47 @@ class Orchestrator {
     return this.#users.find((u) => u.name == name);
   }
 
+  /**
+   * Removes a given user from the orchestrator.
+   *
+   * @param user User to remove from the orchestrator
+   */
   public removeUser(user: User) {
     this.#users = this.#users.filter((u) => u.id != user.id);
   }
 
+  /**
+   * Returns the session identified by the given ID or undefined if no such
+   * session exists.
+   *
+   * @param id ID of session to retrieve
+   * @returns The session identified by the given ID, undefined if no such session
+   */
   public getSession(id: string): Optional<Session> {
     return this.#sessions.find((s) => s.id == id);
   }
 
+  /**
+   * Adds a session to the orchestrator.
+   *
+   * @param session Session to add
+   */
   public addSession(session: Session) {
     this.#sessions.push(session);
   }
 
+  /**
+   * Removes a given session from the orchestrator.
+   *
+   * @param session Session to remove
+   */
   public removeSession(session: Session) {
     this.#sessions = this.#sessions.filter((s) => s.id != session.id);
   }
 
+  /**
+   * Returns an object of serialised sessions indexed by their session IDs.
+   */
   public get sessions() {
     return this.#sessions.reduce((acc, s) => {
       return {

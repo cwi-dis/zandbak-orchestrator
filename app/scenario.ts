@@ -11,6 +11,10 @@ class Scenario implements Serializable {
     return this.#id;
   }
 
+  /**
+   * Returns the scenario's properties as an object
+   * @returns Object with serialised scenario fields
+   */
   public serialize() {
     return {
       scenarioId: this.#id,
