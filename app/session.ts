@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { Object } from "../util";
+import { Object, Optional } from "../util";
 
 import Serializable from "./serializable";
 import User from "./user";
@@ -68,9 +68,31 @@ class Session implements Serializable {
     user.session = undefined;
   }
 
+  public getUser(userId: string): Optional<User> {
+    return this.#users.find((u) => u.id == userId);
+  }
+
   private notifyUsers(message: Object) {
     this.#users.forEach((u) => {
       u.socket.emit("SessionUpdated", message);
+    });
+  }
+
+  public sendMessageToAll(fromUser: User, message: Object) {
+    this.#users.forEach((u) => {
+      u.socket.emit("MessageSent", {
+        messageFrom: fromUser.id,
+        messageFromName: fromUser.name,
+        message
+      });
+    });
+  }
+
+  public sendMessage(fromUser: User, toUser: User, message: Object) {
+    toUser.socket.emit("MessageSent", {
+      messageFrom: fromUser.id,
+      messageFromName: fromUser.name,
+      message
     });
   }
 

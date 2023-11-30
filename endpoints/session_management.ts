@@ -123,6 +123,54 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
 
     session.removeUser(user);
   });
+
+  /**
+   * Sends a given message to all users in the user's current session. This also
+   * includes the sender itself. If the user not in any session, an error is
+   * issued.
+   */
+  socket.on(EndpointNames.SEND_MESSAGE_TO_ALL, (data, callback) => {
+    const { session } = user;
+    const { message } = data;
+
+    if (!session) {
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    session.sendMessageToAll(user, message);
+    callback(util.createCommandResponse(data, ErrorCodes.OK));
+  });
+
+  /**
+   * Sends a given message from the current user to the user identified by the
+   * given user ID. If the receiver is not in the same session or the sender is
+   * not in any session, an error is issued.
+   */
+  socket.on(EndpointNames.SEND_MESSAGE, (data, callback) => {
+    const { session } = user;
+    const { message } = data;
+
+    if (!session) {
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    const receiver = session.getUser(data.userId);
+    if (!receiver) {
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_SAME_SESSION
+      ));
+    }
+
+    session.sendMessage(user, receiver, message);
+    callback(util.createCommandResponse(data, ErrorCodes.OK));
+  });
 };
 
 export default installHandlers;
