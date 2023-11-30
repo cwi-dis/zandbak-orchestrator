@@ -9,7 +9,7 @@ class User implements Serializable {
   #loggedIn: boolean = false;
   #userData: Object;
 
-  public session: Session;
+  public session?: Session;
 
   public constructor(public name: string, public socket: io.Socket) {}
 
@@ -22,7 +22,7 @@ class User implements Serializable {
   }
 
   public logout() {
-    this.session.removeUser(this);
+    this.session?.removeUser(this);
   }
 
   public serialize(): Object {

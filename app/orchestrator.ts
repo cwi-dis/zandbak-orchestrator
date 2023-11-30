@@ -7,8 +7,8 @@ import { Optional } from "../util";
 class Orchestrator {
   public id: string = uuidv4();
 
-  private sessions: Array<Session> = [];
-  private users: Array<User> = [];
+  #sessions: Array<Session> = [];
+  #users: Array<User> = [];
 
   public constructor() {}
 
@@ -21,10 +21,10 @@ class Orchestrator {
    * @param user User object to add to orchestrator
    */
   public addUser(user: User) {
-    const alreadyPresent = !!this.users.find((u) => u.id == user.id);
+    const alreadyPresent = !!this.#users.find((u) => u.id == user.id);
 
     if (!alreadyPresent) {
-      this.users.push(user);
+      this.#users.push(user);
     }
   }
 
@@ -35,7 +35,7 @@ class Orchestrator {
    * @returns A User object with the given ID, undefined if there is no User with this ID
    */
   public getUser(id: string): Optional<User> {
-    return this.users.find((u) => u.id == id);
+    return this.#users.find((u) => u.id == id);
   }
 
   /**
@@ -45,23 +45,32 @@ class Orchestrator {
    * @returns A User object with the given name, undefined if there is no User with the name
    */
   public findUser(name: string): Optional<User> {
-    return this.users.find((u) => u.name == name);
+    return this.#users.find((u) => u.name == name);
   }
 
   public removeUser(user: User) {
-    this.users = this.users.filter((u) => u.id != user.id);
+    this.#users = this.#users.filter((u) => u.id != user.id);
+  }
+
+  public getSession(id: string): Optional<Session> {
+    return this.#sessions.find((s) => s.id == id);
   }
 
   public addSession(session: Session) {
-    this.sessions.push(session);
+    this.#sessions.push(session);
   }
 
   public removeSession(session: Session) {
-    this.sessions = this.sessions.filter((s) => s.id != session.id);
+    this.#sessions = this.#sessions.filter((s) => s.id != session.id);
   }
 
-  public addScenario() {
-
+  public get sessions() {
+    return this.#sessions.reduce((acc, s) => {
+      return {
+        ...acc,
+        [s.id]: s.serialize()
+      };
+    }, {});
   }
 }
 

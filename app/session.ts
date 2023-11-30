@@ -27,6 +27,10 @@ class Session implements Serializable {
     return this.#id;
   }
 
+  public get tranport() {
+    return this.#transport;
+  }
+
   public get administrator() {
     return this.#administrator;
   }
@@ -35,7 +39,19 @@ class Session implements Serializable {
     this.#administrator = user;
   }
 
+  public isEmpty(): boolean {
+    return this.#users.length == 0;
+  }
+
   public addUser(user: User) {
+    this.notifyUsers({
+      "eventId": "USER_JOINED_SESSION",
+      "eventData": {
+        "userId": user.id,
+        "userData": user.serialize(),
+      }
+    });
+
     this.#users.push(user);
     user.session = this;
   }
@@ -45,11 +61,11 @@ class Session implements Serializable {
       "eventId": "USER_LEAVED_SESSION",
       "eventData": {
         "userId": user.id,
-        "message": "User logged out of orchestrator"
       }
     });
 
     this.#users = this.#users.filter((u) => u.id != user.id);
+    user.session = undefined;
   }
 
   private notifyUsers(message: Object) {
