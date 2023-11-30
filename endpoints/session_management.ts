@@ -76,8 +76,22 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     ));
   });
 
-  socket.on(EndpointNames.GET_SESSION_INFO, () => {
+  /**
+   * Returns a serialised version of the user's current session. If the user
+   * is not in any session, an error is issued.
+   */
+  socket.on(EndpointNames.GET_SESSION_INFO, (data, callback) => {
+    const { session } = user;
 
+    if (!session) {
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      session.serialize()
+    ));
   });
 
   /**
