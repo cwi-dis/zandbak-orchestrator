@@ -101,6 +101,16 @@ class Session implements Serializable {
     return this.#users.find((u) => u.id == userId);
   }
 
+  /**
+   * Checks whether a given user is in this session.
+   *
+   * @param user User to check
+   * @returns True if the user is in the session, false otherwise
+   */
+  public hasUser(user: User): boolean {
+    return !!this.getUser(user.id);
+  }
+
   private notifyUsers(message: Object) {
     this.#users.forEach((u) => {
       u.socket.emit("SessionUpdated", message);
@@ -117,7 +127,19 @@ class Session implements Serializable {
     });
   }
 
+  /**
+   * Sends a message from a given user to another given user in the session. If
+   * the recipient user is not in this session, nothing happens.
+   *
+   * @param fromUser Sender of the message
+   * @param toUser Receiver of the message
+   * @param message Message to send
+   */
   public sendMessage(fromUser: User, toUser: User, message: Object) {
+    if (!this.hasUser(toUser)) {
+      return;
+    }
+
     toUser.socket.emit("MessageSent", {
       messageFrom: fromUser.id,
       messageFromName: fromUser.name,
