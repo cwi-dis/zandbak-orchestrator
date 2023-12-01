@@ -1,7 +1,6 @@
 import io from "socket.io";
 
 import * as util from "../util";
-
 import EndpointNames from "./endpoint_names";
 import Orchestrator from "../app/orchestrator";
 import User from "../app/user";

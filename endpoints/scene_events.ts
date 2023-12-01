@@ -1,11 +1,10 @@
 import * as util from "../util";
 
 import EndpointNames from "./endpoint_names";
-import Orchestrator from "../app/orchestrator";
 import User from "../app/user";
 import ErrorCodes  from "./error_codes";
 
-const installHandlers = (orchestrator: Orchestrator, user: User) => {
+const installHandlers = (user: User) => {
   const { socket } = user;
 
   /**
@@ -44,8 +43,9 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
 
   /**
    * Sends a scene event from a session master to a regular user. If the
-   * master is not in any session, the request data is empty or the session has
-   * no master, an error is issued.
+   * master is not in any session or the request data is empty, an error is
+   * issued. An error is also returned if the calling user is not the master of
+   * their session.
    */
   socket.on(EndpointNames.SEND_SCENE_EVENT_TO_USER, (targetId, sceneEvent, callback) => {
     const { session } = user;
@@ -80,12 +80,40 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
-
     user.sendSceneEvent(
       "SceneEventToUser",
       targetUser,
       sceneEvent
     );
+  });
+
+  /**
+   * Sends a scene event from a session master to all users of the session. If
+   * the master is not in any session or the request data is empty, an error is
+   * issued. An error is also returned if the calling user is not the master of
+   * their session.
+   */
+  socket.on(EndpointNames.SEND_SCENE_EVENT_TO_ALL, (sceneEvent, callback) => {
+    const { session } = user;
+    if (!session) {
+      return callback(util.createResponse(
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    if (!session.isMaster(user)) {
+      return callback(util.createResponse(
+        ErrorCodes.SCENE_EVENT_USER_IS_NOT_MASTER
+      ));
+    }
+
+    if (!sceneEvent) {
+      return callback(util.createResponse(
+        ErrorCodes.SCENE_EVENT_NO_DATA
+      ));
+    }
+
+    session.sendSceneEvent(sceneEvent);
   });
 };
 

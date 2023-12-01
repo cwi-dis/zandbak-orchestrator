@@ -148,9 +148,36 @@ class Session implements Serializable {
     });
   }
 
+  /**
+   * Sends a session update event to all users in the session.
+   *
+   * @param eventId Event ID
+   * @param eventData Event data
+   */
   public sendSessionUpdate(eventId: string, eventData: Object) {
     this.notifyUsers({
       eventId, eventData
+    });
+  }
+
+  /**
+   * Sends a scene event from the master to all users in the session. If the
+   * session has no master, this method does nothing. NB: The caller should
+   * check whether the user issuing the call is the master of the session.
+   *
+   * @param sceneEvent Scene event to send
+   */
+  public sendSceneEvent(sceneEvent: any) {
+    if (!this.#master) {
+      return;
+    }
+
+    this.#users.forEach((user) => {
+      this.#master.sendSceneEvent(
+        "SceneEventToUser",
+        user,
+        sceneEvent
+      );
     });
   }
 

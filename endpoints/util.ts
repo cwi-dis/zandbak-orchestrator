@@ -1,15 +1,13 @@
 import * as ntp from "ntp-client";
 
 import * as util from "../util";
-
 import EndpointNames from "./endpoint_names";
-import Orchestrator from "../app/orchestrator";
 import User from "../app/user";
 import ErrorCodes from "./error_codes";
 
 const packageInfo = require("../package.json");
 
-const installHandlers = (orchestrator: Orchestrator, user: User) => {
+const installHandlers = (user: User) => {
   const { socket } = user;
 
   socket.on(EndpointNames.GET_ORCHESTRATOR_VERSION, (data, callback) => {

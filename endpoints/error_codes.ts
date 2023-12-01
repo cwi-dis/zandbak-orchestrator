@@ -17,7 +17,7 @@ enum ErrorCodes {
   SCENE_EVENT_NO_MASTER = 3001,
   SCENE_EVENT_NO_DATA = 3002,
   SCENE_EVENT_NO_TARGET_ID = 3014,
-  SCENE_EVENT_USER_IS_NOT_MASTER = 3016
+  SCENE_EVENT_USER_IS_NOT_MASTER = 3012
 }
 
 export const ErrorMessages: { [key in ErrorCodes]: string } = {

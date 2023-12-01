@@ -11,6 +11,7 @@ import installConnectionHandlers, { installLoginHandler } from "./endpoints/conn
 import installSessionHandlers from "./endpoints/session_management";
 import installUtilHandlers from "./endpoints/util";
 import installUserDataHandlers from "./endpoints/user_data";
+import installSceneEventHandlers from "./endpoints/scene_events";
 
 const [ LOG_FOLDER, LOG_SERVER_PORT, PORT ] = getFromEnvironment(
   "LOG_FOLDER", "LOG_SERVER_PORT", "PORT"
@@ -27,8 +28,9 @@ io.on("connection", async (socket) => {
 
   installConnectionHandlers(orchestrator, user);
   installSessionHandlers(orchestrator, user);
-  installUtilHandlers(orchestrator, user);
   installUserDataHandlers(orchestrator, user);
+  installSceneEventHandlers(user);
+  installUtilHandlers(user);
 });
 
 const staticHttpServer = express();
