@@ -56,6 +56,20 @@ class User implements Serializable {
   }
 
   /**
+   * Sends a scene event to this user.
+   *
+   * @param eventId ID of the scene event
+   * @param fromUser Sender of the scene event
+   * @param sceneEventData Data associated to the event
+   */
+  public sendSceneEvent(eventId: "SceneEventToMaster" | "SceneEventToUser", fromUser: User, sceneEventData: any) {
+    this.socket.emit(eventId, {
+      sceneEventFrom: fromUser.id,
+      sceneEventData
+    });
+  }
+
+  /**
    * Returns the user's properties as an object
    *
    * @returns Object with serialised user fields

@@ -12,7 +12,12 @@ enum ErrorCodes {
   SESSION_USER_NOT_IN_SAME_SESSION = 802,
 
   USER_DATA_USER_NOT_FOUND = 1301,
-  USER_DATA_MISSING_DATA_JSON = 1700
+  USER_DATA_MISSING_DATA_JSON = 1700,
+
+  SCENE_EVENT_NO_MASTER = 3001,
+  SCENE_EVENT_NO_DATA = 3002,
+  SCENE_EVENT_NO_TARGET_ID = 3014,
+  SCENE_EVENT_USER_IS_NOT_MASTER = 3016
 }
 
 export const ErrorMessages: { [key in ErrorCodes]: string } = {
@@ -29,7 +34,12 @@ export const ErrorMessages: { [key in ErrorCodes]: string } = {
   [ErrorCodes.SESSION_USER_NOT_IN_SAME_SESSION]: "The target user is not in the same session",
 
   [ErrorCodes.USER_DATA_USER_NOT_FOUND]: "The user was not found",
-  [ErrorCodes.USER_DATA_MISSING_DATA_JSON]: "User data (JSON) missing"
+  [ErrorCodes.USER_DATA_MISSING_DATA_JSON]: "User data (JSON) missing",
+
+  [ErrorCodes.SCENE_EVENT_NO_DATA]: "No event data has been provided",
+  [ErrorCodes.SCENE_EVENT_NO_MASTER]: "No master for this session was found",
+  [ErrorCodes.SCENE_EVENT_NO_TARGET_ID]: "Missing target user ID",
+  [ErrorCodes.SCENE_EVENT_USER_IS_NOT_MASTER]: "The user is not the master of this session"
 };
 
 export default ErrorCodes;

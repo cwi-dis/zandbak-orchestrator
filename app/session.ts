@@ -35,6 +35,10 @@ class Session implements Serializable {
     return this.#administrator;
   }
 
+  public get master() {
+    return this.#master;
+  }
+
   /**
    * Sets the given user to be the administrator of the session.
    *
@@ -109,6 +113,27 @@ class Session implements Serializable {
    */
   public hasUser(user: User): boolean {
     return !!this.getUser(user.id);
+  }
+
+  /**
+   * Checks if the session has a master user.
+   *
+   * @returns True if the session has a master, false otherwise
+   */
+  public hasMaster(): boolean {
+    return !!this.#master;
+  }
+
+  /**
+   * Checks if the given user is the master of this session. If the session has
+   * no master or the given user is not the master of this session, the method
+   * returns false.
+   *
+   * @param user User to check
+   * @returns True if the given user is the master of this session, false otherwise
+   */
+  public isMaster(user: User): boolean {
+    return this.hasMaster() && user.id == this.#master.id;
   }
 
   /**
