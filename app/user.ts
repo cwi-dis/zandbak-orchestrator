@@ -11,7 +11,9 @@ class User implements Serializable {
 
   public session?: Session;
 
-  public constructor(public name: string, public socket: io.Socket) {}
+  public constructor(public name: string, public socket: io.Socket, userData: Object = {}) {
+    this.#userData = userData;
+  }
 
   public get id() {
     return this.#id;
@@ -19,6 +21,10 @@ class User implements Serializable {
 
   public get loggedIn() {
     return this.#loggedIn;
+  }
+
+  public get userData() {
+    return this.#userData;
   }
 
   /**

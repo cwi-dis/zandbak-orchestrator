@@ -9,7 +9,9 @@ enum ErrorCodes {
   SESSION_USER_ALREADY_IN_SESSION = 603,
   SESSION_USER_NOT_IN_SESSION = 700,
   SESSION_USER_NOT_IN_ANY_SESSION = 800,
-  SESSION_USER_NOT_IN_SAME_SESSION = 802
+  SESSION_USER_NOT_IN_SAME_SESSION = 802,
+
+  USER_DATA_USER_NOT_FOUND = 1301
 }
 
 export const ErrorMessages: { [key in ErrorCodes]: string } = {
@@ -23,7 +25,9 @@ export const ErrorMessages: { [key in ErrorCodes]: string } = {
   [ErrorCodes.SESSION_USER_ALREADY_IN_OTHER_SESSION]: "The user already in a session",
   [ErrorCodes.SESSION_USER_NOT_IN_SESSION]: "The user has not joined any session",
   [ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION]: "The user is not in any session",
-  [ErrorCodes.SESSION_USER_NOT_IN_SAME_SESSION]: "The target user is not in the same session"
+  [ErrorCodes.SESSION_USER_NOT_IN_SAME_SESSION]: "The target user is not in the same session",
+
+  [ErrorCodes.USER_DATA_USER_NOT_FOUND]: "The user was not found"
 };
 
 export default ErrorCodes;
