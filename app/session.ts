@@ -111,12 +111,26 @@ class Session implements Serializable {
     return !!this.getUser(user.id);
   }
 
+  /**
+   * Sends a given message to all users currently in the session. The message
+   * can be any serialisable object.
+   *
+   * @param message Message to send
+   */
   private notifyUsers(message: Object) {
     this.#users.forEach((u) => {
       u.socket.emit("SessionUpdated", message);
     });
   }
 
+  /**
+   * Sends a given message to all users currently in the session. The message
+   * can be any serialisable object. The `fromUser` param will be used as the
+   * sender of the message.
+   *
+   * @param fromUser Sender of the message
+   * @param message Message to send
+   */
   public sendMessageToAll(fromUser: User, message: Object) {
     this.#users.forEach((u) => {
       u.socket.emit("MessageSent", {
@@ -147,6 +161,11 @@ class Session implements Serializable {
     });
   }
 
+  /**
+   * Returns the sessions's properties as an object
+   *
+   * @returns Object with serialised session fields
+   */
   public serialize(): Object {
     return {
       sessionId: this.#id,

@@ -21,10 +21,19 @@ class User implements Serializable {
     return this.#loggedIn;
   }
 
+  /**
+   * Remove user from their current session. If the user is not part of any
+   * session, this method does nothing.
+   */
   public logout() {
     this.session?.removeUser(this);
   }
 
+  /**
+   * Returns the user's properties as an object
+   *
+   * @returns Object with serialised user fields
+   */
   public serialize(): Object {
     return {
       userId: this.#id,

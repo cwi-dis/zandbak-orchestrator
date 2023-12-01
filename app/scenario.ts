@@ -13,6 +13,7 @@ class Scenario implements Serializable {
 
   /**
    * Returns the scenario's properties as an object
+   *
    * @returns Object with serialised scenario fields
    */
   public serialize() {
