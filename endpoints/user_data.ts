@@ -30,6 +30,39 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       targetUser.userData
     ));
   });
+
+  /**
+   * Updates the `userData` property for the current user. The updated user
+   * data object is returned in the response. A notification is also sent to
+   * all session members. If the request does not contain the field
+   * `userDataJson`, an error is issued.
+   */
+  socket.on(EndpointNames.UPDATE_USER_DATA, (data, callback) => {
+    const { userDataJson } = data;
+    const { session } = user;
+
+    if (!userDataJson) {
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.USER_DATA_MISSING_DATA_JSON
+      ));
+    }
+
+    const userData = user.updateUserData(userDataJson);
+
+    if (session) {
+      session.sendSessionUpdate("USER_DATA_UPDATED", {
+        userId: user.id,
+        userData
+      });
+    }
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      userData
+    ));
+  });
 };
 
 export default installHandlers;

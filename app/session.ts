@@ -123,6 +123,12 @@ class Session implements Serializable {
     });
   }
 
+  public sendSessionUpdate(eventId: string, eventData: Object) {
+    this.notifyUsers({
+      eventId, eventData
+    });
+  }
+
   /**
    * Sends a given message to all users currently in the session. The message
    * can be any serialisable object. The `fromUser` param will be used as the

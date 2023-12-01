@@ -11,7 +11,8 @@ enum ErrorCodes {
   SESSION_USER_NOT_IN_ANY_SESSION = 800,
   SESSION_USER_NOT_IN_SAME_SESSION = 802,
 
-  USER_DATA_USER_NOT_FOUND = 1301
+  USER_DATA_USER_NOT_FOUND = 1301,
+  USER_DATA_MISSING_DATA_JSON = 1700
 }
 
 export const ErrorMessages: { [key in ErrorCodes]: string } = {
@@ -27,7 +28,8 @@ export const ErrorMessages: { [key in ErrorCodes]: string } = {
   [ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION]: "The user is not in any session",
   [ErrorCodes.SESSION_USER_NOT_IN_SAME_SESSION]: "The target user is not in the same session",
 
-  [ErrorCodes.USER_DATA_USER_NOT_FOUND]: "The user was not found"
+  [ErrorCodes.USER_DATA_USER_NOT_FOUND]: "The user was not found",
+  [ErrorCodes.USER_DATA_MISSING_DATA_JSON]: "User data (JSON) missing"
 };
 
 export default ErrorCodes;
