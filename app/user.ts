@@ -166,6 +166,14 @@ class User implements Serializable {
     this.#remoteDataStreams.clear();
   }
 
+  /**
+   * Checks if this user object has a remote data stream for the given user and
+   * stream type.
+   *
+   * @param user User for remote data stream
+   * @param type Type of stream
+   * @returns True if this user has a remote data stream with the given parameters
+   */
   public hasRemoteDataStream(user: User, type: string): boolean {
     return this.#remoteDataStreams.has(RemoteDataStream.genId(user.id, type));
   }
