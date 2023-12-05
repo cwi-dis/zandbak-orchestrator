@@ -1,21 +1,27 @@
 import { v4 as uuidv4 } from "uuid";
 import io from "socket.io";
+
 import Session from "./session";
 import Serializable from "./serializable";
 import { Object } from "../util";
 import DataStream from "./data_stream";
+import RemoteDataStream from "./remote_data_stream";
 
 class User implements Serializable {
   #id: string = uuidv4();
   #loggedIn: boolean = false;
   #userData: Map<string, any>;
+
   #dataStreams: Map<string, DataStream>;
+  #remoteDataStreams: Map<string, RemoteDataStream>;
 
   public session?: Session;
 
   public constructor(public name: string, public socket: io.Socket, userData: Object = {}) {
     this.#userData = new Map(Object.entries(userData));
+
     this.#dataStreams = new Map();
+    this.#remoteDataStreams = new Map();
   }
 
   public get id() {
@@ -110,6 +116,53 @@ class User implements Serializable {
    */
   public removeAllDataStreams() {
     this.#dataStreams.clear();
+  }
+
+  /**
+   * Adds a new remote data stream for the given user with the given type and
+   * description to this user.
+   *
+   * @param user User for stream
+   * @param type Type of stream to add
+   * @param description Stream description
+   */
+  public declareRemoteDataStream(user: User, type: string) {
+    const remoteStream = new RemoteDataStream(user, type);
+    this.#remoteDataStreams.set(remoteStream.id, remoteStream);
+  }
+
+  /**
+   * Returns a remote data stream of the given type for the given user. If no
+   * such stream exists, null is returned.
+   *
+   * @param user User for stream
+   * @param type Type of data stream to get
+   * @returns A data stream of the given type, null otherwise
+   */
+  public getRemoteDataStream(user: User, type: string) {
+    return this.#remoteDataStreams.get(
+      RemoteDataStream.genId(user.id, type)
+    ) || null;
+  }
+
+  /**
+   * Removes a remote data stream for the given user of the given type from
+   * this user. If the user has no such data stream, nothing happens.
+   *
+   * @param user User for stream
+   * @param type Type of stream to remove
+   */
+  public removeRemoteDataStream(user: User, type: string) {
+    this.#remoteDataStreams.delete(RemoteDataStream.genId(user.id, type));
+  }
+
+  /**
+   * Removes all remote data streams from this user.
+   *
+   * @param type Type of stream to remove
+   */
+  public removeAllRemoteDataStreams() {
+    this.#remoteDataStreams.clear();
   }
 
   /**
