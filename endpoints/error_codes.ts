@@ -19,7 +19,8 @@ enum ErrorCodes {
   SCENE_EVENT_NO_TARGET_ID = 3014,
   SCENE_EVENT_USER_IS_NOT_MASTER = 3012,
 
-  STREAM_DATA_MISSING_KIND = 4002
+  STREAM_DATA_MISSING_USER_NOT_PROVIDED = 4001,
+  STREAM_DATA_MISSING_KIND = 4002,
 }
 
 export const ErrorMessages: { [key in ErrorCodes]: string } = {
@@ -43,6 +44,7 @@ export const ErrorMessages: { [key in ErrorCodes]: string } = {
   [ErrorCodes.SCENE_EVENT_NO_TARGET_ID]: "Missing target user ID",
   [ErrorCodes.SCENE_EVENT_USER_IS_NOT_MASTER]: "The user is not the master of this session",
 
+  [ErrorCodes.STREAM_DATA_MISSING_USER_NOT_PROVIDED]: "Missing user parameter",
   [ErrorCodes.STREAM_DATA_MISSING_KIND]: "Missing type for data stream"
 };
 

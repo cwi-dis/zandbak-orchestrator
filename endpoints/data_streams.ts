@@ -1,8 +1,8 @@
 import * as util from "../util";
 
 import EndpointNames from "./endpoint_names";
-import User from "../app/user";
 import ErrorCodes  from "./error_codes";
+import User from "../app/user";
 
 const installHandlers = (user: User) => {
   const { socket } = user;
@@ -62,6 +62,90 @@ const installHandlers = (user: User) => {
     }
 
     user.removeDataStream(streamType);
+    const { dataStreams, remoteDataStreams } = user.serialize();
+
+    callback(util.createResponse(ErrorCodes.OK, {
+      dataStreams, remoteDataStreams,
+      connectionId: user.id,
+      connectionLoggedAs: user.id
+    }));
+  });
+
+  /**
+   * Registers the current user for a remote data stream from the user with the
+   * given ID and the given stream type.
+   */
+  socket.on(EndpointNames.REGISTER_FOR_DATA_STREAM, (fromUserId, streamType, callback) => {
+    const { session } = user;
+
+    if (!session) {
+      return callback(util.createResponse(
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    if (!fromUserId) {
+      return callback(util.createResponse(
+        ErrorCodes.STREAM_DATA_MISSING_USER_NOT_PROVIDED
+      ));
+    }
+
+    const fromUser = session.getUser(fromUserId);
+    if (!fromUser) {
+      return callback(util.createResponse(
+        ErrorCodes.SESSION_USER_NOT_IN_SESSION
+      ));
+    }
+
+    if (!streamType) {
+      return callback(util.createResponse(
+        ErrorCodes.STREAM_DATA_MISSING_KIND
+      ));
+    }
+
+    user.declareRemoteDataStream(fromUser, streamType);
+    const { dataStreams, remoteDataStreams } = user.serialize();
+
+    callback(util.createResponse(ErrorCodes.OK, {
+      dataStreams, remoteDataStreams,
+      connectionId: user.id,
+      connectionLoggedAs: user.id
+    }));
+  });
+
+  /**
+   * Unregisters the current user from a remote data stream from the user with
+   * the given ID and the given stream type.
+   */
+  socket.on(EndpointNames.UNREGISTER_FROM_DATA_STREAM, (fromUserId, streamType, callback) => {
+    const { session } = user;
+
+    if (!session) {
+      return callback(util.createResponse(
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    if (!fromUserId) {
+      return callback(util.createResponse(
+        ErrorCodes.STREAM_DATA_MISSING_USER_NOT_PROVIDED
+      ));
+    }
+
+    const fromUser = session.getUser(fromUserId);
+    if (!fromUser) {
+      return callback(util.createResponse(
+        ErrorCodes.SESSION_USER_NOT_IN_SESSION
+      ));
+    }
+
+    if (!streamType) {
+      return callback(util.createResponse(
+        ErrorCodes.STREAM_DATA_MISSING_KIND
+      ));
+    }
+
+    user.removeRemoteDataStream(fromUser, streamType);
     const { dataStreams, remoteDataStreams } = user.serialize();
 
     callback(util.createResponse(ErrorCodes.OK, {
