@@ -22,6 +22,13 @@ enum EndpointNames {
   SEND_SCENE_EVENT_TO_USER = "SceneEventToUser",
   SEND_SCENE_EVENT_TO_ALL = "SceneEventToAllUsers",
 
+  DECLARE_DATA_STREAM = "DeclareDataStream",
+  REMOVE_DATA_STREAM = "RemoveDataStream",
+  REGISTER_FOR_DATA_STREAM = "RegisterForDataStream",
+  UNREGISTER_FROM_DATA_STREAM = "UnregisterFromDataStream",
+  DATA_RECEIVED = "DataReceived",
+  SEND_DATA = "SendData",
+
   GET_ORCHESTRATOR_VERSION = "GetOrchestratorVersion",
   GET_NTP_TIME = "GetNTPTime",
   EXIT_ORCHESTRATOR = "TerminateOrchestrator"
