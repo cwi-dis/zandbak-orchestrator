@@ -60,3 +60,7 @@ export function createCommandResponse(msg: Object, error: ErrorCodes, body: Obje
     commandId
   };
 }
+
+export function mapHashToDict<T, U>(hash: Map<T, U>, fn: (tuple: [T, U]) => [T, any]) {
+  return Object.fromEntries([...hash].map(fn));
+}
