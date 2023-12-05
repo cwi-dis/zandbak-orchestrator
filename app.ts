@@ -12,6 +12,7 @@ import installSessionHandlers from "./endpoints/session_management";
 import installUtilHandlers from "./endpoints/util";
 import installUserDataHandlers from "./endpoints/user_data";
 import installSceneEventHandlers from "./endpoints/scene_events";
+import installStreamHandlers from "./endpoints/data_streams";
 
 const [ LOG_FOLDER, LOG_SERVER_PORT, PORT ] = getFromEnvironment(
   "LOG_FOLDER", "LOG_SERVER_PORT", "PORT"
@@ -30,6 +31,7 @@ io.on("connection", async (socket) => {
   installSessionHandlers(orchestrator, user);
   installUserDataHandlers(orchestrator, user);
   installSceneEventHandlers(user);
+  installStreamHandlers(user);
   installUtilHandlers(user);
 });
 
