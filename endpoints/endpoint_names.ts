@@ -26,7 +26,6 @@ enum EndpointNames {
   REMOVE_DATA_STREAM = "RemoveDataStream",
   REGISTER_FOR_DATA_STREAM = "RegisterForDataStream",
   UNREGISTER_FROM_DATA_STREAM = "UnregisterFromDataStream",
-  DATA_RECEIVED = "DataReceived",
   SEND_DATA = "SendData",
 
   GET_ORCHESTRATOR_VERSION = "GetOrchestratorVersion",

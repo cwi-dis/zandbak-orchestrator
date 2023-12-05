@@ -220,6 +220,22 @@ class Session implements Serializable {
   }
 
   /**
+   * Sends raw data from the given user to all users in this session which are
+   * registered for the data stream from the user with the given type.
+   *
+   * @param fromUser Sending user
+   * @param type Type of stream
+   * @param data Data to send
+   */
+  public sendData(fromUser: User, type: string, data: any) {
+    this.#users.forEach((u) => {
+      if (u.hasRemoteDataStream(fromUser, type)) {
+        u.socket.emit("DataReceived", data);
+      }
+    });
+  }
+
+  /**
    * Returns the sessions's properties as an object
    *
    * @returns Object with serialised session fields

@@ -154,6 +154,21 @@ const installHandlers = (user: User) => {
       connectionLoggedAs: user.id
     }));
   });
+
+  /**
+   * Sends data from the current user to all users in the same session,
+   * provided they are registered for the given stream type. If either the
+   * stream type of the data are not provided, nothing happens.
+   */
+  socket.on(EndpointNames.SEND_DATA, (streamType, data) => {
+    const { session } = user;
+
+    if (!session || !streamType || !data) {
+      return;
+    }
+
+    session.sendData(user, streamType, data);
+  });
 };
 
 export default installHandlers;
