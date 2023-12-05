@@ -166,6 +166,10 @@ class User implements Serializable {
     this.#remoteDataStreams.clear();
   }
 
+  public hasRemoteDataStream(user: User, type: string): boolean {
+    return this.#remoteDataStreams.has(RemoteDataStream.genId(user.id, type));
+  }
+
   /**
    * Returns the user's properties as an object
    *
