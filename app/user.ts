@@ -3,16 +3,19 @@ import io from "socket.io";
 import Session from "./session";
 import Serializable from "./serializable";
 import { Object } from "../util";
+import DataStream from "./data_stream";
 
 class User implements Serializable {
   #id: string = uuidv4();
   #loggedIn: boolean = false;
   #userData: Map<string, any>;
+  #dataStreams: Map<string, DataStream>;
 
   public session?: Session;
 
   public constructor(public name: string, public socket: io.Socket, userData: Object = {}) {
     this.#userData = new Map(Object.entries(userData));
+    this.#dataStreams = new Map();
   }
 
   public get id() {
@@ -67,6 +70,46 @@ class User implements Serializable {
       sceneEventFrom: fromUser.id,
       sceneEventData
     });
+  }
+
+  /**
+   * Adds a new data stream with the given type and description to this user.
+   *
+   * @param type Type of stream to add
+   * @param description Stream description
+   */
+  public declareDataStream(type: string, description: string) {
+    this.#dataStreams.set(type, new DataStream(type, description));
+  }
+
+  /**
+   * Returns a data stream of the given type. If no such stream exists, null is
+   * returned.
+   *
+   * @param type Type of data stream to get
+   * @returns A data stream of the given type, null otherwise
+   */
+  public getDataStream(type: string) {
+    return this.#dataStreams.get(type) || null;
+  }
+
+  /**
+   * Removes a data stream of the given type from this user. If the user has no
+   * such data stream, nothing happens.
+   *
+   * @param type Type of stream to remove
+   */
+  public removeDataStream(type: string) {
+    this.#dataStreams.delete(type);
+  }
+
+  /**
+   * Removes all data streams from this user.
+   *
+   * @param type Type of stream to remove
+   */
+  public removeAllDataStreams() {
+    this.#dataStreams.clear();
   }
 
   /**
