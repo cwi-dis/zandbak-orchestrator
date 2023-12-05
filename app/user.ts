@@ -6,6 +6,7 @@ import Serializable from "./serializable";
 import { Object } from "../util";
 import DataStream from "./data_stream";
 import RemoteDataStream from "./remote_data_stream";
+import { mapHashToDict } from "../util";
 
 class User implements Serializable {
   #id: string = uuidv4();
@@ -175,6 +176,12 @@ class User implements Serializable {
       userId: this.#id,
       userName: this.name,
       userData: this.#userData,
+      dataStreams: mapHashToDict(this.#dataStreams, ([type, stream]) => {
+        return [type, stream.serialize()];
+      }),
+      remoteDataStreams: mapHashToDict(this.#remoteDataStreams, ([type, stream]) => {
+        return [type, stream.serialize()];
+      })
     };
   }
 }
