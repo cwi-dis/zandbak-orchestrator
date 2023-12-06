@@ -68,6 +68,7 @@ class User implements Serializable {
    */
   public logout() {
     this.session?.removeUser(this);
+    this.session = undefined;
   }
 
   /**
