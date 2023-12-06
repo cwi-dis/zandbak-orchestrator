@@ -29,6 +29,14 @@ enum LogLevel {
   DISABLED
 }
 
+/**
+ * Prints the passed values to the standard output, prefixed by a current
+ * timestamp. The first parameter designates log level and can also be used to
+ * disable logging.
+ *
+ * @param logLevel Log level, can also be used for disabling logging altogether
+ * @param logData Values that will be printed to the log
+ */
 export function log(logLevel: LogLevel, ...logData: Array<any>) {
   if (logLevel == LogLevel.DISABLED) {
     return;
@@ -38,6 +46,14 @@ export function log(logLevel: LogLevel, ...logData: Array<any>) {
   console.log(`[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`, ...logData);
 }
 
+/**
+ * Loads the contents of a file identified by the given path and tries to parse
+ * it as JSON. A promise is returned which, when resolved, contains the JSON
+ * data structure loaded from the file.
+ *
+ * @param path Path to config file to load
+ * @returns A promise which, when resolved, contains the contents of the loaded file
+ */
 export async function loadConfig(path: string): Promise<Object> {
   return new Promise((resolve, reject) => {
     fs.readFile(path, (err, data) => {
@@ -50,13 +66,31 @@ export async function loadConfig(path: string): Promise<Object> {
   });
 }
 
-export function createResponse(error: ErrorCodes, body: object = {}) {
+/**
+ * Creates an object intended to be passed as a response to a request from a
+ * client containing an error code and an optional response body.
+ *
+ * @param error Error code for the response object
+ * @param body Body object to be passed along in the response (optional)
+ * @returns The response object containing the data passed in and an error message
+ */
+export function createResponse(error: ErrorCodes, body: Object = {}) {
   return {
     error, body,
     message: ErrorMessages[error]
   };
 }
 
+/**
+ * Creates an object intended to be passed as a response to a command from a
+ * client containing the original command, an error code and an optional
+ * response body.
+ *
+ * @param msg The original command message received from the client
+ * @param error Error code for the response object
+ * @param body Body object to be passed along in the response (optional)
+ * @returns The response object containing the original command name, the data passed in and an error message
+ */
 export function createCommandResponse(msg: Object, error: ErrorCodes, body: Object = {}) {
   const { commandId } = msg;
 
@@ -66,6 +100,13 @@ export function createCommandResponse(msg: Object, error: ErrorCodes, body: Obje
   };
 }
 
+/**
+ * Maps a JS Hash object to a regular JS object using a given mapping function.
+ *
+ * @param hash JS Hash object to be converted to a JS object
+ * @param fn Mapping function to be applied to every item in the hash
+ * @returns A JS object containing every item from the input, transformed by the mapping function
+ */
 export function mapHashToDict<T, U>(hash: Map<T, U>, fn: (tuple: [T, U]) => [T, any]) {
   return Object.fromEntries([...hash].map(fn));
 }
