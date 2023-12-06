@@ -24,8 +24,13 @@ export function getFromEnvironment(...keys: Array<string>): Array<string> {
   }, []);
 }
 
-export function log(logLevel: "disabled" | "debug", ...logData: Array<any>) {
-  if (logLevel == "disabled") {
+enum LogLevel {
+  DEBUG,
+  DISABLED
+}
+
+export function log(logLevel: LogLevel, ...logData: Array<any>) {
+  if (logLevel == LogLevel.DISABLED) {
     return;
   }
 
