@@ -1,16 +1,9 @@
-import { Object } from "../util";
-import Transport from "./transport";
+import ExternalTransport from "./external_transport";
 
-class WebRTCTransport implements Transport {
-  public start(): void {
-  }
-
-  public destroy(): void {
-  }
-
-  public getUrls(): Object {
-    return {};
-  }
+class WebRTCTransport extends ExternalTransport {
+  protected cmdLine: Array<string>;
+  protected port: number;
+  protected tls: boolean;
 }
 
 export default WebRTCTransport;
