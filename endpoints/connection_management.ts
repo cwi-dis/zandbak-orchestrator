@@ -8,9 +8,22 @@ import ErrorCodes  from "./error_codes";
 
 const DEBUG = util.LogLevel.DEBUG;
 
+/**
+ * Installs a handler which responds to the `LOGIN` message and creates a new
+ * user object. The handler returns a promise which, when resolved, contains a
+ * new user object instantiated with the params received in the request.
+ *
+ * @param orchestrator Reference to the orchestrator
+ * @param socket Reference to socket that received the connection
+ * @returns A promise that resolves to a new user object, or rejects if the user could not be instantiated
+ */
 export const installLoginHandler =  async (orchestrator: Orchestrator, socket: io.Socket): Promise<User> => {
   return new Promise((resolve, reject) => {
-    // Handle user login
+    /**
+     * Creates a new user with the given username which is stored in the
+     * enclosing promise. If the received data contained no username, causes
+     * the promise to reject.
+     */
     socket.on(EndpointNames.LOGIN, (data, callback) => {
       const { userName }: { userName: string | undefined } = data;
 
@@ -37,7 +50,10 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
 const installHandlers = (orchestrator: Orchestrator, user: User) => {
   const { socket } = user;
 
-  // Handle user logout
+  /**
+   * Logs the user out from the orchestrator, removing them from their session
+   * first.
+   */
   socket.on(EndpointNames.LOGOUT, (data, callback) => {
     user.session?.removeUser(user);
     orchestrator.removeUser(user);
@@ -45,7 +61,10 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
 
-  // Handle disconnect
+  /**
+   * Handles a disconnct received from a socket by removing the associated user
+   * from their session and the orchestrator.
+   */
   socket.on("disconnect", () => {
     user.session?.removeUser(user);
     orchestrator.removeUser(user);
