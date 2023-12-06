@@ -11,6 +11,7 @@ import { mapHashToDict } from "../util";
 class User implements Serializable {
   #id: string = uuidv4();
   #loggedIn: boolean = false;
+  #canBeMaster: boolean = true;
   #userData: Map<string, any>;
 
   #dataStreams: Map<string, DataStream>;
@@ -31,6 +32,10 @@ class User implements Serializable {
 
   public get loggedIn() {
     return this.#loggedIn;
+  }
+
+  public get canBeMaster() {
+    return this.#canBeMaster;
   }
 
   public get userData() {
