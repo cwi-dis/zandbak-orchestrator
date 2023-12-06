@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    image: registry.dis.cwi.nl/vr2gather-orchestrator
+    restart: always
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    command: sh -c "/wait && yarn start"
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "3"
