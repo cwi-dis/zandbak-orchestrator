@@ -11,7 +11,7 @@ class Session implements Serializable {
   #id: string = uuidv4();
   #users: Array<User> = [];
   #administrator: User;
-  #master: User;
+  #master?: User;
   #transport: Transport;
 
   public constructor(
@@ -59,6 +59,21 @@ class Session implements Serializable {
   }
 
   /**
+   * Selects a new master user. If the session has a master and that master is
+   * still present in the session, nothing happens. Otherwise, the first user
+   * that can be master will be selected as new master. If there are no users
+   * present that can be master, or there are no more users present, the master
+   * is set to undefined.
+   */
+  private selectMaster() {
+    if (this.#master && this.hasUser(this.#master)) {
+      return;
+    }
+
+    this.#master = this.#users.filter((u) => u.canBeMaster)?.[0];
+  }
+
+  /**
    * Adds the given user to the session and notifies all currently joined users
    * of the new user.
    *
@@ -74,6 +89,7 @@ class Session implements Serializable {
     });
 
     this.#users.push(user);
+    this.selectMaster();
     user.session = this;
   }
 
@@ -92,6 +108,7 @@ class Session implements Serializable {
     });
 
     this.#users = this.#users.filter((u) => u.id != user.id);
+    this.selectMaster();
     user.session = undefined;
   }
 
@@ -133,7 +150,7 @@ class Session implements Serializable {
    * @returns True if the given user is the master of this session, false otherwise
    */
   public isMaster(user: User): boolean {
-    return this.hasMaster() && user.id == this.#master.id;
+    return !!this.#master && user.id == this.#master.id;
   }
 
   /**
@@ -173,7 +190,7 @@ class Session implements Serializable {
     }
 
     this.#users.forEach((user) => {
-      this.#master.sendSceneEvent(
+      this.#master!.sendSceneEvent(
         "SceneEventToUser",
         user,
         sceneEvent
