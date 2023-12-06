@@ -4,6 +4,11 @@ import ErrorCodes, { ErrorMessages } from "./endpoints/error_codes";
 export type Optional<T> = T | undefined;
 export type Object = { [key: string]: any };
 
+export enum LogLevel {
+  DEBUG,
+  DISABLED
+}
+
 /**
  * Tries to extract the values of the keys given as parameters from the
  * environment and throws an excaption if one of them cannot be found.
@@ -22,11 +27,6 @@ export function getFromEnvironment(...keys: Array<string>): Array<string> {
 
     return values.concat(value);
   }, []);
-}
-
-enum LogLevel {
-  DEBUG,
-  DISABLED
 }
 
 /**

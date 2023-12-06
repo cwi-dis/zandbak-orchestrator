@@ -6,6 +6,8 @@ import Orchestrator from "../app/orchestrator";
 import User from "../app/user";
 import ErrorCodes  from "./error_codes";
 
+const DEBUG = util.LogLevel.DEBUG;
+
 export const installLoginHandler =  async (orchestrator: Orchestrator, socket: io.Socket): Promise<User> => {
   return new Promise((resolve, reject) => {
     // Handle user login
@@ -15,7 +17,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
       if (!userName) {
         callback(util.createResponse(ErrorCodes.MISSING_CREDENTIALS));
 
-        util.log("debug", "UserLogin: no username supplied");
+        util.log(DEBUG, "UserLogin: no username supplied");
         reject();
         return;
       }
