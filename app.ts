@@ -18,12 +18,21 @@ const [ LOG_FOLDER, LOG_SERVER_PORT, PORT ] = getFromEnvironment(
   "LOG_FOLDER", "LOG_SERVER_PORT", "PORT"
 );
 
+/**
+ * Set up Socket.IO server.
+ **/
 const io = new Server();
 io.listen(parseInt(PORT));
 logger.info("Socket.io server listening on port", PORT);
 
+/**
+ * Create new orchestrator instance.
+ **/
 const orchestrator = new Orchestrator();
 
+/**
+ * Install handler functions once a new socket connects.
+ **/
 io.on("connection", async (socket) => {
   const user = await installLoginHandler(orchestrator, socket);
 
@@ -35,6 +44,9 @@ io.on("connection", async (socket) => {
   installUtilHandlers(user);
 });
 
+/**
+ * Create Express application for log server and set up routing.
+ **/
 const staticHttpServer = express();
 
 staticHttpServer.get("/", (req, res) => {
