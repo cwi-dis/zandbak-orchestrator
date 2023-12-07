@@ -1,12 +1,11 @@
 import io from "socket.io";
 
 import * as util from "../util";
+import { logger } from "../util";
 import EndpointNames from "./endpoint_names";
 import Orchestrator from "../app/orchestrator";
 import User from "../app/user";
 import ErrorCodes  from "./error_codes";
-
-const DEBUG = util.LogLevel.DEBUG;
 
 /**
  * Installs a handler which responds to the `LOGIN` message and creates a new
@@ -30,7 +29,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
       if (!userName) {
         callback(util.createResponse(ErrorCodes.MISSING_CREDENTIALS));
 
-        util.log(DEBUG, "UserLogin: no username supplied");
+        logger.debug("UserLogin: no username supplied");
         reject();
         return;
       }
