@@ -1,4 +1,6 @@
 import * as fs from "fs";
+import * as ntp from "ntp-client";
+
 import ErrorCodes, { ErrorMessages } from "./endpoints/error_codes";
 
 export type Optional<T> = T | undefined;
@@ -54,7 +56,7 @@ export function log(logLevel: LogLevel, ...logData: Array<any>) {
  * @param path Path to config file to load
  * @returns A promise which, when resolved, contains the contents of the loaded file
  */
-export async function loadConfig(path: string): Promise<Object> {
+export async function loadConfig<T>(path: string): Promise<T> {
   return new Promise((resolve, reject) => {
     fs.readFile(path, (err, data) => {
       if (err) {
@@ -109,4 +111,26 @@ export function createCommandResponse(msg: Object, error: ErrorCodes, body: Obje
  */
 export function mapHashToDict<T, U>(hash: Map<T, U>, fn: (tuple: [T, U]) => [T, any]) {
   return Object.fromEntries([...hash].map(fn));
+}
+
+/**
+ * Tries to retrieve the current time from the given NTP server and port.
+ * Returns a promise which resolves to a Date object if successful or rejects
+ * with an error otherwise. This function is mainly a promise wrapper around
+ * `util.getNetworkTime()`.
+ *
+ * @param server Hostname for the NTP server
+ * @param port Port for the NTP server (defaults to 123)
+ * @returns A promise containing the date, or an error if rejected
+ */
+function getNetworkTime(server: string, port: number = 123): Promise<Date> {
+  return new Promise((resolve, reject) => {
+    ntp.getNetworkTime(server, port, (err, date) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(date!);
+      }
+    });
+  });
 }
