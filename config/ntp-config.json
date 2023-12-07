@@ -1,4 +1,8 @@
 {
-  "host": "time.cwi.nl",
-  "port": "123"
+  "ntpConfig": [
+    {
+      "server": "time.cwi.nl",
+      "port": "123"
+    }
+  ]
 }
