@@ -89,6 +89,18 @@ export async function loadConfig<T>(path: string): Promise<T> {
 }
 
 /**
+ * Loads the contents of a file identified by the given path synchronously and
+ * tries to parse it as JSON. Returns the JSON data structure loaded from the
+ * file.
+ *
+ * @param path Path to config file to load
+ * @returns The contents of the loaded file as a JSON object
+ */
+export function loadConfigSync<T>(path: string): T {
+  return JSON.parse(fs.readFileSync(path).toString());
+}
+
+/**
  * Creates an object intended to be passed as a response to a request from a
  * client containing an error code and an optional response body.
  *
