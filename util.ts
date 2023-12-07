@@ -114,6 +114,27 @@ export function mapHashToDict<T, U>(hash: Map<T, U>, fn: (tuple: [T, U]) => [T, 
 }
 
 /**
+ * Tries to get the current time from a series of NTP servers listed in the
+ * application config. Servers are tried in order until the first server that
+ * returns a valid time. The result is returned as a `Date` object wrapped
+ * inside a promise. If no servers returned a valid time, the promise will
+ * reject with an error.
+ *
+ * @returns A promise which, when resolved, contains the current NTP time
+ */
+export async function getCurrentTime(): Promise<Date> {
+  const { ntpConfig }: { ntpConfig: Array<{ server: string, port: number }> } = await loadConfig("config/ntp-config.json");
+
+  return ntpConfig.reduce(async (result, { server, port }) => {
+    try {
+      return await result;
+    } catch {
+      return getNetworkTime(server, port);
+    }
+  }, Promise.reject<Date>());
+}
+
+/**
  * Tries to retrieve the current time from the given NTP server and port.
  * Returns a promise which resolves to a Date object if successful or rejects
  * with an error otherwise. This function is mainly a promise wrapper around
