@@ -23,6 +23,7 @@ interface WebRTCTransportConfig {
 class WebRTCTransport extends ExternalTransport {
   private transportConfig: WebRTCTransportConfig = loadConfigSync("../config/webrtc-config.json");
 
+  protected type = "WebRTC";
   protected cmdLine: Array<string> = this.transportConfig.commandLine;
   protected tls: boolean = this.transportConfig.tls;
   protected port: number;

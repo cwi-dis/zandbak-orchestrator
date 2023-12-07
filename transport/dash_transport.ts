@@ -23,6 +23,7 @@ interface DashTransportConfig {
 class DashTransport extends ExternalTransport {
   private transportConfig: DashTransportConfig = loadConfigSync("../config/sfu-config.json");
 
+  protected type = "Dash";
   protected cmdLine: Array<string> = this.transportConfig.commandLine;
   protected tls: boolean = this.transportConfig.tls;
   protected port: number;
