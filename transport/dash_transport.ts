@@ -1,3 +1,4 @@
+import { loadConfigSync } from "../util";
 import ExternalTransport from "./external_transport";
 
 interface DashTransportPortMapping {
@@ -20,9 +21,11 @@ interface DashTransportConfig {
 }
 
 class DashTransport extends ExternalTransport {
-  protected cmdLine: Array<string>;
+  private transportConfig: DashTransportConfig = loadConfigSync("../config/sfu-config.json");
+
+  protected cmdLine: Array<string> = this.transportConfig.commandLine;
+  protected tls: boolean = this.transportConfig.tls;
   protected port: number;
-  protected tls: boolean;
 }
 
 export default DashTransport;

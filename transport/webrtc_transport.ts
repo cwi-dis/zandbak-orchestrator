@@ -1,3 +1,4 @@
+import { loadConfigSync } from "../util";
 import ExternalTransport from "./external_transport";
 
 interface WebRTCTransportPortMapping {
@@ -20,9 +21,11 @@ interface WebRTCTransportConfig {
 }
 
 class WebRTCTransport extends ExternalTransport {
-  protected cmdLine: Array<string>;
+  private transportConfig: WebRTCTransportConfig = loadConfigSync("../config/webrtc-config.json");
+
+  protected cmdLine: Array<string> = this.transportConfig.commandLine;
+  protected tls: boolean = this.transportConfig.tls;
   protected port: number;
-  protected tls: boolean;
 }
 
 export default WebRTCTransport;
