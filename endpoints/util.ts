@@ -1,5 +1,3 @@
-import * as ntp from "ntp-client";
-
 import * as util from "../util";
 import EndpointNames from "./endpoint_names";
 import User from "../app/user";
@@ -23,16 +21,16 @@ const installHandlers = (user: User) => {
    * Returns the current time as determined using NTP.
    */
   socket.on(EndpointNames.GET_NTP_TIME, async (data, callback) => {
-    const ntpConfig = await util.loadConfig("../config/ntp-config.json");
+    try {
+      const date = await util.getCurrentTime();
 
-    ntp.getNetworkTime(ntpConfig.server, ntpConfig.port, (err, date) => {
-      if (!err) {
-        callback(util.createCommandResponse(data, ErrorCodes.OK, {
-          ntpDate: date,
-          ntpTimeMs: date!.getTime()
-        }));
-      }
-    });
+      callback(util.createCommandResponse(data, ErrorCodes.OK, {
+        ntpDate: date,
+        ntpTimeMs: date!.getTime()
+      }));
+    } catch (err) {
+      console.log("oops");
+    }
   });
 
   /**
