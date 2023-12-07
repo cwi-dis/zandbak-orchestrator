@@ -1,15 +1,52 @@
 import * as fs from "fs";
 import * as ntp from "ntp-client";
+import { createLogger, format, transports } from "winston";
 
 import ErrorCodes, { ErrorMessages } from "./endpoints/error_codes";
 
 export type Optional<T> = T | undefined;
 export type Object = { [key: string]: any };
 
-export enum LogLevel {
-  DEBUG,
-  DISABLED
+/**
+ * Takes any type of value and tries to convert it to a string by means of
+ * `JSON.stringify()`. If the resulting value is enclosed by quotation marks,
+ * there are stripped before the value is returned.
+ *
+ * @param arg Argument to be stringified
+ * @returns Stringified argument
+ */
+function stringifyLogArg(arg: any) {
+  const strArg = JSON.stringify(arg);
+
+  if (strArg.startsWith("\"") && strArg.endsWith("\"")) {
+    return strArg.slice(1, -1);
+  }
+
+  return strArg;
 }
+
+/**
+ * Creates a new logger instance that prints log messages to stdout.
+ */
+export const logger = createLogger({
+  level: "debug",
+  format: format.combine(
+    format.colorize(),
+    format.timestamp(),
+    format.printf((info) => {
+      const metaArgs = info[Symbol.for("splat")]?.map(stringifyLogArg).join(" ");
+
+      if (metaArgs) {
+        return `${info.timestamp} ${info.level}: ${info.message} ${metaArgs}`;
+      }
+
+      return `${info.timestamp} ${info.level}: ${info.message}`;
+    })
+  ),
+  transports: [
+    new transports.Console()
+  ]
+});
 
 /**
  * Tries to extract the values of the keys given as parameters from the
@@ -29,23 +66,6 @@ export function getFromEnvironment(...keys: Array<string>): Array<string> {
 
     return values.concat(value);
   }, []);
-}
-
-/**
- * Prints the passed values to the standard output, prefixed by a current
- * timestamp. The first parameter designates log level and can also be used to
- * disable logging.
- *
- * @param logLevel Log level, can also be used for disabling logging altogether
- * @param logData Values that will be printed to the log
- */
-export function log(logLevel: LogLevel, ...logData: Array<any>) {
-  if (logLevel == LogLevel.DISABLED) {
-    return;
-  }
-
-  const date = new Date();
-  console.log(`[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`, ...logData);
 }
 
 /**
