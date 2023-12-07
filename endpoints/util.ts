@@ -1,4 +1,5 @@
 import * as util from "../util";
+import { logger } from "../util";
 import EndpointNames from "./endpoint_names";
 import User from "../app/user";
 import ErrorCodes from "./error_codes";
@@ -29,7 +30,7 @@ const installHandlers = (user: User) => {
         ntpTimeMs: date!.getTime()
       }));
     } catch (err) {
-      console.log("oops");
+      logger.error("Could not get NTP time:", err);
     }
   });
 
