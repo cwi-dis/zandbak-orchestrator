@@ -1,7 +1,7 @@
 import childProcess from "child_process";
 import { v4 as uuidv4 } from "uuid";
 
-import { Object, logger } from "../util";
+import { Dict, logger } from "../util";
 import Transport from "./transport";
 import Serializable from "app/serializable";
 
@@ -66,7 +66,7 @@ class ExternalTransport implements Transport, Serializable {
     this.process = undefined;
   }
 
-  public getUrls(): Object {
+  public getUrls(): Dict {
     return {};
   }
 

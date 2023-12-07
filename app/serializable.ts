@@ -1,7 +1,7 @@
-import { Object } from "../util";
+import { Dict } from "../util";
 
 interface Serializable {
-  serialize(): Object;
+  serialize(): Dict;
 }
 
 export default Serializable;

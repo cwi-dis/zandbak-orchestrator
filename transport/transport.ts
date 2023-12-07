@@ -1,9 +1,9 @@
-import { Object } from "../util";
+import { Dict } from "../util";
 
 interface Transport {
   start(): void;
   destroy(): void;
-  getUrls(): Object;
+  getUrls(): Dict;
 }
 
 export default Transport;

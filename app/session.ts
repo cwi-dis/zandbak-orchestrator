@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { Object, Optional } from "../util";
+import { Dict, Optional } from "../util";
 
 import Serializable from "./serializable";
 import User from "./user";
@@ -159,7 +159,7 @@ class Session implements Serializable {
    *
    * @param message Message to send
    */
-  private notifyUsers(message: Object) {
+  private notifyUsers(message: Dict) {
     this.#users.forEach((u) => {
       u.socket.emit("SessionUpdated", message);
     });
@@ -171,7 +171,7 @@ class Session implements Serializable {
    * @param eventId Event ID
    * @param eventData Event data
    */
-  public sendSessionUpdate(eventId: string, eventData: Object) {
+  public sendSessionUpdate(eventId: string, eventData: Dict) {
     this.notifyUsers({
       eventId, eventData
     });
@@ -206,7 +206,7 @@ class Session implements Serializable {
    * @param fromUser Sender of the message
    * @param message Message to send
    */
-  public sendMessageToAll(fromUser: User, message: Object) {
+  public sendMessageToAll(fromUser: User, message: Dict) {
     this.#users.forEach((u) => {
       u.socket.emit("MessageSent", {
         messageFrom: fromUser.id,
@@ -224,7 +224,7 @@ class Session implements Serializable {
    * @param toUser Receiver of the message
    * @param message Message to send
    */
-  public sendMessage(fromUser: User, toUser: User, message: Object) {
+  public sendMessage(fromUser: User, toUser: User, message: Dict) {
     if (!this.hasUser(toUser)) {
       return;
     }
@@ -257,7 +257,7 @@ class Session implements Serializable {
    *
    * @returns Object with serialised session fields
    */
-  public serialize(): Object {
+  public serialize(): Dict {
     return {
       sessionId: this.#id,
       sessionName: this.name,

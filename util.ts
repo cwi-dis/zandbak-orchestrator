@@ -5,7 +5,7 @@ import { createLogger, format, transports } from "winston";
 import ErrorCodes, { ErrorMessages } from "./endpoints/error_codes";
 
 export type Optional<T> = T | undefined;
-export type Object = { [key: string]: any };
+export type Dict = { [key: string]: any };
 
 /**
  * Takes any type of value and tries to convert it to a string by means of
@@ -108,7 +108,7 @@ export function loadConfigSync<T>(path: string): T {
  * @param body Body object to be passed along in the response (optional)
  * @returns The response object containing the data passed in and an error message
  */
-export function createResponse(error: ErrorCodes, body: Object = {}) {
+export function createResponse(error: ErrorCodes, body: Dict = {}) {
   return {
     error, body,
     message: ErrorMessages[error]
@@ -125,7 +125,7 @@ export function createResponse(error: ErrorCodes, body: Object = {}) {
  * @param body Body object to be passed along in the response (optional)
  * @returns The response object containing the original command name, the data passed in and an error message
  */
-export function createCommandResponse(msg: Object, error: ErrorCodes, body: Object = {}) {
+export function createCommandResponse(msg: Dict, error: ErrorCodes, body: Dict = {}) {
   const { commandId } = msg;
 
   return {

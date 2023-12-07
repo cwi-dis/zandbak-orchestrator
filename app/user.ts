@@ -3,7 +3,7 @@ import io from "socket.io";
 
 import Session from "./session";
 import Serializable from "./serializable";
-import { Object } from "../util";
+import { Dict } from "../util";
 import DataStream from "./data_stream";
 import RemoteDataStream from "./remote_data_stream";
 import { mapHashToDict } from "../util";
@@ -19,7 +19,7 @@ class User implements Serializable {
 
   public session?: Session;
 
-  public constructor(public name: string, public socket: io.Socket, userData: Object = {}) {
+  public constructor(public name: string, public socket: io.Socket, userData: Dict = {}) {
     this.#userData = new Map(Object.entries(userData));
 
     this.#dataStreams = new Map();
@@ -51,7 +51,7 @@ class User implements Serializable {
    * @param userData JSON-string or JS object
    * @returns The updated user data object
    */
-  public updateUserData(userData: string | Object): Object {
+  public updateUserData(userData: string | Dict): Dict {
     const obj = (typeof userData == "string") ? JSON.parse(userData) : userData;
 
     this.#userData = new Map(Object.entries({
@@ -189,7 +189,7 @@ class User implements Serializable {
    *
    * @returns Object with serialised user fields
    */
-  public serialize(): Object {
+  public serialize(): Dict {
     return {
       userId: this.#id,
       userName: this.name,

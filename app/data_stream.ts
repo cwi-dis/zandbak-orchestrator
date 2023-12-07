@@ -1,5 +1,5 @@
 import Serializable from "./serializable";
-import { Object } from "../util";
+import { Dict } from "../util";
 
 class DataStream implements Serializable {
   constructor(public type: string, public description: string) {
@@ -9,7 +9,7 @@ class DataStream implements Serializable {
     return this.type;
   }
 
-  public serialize(): Object {
+  public serialize(): Dict {
     return {
       dataStreamKind: this.type,
       dataSteamDescription: this.description
