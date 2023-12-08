@@ -32,7 +32,9 @@ export const logger = createLogger({
   level: "debug",
   format: format.combine(
     format.colorize(),
-    format.timestamp(),
+    format.timestamp({
+      format: "[[]YYYY-MM-DD hh:mm:ss.SSS[]]"
+    }),
     format.printf((info) => {
       const metaArgs = info[Symbol.for("splat")]?.map(stringifyLogArg).join(" ");
 
