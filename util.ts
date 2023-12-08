@@ -7,6 +7,9 @@ import ErrorCodes, { ErrorMessages } from "./endpoints/error_codes";
 export type Optional<T> = T | undefined;
 export type Dict = { [key: string]: any };
 
+const packageInfo = require("./package.json");
+export const ORCHESTRATOR_VERSION = packageInfo.version;
+
 /**
  * Takes any type of value and tries to convert it to a string by means of
  * `JSON.stringify()`. If the resulting value is enclosed by quotation marks,

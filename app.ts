@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
-import { getFromEnvironment, logger } from "./util";
+import { getFromEnvironment, logger, ORCHESTRATOR_VERSION } from "./util";
 import Orchestrator from "./app/orchestrator";
 
 import installConnectionHandlers, { installLoginHandler } from "./endpoints/connection_management";
@@ -17,6 +17,8 @@ import installStreamHandlers from "./endpoints/data_streams";
 const [ LOG_FOLDER, LOG_SERVER_PORT, PORT ] = getFromEnvironment(
   "LOG_FOLDER", "LOG_SERVER_PORT", "PORT"
 );
+
+logger.info("Launching orchestrator version", ORCHESTRATOR_VERSION);
 
 /**
  * Create new orchestrator instance.
@@ -33,9 +35,6 @@ const io = new Server({ allowEIO3: true });
  **/
 io.on("connection", async (socket) => {
   logger.debug("Client socket connected, awaiting login...");
-  socket.onAny((event) => {
-    logger.warn("Got unhandled event", event);
-  });
   const user = await installLoginHandler(orchestrator, socket);
 
   logger.debug("Login process complete, installing event handlers");

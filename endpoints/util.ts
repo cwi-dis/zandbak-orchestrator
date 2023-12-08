@@ -4,8 +4,6 @@ import EndpointNames from "./endpoint_names";
 import User from "../app/user";
 import ErrorCodes from "./error_codes";
 
-const packageInfo = require("../package.json");
-
 const installHandlers = (user: User) => {
   const { socket } = user;
 
@@ -16,7 +14,7 @@ const installHandlers = (user: User) => {
     logger.debug(EndpointNames.GET_ORCHESTRATOR_VERSION, "Getting orchestrator version");
 
     callback(util.createCommandResponse(data, ErrorCodes.OK), {
-      orchestratorVersion: packageInfo.version
+      orchestratorVersion: util.ORCHESTRATOR_VERSION
     });
   });
 
