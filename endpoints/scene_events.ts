@@ -1,4 +1,5 @@
 import * as util from "../util";
+import { logger } from "../util";
 
 import EndpointNames from "./endpoint_names";
 import User from "../app/user";
@@ -16,12 +17,16 @@ const installHandlers = (user: User) => {
     const { session } = user;
 
     if (!session) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_MASTER, "User not in any session");
+
       return callback(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
 
     if (!sceneEvent) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_MASTER, "Scene event not specified");
+
       return callback(util.createResponse(
         ErrorCodes.SCENE_EVENT_NO_DATA
       ));
@@ -29,10 +34,14 @@ const installHandlers = (user: User) => {
 
     const { master } = session;
     if (!master) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_MASTER, "Session has not master");
+
       return callback(util.createResponse(
         ErrorCodes.SCENE_EVENT_NO_MASTER
       ));
     }
+
+    logger.debug(EndpointNames.SEND_SCENE_EVENT_TO_MASTER, "Sending scene event to master");
 
     master.sendSceneEvent(
       "SceneEventToMaster",
@@ -50,18 +59,24 @@ const installHandlers = (user: User) => {
   socket.on(EndpointNames.SEND_SCENE_EVENT_TO_USER, (targetId, sceneEvent, callback) => {
     const { session } = user;
     if (!session) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_USER, "User not in any session");
+
       return callback(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
 
     if (!session.isMaster(user)) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_USER, "User", user.name, "is not the master of session", session.name);
+
       return callback(util.createResponse(
         ErrorCodes.SCENE_EVENT_USER_IS_NOT_MASTER
       ));
     }
 
     if (!targetId) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_USER, "Target user ID not specified");
+
       return callback(util.createResponse(
         ErrorCodes.SCENE_EVENT_NO_TARGET_ID
       ));
@@ -69,16 +84,22 @@ const installHandlers = (user: User) => {
 
     const targetUser = session.getUser(targetId);
     if (!targetUser) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_USER, "Target user with ID", targetId, "not found in session", session.name);
+
       return callback(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_SESSION
       ));
     }
 
     if (!sceneEvent) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_USER, "Scene event not specified");
+
       return callback(util.createResponse(
         ErrorCodes.SCENE_EVENT_NO_DATA
       ));
     }
+
+    logger.debug(EndpointNames.SEND_SCENE_EVENT_TO_USER, "Sending scene event from master", user.name, "to", targetUser.name, "in session", session.name);
 
     user.sendSceneEvent(
       "SceneEventToUser",
@@ -96,23 +117,30 @@ const installHandlers = (user: User) => {
   socket.on(EndpointNames.SEND_SCENE_EVENT_TO_ALL, (sceneEvent, callback) => {
     const { session } = user;
     if (!session) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_ALL, "User not in any session");
+
       return callback(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
 
     if (!session.isMaster(user)) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_ALL, "User", user.name, "is not the master of session", session.name);
+
       return callback(util.createResponse(
         ErrorCodes.SCENE_EVENT_USER_IS_NOT_MASTER
       ));
     }
 
     if (!sceneEvent) {
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_ALL, "Request contains no scene event data");
+
       return callback(util.createResponse(
         ErrorCodes.SCENE_EVENT_NO_DATA
       ));
     }
 
+    logger.debug(EndpointNames.SEND_SCENE_EVENT_TO_ALL, "Sending scene event from master", user.name, "to all in session", session.name);
     session.sendSceneEvent(sceneEvent);
   });
 };

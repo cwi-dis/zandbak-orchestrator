@@ -13,6 +13,8 @@ const installHandlers = (user: User) => {
    * Returns the version of the orchestrator inside a JSON object.
    */
   socket.on(EndpointNames.GET_ORCHESTRATOR_VERSION, (data, callback) => {
+    logger.debug(EndpointNames.GET_ORCHESTRATOR_VERSION, "Getting orchestrator version");
+
     callback(util.createCommandResponse(data, ErrorCodes.OK), {
       orchestratorVersion: packageInfo.version
     });
@@ -24,6 +26,7 @@ const installHandlers = (user: User) => {
   socket.on(EndpointNames.GET_NTP_TIME, async (data, callback) => {
     try {
       const date = await util.getCurrentTime();
+      logger.debug(EndpointNames.GET_NTP_TIME, "Getting NTP time:", date);
 
       callback(util.createCommandResponse(data, ErrorCodes.OK, {
         ntpDate: date,
@@ -38,6 +41,7 @@ const installHandlers = (user: User) => {
    * Ends the orchestrator process.
    */
   socket.on(EndpointNames.EXIT_ORCHESTRATOR, () => {
+    logger.debug(EndpointNames.EXIT_ORCHESTRATOR, "Received exit command");
     process.exit(1);
   });
 };

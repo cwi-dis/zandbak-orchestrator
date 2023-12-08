@@ -29,13 +29,15 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
       if (!userName) {
         callback(util.createResponse(ErrorCodes.MISSING_CREDENTIALS));
 
-        logger.debug("UserLogin: no username supplied");
+        logger.warning(EndpointNames.LOGIN, "No username supplied");
         reject();
         return;
       }
 
       const user = orchestrator.findUser(userName) || new User(userName, socket);
       orchestrator.addUser(user);
+
+      logger.debug(EndpointNames.LOGIN, "Added user", user.name, "to orchestrator");
 
       callback(util.createCommandResponse(data, ErrorCodes.OK, {
         userId: user.id
@@ -57,6 +59,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     user.session?.removeUser(user);
     orchestrator.removeUser(user);
 
+    logger.debug(EndpointNames.LOGOUT, "Logged out user", user.name);
+
     callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
 
@@ -67,6 +71,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on("disconnect", () => {
     user.session?.removeUser(user);
     orchestrator.removeUser(user);
+
+    logger.debug("DISCONNECT", "Disconnected user", user.name);
   });
 };
 

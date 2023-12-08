@@ -1,4 +1,5 @@
 import * as util from "../util";
+import { logger } from "../util";
 
 import EndpointNames from "./endpoint_names";
 import Orchestrator from "../app/orchestrator";
@@ -20,12 +21,16 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       scenarioDefinition: { scenarioId, scenarioName, scenarioDescription }
     } = data;
 
+    logger.debug(EndpointNames.ADD_SESSION, "Creating new session with name", sessionName);
+
     const session = new Session(
       sessionName.trim(),
       sessionDescription,
       sessionProtocol,
       new Scenario(scenarioId, scenarioName, scenarioDescription)
     );
+
+    logger.debug(EndpointNames.ADD_SESSION, "Adding user", user.name, "as admin to new session", session.name);
 
     session.addUser(user);
     session.setAdministrator(user);
@@ -48,17 +53,22 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const session = orchestrator.getSession(sessionId);
 
     if (!session) {
+      logger.warn(EndpointNames.DELETE_SESSION, "No session with ID", sessionId);
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_NOT_FOUND));
     }
 
     const { administrator } = session;
     if (administrator.id != user.id) {
+      logger.warn(EndpointNames.DELETE_SESSION, "User", user.name, "is not the admin of session", session.name);
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_DELETE_UNAUTHORIZED));
     }
 
     if (!session.isEmpty()) {
+      logger.warn(EndpointNames.DELETE_SESSION, "Session", session.name, "is not empty");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_NOT_EMPTY));
     }
+
+    logger.debug(EndpointNames.DELETE_SESSION, "Deleting session", session.name);
 
     orchestrator.removeSession(session);
     callback(util.createCommandResponse(data, ErrorCodes.OK));
@@ -69,6 +79,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * session ID.
    */
   socket.on(EndpointNames.GET_SESSIONS, (data, callback) => {
+    logger.debug(EndpointNames.DELETE_SESSION, "Getting all sessions");
+
     callback(util.createCommandResponse(
       data,
       ErrorCodes.OK,
@@ -84,8 +96,11 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const { session } = user;
 
     if (!session) {
+      logger.debug(EndpointNames.GET_SESSION_INFO, "User", user.name, "not in any session");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
+
+    logger.debug(EndpointNames.GET_SESSION_INFO, "Getting info for session", session.name);
 
     callback(util.createCommandResponse(
       data,
@@ -104,6 +119,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const session = orchestrator.getSession(sessionId);
 
     if (!session) {
+      logger.warn(EndpointNames.JOIN_SESSION, "Session with ID", sessionId, "not found");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_NOT_FOUND));
     }
 
@@ -111,12 +127,15 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     if (user.session) {
       // Check if user is already in given session
       if (user.session.id == session.id) {
+        logger.warn(EndpointNames.JOIN_SESSION, "User is already in session", session.id);
         return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_ALREADY_IN_SESSION));
       }
 
+      logger.warn(EndpointNames.JOIN_SESSION, "User is already in another session");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_ALREADY_IN_OTHER_SESSION));
     }
 
+    logger.debug(EndpointNames.JOIN_SESSION, "Adding user", user.name, "to session", session.name);
     session.addUser(user);
     callback(util.createCommandResponse(data, ErrorCodes.OK, session.serialize()));
   });
@@ -129,12 +148,15 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const { session } = user;
 
     if (!session) {
+      logger.warn(EndpointNames.LEAVE_SESSION, "User", user.name, "is not in any session");
+
       return callback(util.createCommandResponse(
         data,
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
 
+    logger.debug(EndpointNames.LEAVE_SESSION, "Removing user", user.name, "from session", session.name);
     session.removeUser(user);
   });
 
@@ -148,12 +170,15 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const { message } = data;
 
     if (!session) {
+      logger.warn(EndpointNames.SEND_MESSAGE_TO_ALL, "User", user.name, "is not in any session");
+
       return callback(util.createCommandResponse(
         data,
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
 
+    logger.debug(EndpointNames.SEND_MESSAGE_TO_ALL, "Sending message to all in session", session.name, "from", user.name);
     session.sendMessageToAll(user, message);
     callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
@@ -168,6 +193,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const { message } = data;
 
     if (!session) {
+      logger.warn(EndpointNames.SEND_MESSAGE, "User", user.name, "is not in any session");
+
       return callback(util.createCommandResponse(
         data,
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
@@ -176,12 +203,15 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
 
     const receiver = session.getUser(data.userId);
     if (!receiver) {
+      logger.warn(EndpointNames.SEND_MESSAGE, "Receiver with ID", data.userId, "is not in session", session.name);
+
       return callback(util.createCommandResponse(
         data,
         ErrorCodes.SESSION_USER_NOT_IN_SAME_SESSION
       ));
     }
 
+    logger.debug(EndpointNames.SEND_MESSAGE, "Sending message from", user.name, "to", receiver.name, "in session", session.name);
     session.sendMessage(user, receiver, message);
     callback(util.createCommandResponse(data, ErrorCodes.OK));
   });

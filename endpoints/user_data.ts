@@ -1,4 +1,5 @@
 import * as util from "../util";
+import { logger } from "../util";
 
 import EndpointNames from "./endpoint_names";
 import Orchestrator from "../app/orchestrator";
@@ -18,11 +19,15 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const targetUser = (data.userId) ? orchestrator.getUser(data.userId) : user;
 
     if (!targetUser) {
+      logger.warn(EndpointNames.GET_USER_DATA, "Target user not found");
+
       return callback(util.createCommandResponse(
         data,
         ErrorCodes.USER_DATA_USER_NOT_FOUND
       ));
     }
+
+    logger.debug(EndpointNames.GET_USER_DATA, "Getting user data for", targetUser.name);
 
     callback(util.createCommandResponse(
       data,
@@ -42,6 +47,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const { session } = user;
 
     if (!userDataJson) {
+      logger.warn(EndpointNames.UPDATE_USER_DATA, "Request contains no user data");
+
       return callback(util.createCommandResponse(
         data,
         ErrorCodes.USER_DATA_MISSING_DATA_JSON
@@ -49,6 +56,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     }
 
     const userData = user.updateUserData(userDataJson);
+    logger.debug(EndpointNames.UPDATE_USER_DATA, "Updated user data for", user.name);
 
     if (session) {
       session.sendSessionUpdate("USER_DATA_UPDATED", {

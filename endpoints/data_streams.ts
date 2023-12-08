@@ -1,4 +1,5 @@
 import * as util from "../util";
+import { logger } from "../util";
 
 import EndpointNames from "./endpoint_names";
 import ErrorCodes  from "./error_codes";
@@ -16,12 +17,16 @@ const installHandlers = (user: User) => {
     const { session } = user;
 
     if (!session) {
+      logger.warn(EndpointNames.DECLARE_DATA_STREAM, "User", user.name, "not in any session");
+
       return callback(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
 
     if (!streamType) {
+      logger.warn(EndpointNames.DECLARE_DATA_STREAM, "Stream type not specified");
+
       return callback(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_KIND
       ));
@@ -33,6 +38,8 @@ const installHandlers = (user: User) => {
 
     user.declareDataStream(streamType, streamDescription);
     const { dataStreams, remoteDataStreams } = user.serialize();
+
+    logger.debug(EndpointNames.DECLARE_DATA_STREAM, "Data stream", streamType, "declared for", user.name);
 
     callback(util.createResponse(ErrorCodes.OK, {
       dataStreams, remoteDataStreams,
@@ -50,12 +57,16 @@ const installHandlers = (user: User) => {
     const { session } = user;
 
     if (!session) {
+      logger.warn(EndpointNames.REMOVE_DATA_STREAM, "User", user.name, "not in any session");
+
       return callback(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
 
     if (!streamType) {
+      logger.warn(EndpointNames.REMOVE_DATA_STREAM, "Stream type not specified");
+
       return callback(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_KIND
       ));
@@ -63,6 +74,8 @@ const installHandlers = (user: User) => {
 
     user.removeDataStream(streamType);
     const { dataStreams, remoteDataStreams } = user.serialize();
+
+    logger.debug(EndpointNames.REMOVE_DATA_STREAM, "Data stream", streamType, "removed for", user.name);
 
     callback(util.createResponse(ErrorCodes.OK, {
       dataStreams, remoteDataStreams,
@@ -79,12 +92,16 @@ const installHandlers = (user: User) => {
     const { session } = user;
 
     if (!session) {
+      logger.warn(EndpointNames.REGISTER_FOR_DATA_STREAM, "User", user.name, "not in any session");
+
       return callback(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
 
     if (!fromUserId) {
+      logger.warn(EndpointNames.REGISTER_FOR_DATA_STREAM, "No sending user specified");
+
       return callback(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_USER_NOT_PROVIDED
       ));
@@ -92,12 +109,16 @@ const installHandlers = (user: User) => {
 
     const fromUser = session.getUser(fromUserId);
     if (!fromUser) {
+      logger.warn(EndpointNames.REGISTER_FOR_DATA_STREAM, "Sending user", fromUserId, "not found");
+
       return callback(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_SESSION
       ));
     }
 
     if (!streamType) {
+      logger.warn(EndpointNames.REGISTER_FOR_DATA_STREAM, "Stream type not specified");
+
       return callback(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_KIND
       ));
@@ -105,6 +126,8 @@ const installHandlers = (user: User) => {
 
     user.declareRemoteDataStream(fromUser, streamType);
     const { dataStreams, remoteDataStreams } = user.serialize();
+
+    logger.debug(EndpointNames.REGISTER_FOR_DATA_STREAM, "Remote data stream", streamType, "registered for", user.name, "from", fromUser.name);
 
     callback(util.createResponse(ErrorCodes.OK, {
       dataStreams, remoteDataStreams,
@@ -121,12 +144,16 @@ const installHandlers = (user: User) => {
     const { session } = user;
 
     if (!session) {
+      logger.warn(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "User", user.name, "not in any session");
+
       return callback(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
 
     if (!fromUserId) {
+      logger.warn(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "No sending user specified");
+
       return callback(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_USER_NOT_PROVIDED
       ));
@@ -134,12 +161,16 @@ const installHandlers = (user: User) => {
 
     const fromUser = session.getUser(fromUserId);
     if (!fromUser) {
+      logger.warn(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "Sending user", fromUserId, "not found");
+
       return callback(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_SESSION
       ));
     }
 
     if (!streamType) {
+      logger.warn(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "Stream type not specified");
+
       return callback(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_KIND
       ));
@@ -147,6 +178,8 @@ const installHandlers = (user: User) => {
 
     user.removeRemoteDataStream(fromUser, streamType);
     const { dataStreams, remoteDataStreams } = user.serialize();
+
+    logger.debug(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "Remote data stream", streamType, "unregistered for", user.name, "from", fromUser.name);
 
     callback(util.createResponse(ErrorCodes.OK, {
       dataStreams, remoteDataStreams,
@@ -164,9 +197,11 @@ const installHandlers = (user: User) => {
     const { session } = user;
 
     if (!session || !streamType || !data) {
+      logger.warn(EndpointNames.SEND_DATA, "Missing parameters");
       return;
     }
 
+    logger.debug(EndpointNames.SEND_DATA, "Sending data with stream type", streamType);
     session.sendData(user, streamType, data);
   });
 };
