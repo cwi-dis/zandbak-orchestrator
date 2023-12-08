@@ -19,30 +19,38 @@ const [ LOG_FOLDER, LOG_SERVER_PORT, PORT ] = getFromEnvironment(
 );
 
 /**
- * Set up Socket.IO server.
- **/
-const io = new Server();
-io.listen(parseInt(PORT));
-logger.info("Socket.io server listening on port", PORT);
-
-/**
  * Create new orchestrator instance.
  **/
 const orchestrator = new Orchestrator();
 
 /**
+ * Set up Socket.IO server with protocol version 2/3 backward-compatibility.
+ **/
+const io = new Server({ allowEIO3: true });
+
+/**
  * Install handler functions once a new socket connects.
  **/
 io.on("connection", async (socket) => {
+  logger.debug("Client socket connected, awaiting login...");
+  socket.onAny((event) => {
+    logger.warn("Got unhandled event", event);
+  });
   const user = await installLoginHandler(orchestrator, socket);
 
+  logger.debug("Login process complete, installing event handlers");
   installConnectionHandlers(orchestrator, user);
   installSessionHandlers(orchestrator, user);
   installUserDataHandlers(orchestrator, user);
   installSceneEventHandlers(user);
   installStreamHandlers(user);
   installUtilHandlers(user);
+
+  logger.debug("Event handlers installed");
 });
+
+io.listen(parseInt(PORT));
+logger.info("Socket.io server listening on port", PORT);
 
 /**
  * Create Express application for log server and set up routing.

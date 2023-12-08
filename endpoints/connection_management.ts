@@ -25,6 +25,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
      */
     socket.on(EndpointNames.LOGIN, (data, callback) => {
       const { userName }: { userName: string | undefined } = data;
+      logger.debug(EndpointNames.LOGIN, "Starting login process with username", userName);
 
       if (!userName) {
         callback(util.createResponse(ErrorCodes.MISSING_CREDENTIALS));
@@ -65,7 +66,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   });
 
   /**
-   * Handles a disconnct received from a socket by removing the associated user
+   * Handles a disconnect received from a socket by removing the associated user
    * from their session and the orchestrator.
    */
   socket.on("disconnect", () => {
