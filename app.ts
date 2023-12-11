@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import { createServer } from "http";
 import { Server } from "socket.io";
 
 dotenv.config();
@@ -14,9 +15,7 @@ import installUserDataHandlers from "./endpoints/user_data";
 import installSceneEventHandlers from "./endpoints/scene_events";
 import installStreamHandlers from "./endpoints/data_streams";
 
-const [ PORT ] = getFromEnvironment(
-  "LOG_FOLDER", "LOG_SERVER_PORT", "PORT"
-);
+const [ PORT ] = getFromEnvironment("PORT");
 
 logger.info("Launching orchestrator version", ORCHESTRATOR_VERSION);
 
@@ -26,9 +25,15 @@ logger.info("Launching orchestrator version", ORCHESTRATOR_VERSION);
 const orchestrator = new Orchestrator();
 
 /**
+ * Set up express app and create HTTP server.
+ */
+const app = express();
+const server = createServer(app);
+
+/**
  * Set up Socket.IO server with protocol version 2/3 backward-compatibility.
  **/
-const io = new Server({ allowEIO3: true });
+const io = new Server(server, { allowEIO3: true });
 
 /**
  * Install handler functions once a new socket connects.
@@ -48,5 +53,9 @@ io.on("connection", async (socket) => {
   logger.debug("Event handlers installed");
 });
 
-io.listen(parseInt(PORT));
-logger.info("Socket.io server listening on port", PORT);
+/**
+ * Launch server on port given by environment variable PORT
+ */
+server.listen(PORT, () => {
+  logger.info("Socket.io server listening on port", PORT);
+});
