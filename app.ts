@@ -14,7 +14,7 @@ import installUserDataHandlers from "./endpoints/user_data";
 import installSceneEventHandlers from "./endpoints/scene_events";
 import installStreamHandlers from "./endpoints/data_streams";
 
-const [ LOG_FOLDER, LOG_SERVER_PORT, PORT ] = getFromEnvironment(
+const [ PORT ] = getFromEnvironment(
   "LOG_FOLDER", "LOG_SERVER_PORT", "PORT"
 );
 
@@ -50,19 +50,3 @@ io.on("connection", async (socket) => {
 
 io.listen(parseInt(PORT));
 logger.info("Socket.io server listening on port", PORT);
-
-/**
- * Create Express application for log server and set up routing.
- **/
-const staticHttpServer = express();
-
-staticHttpServer.get("/", (req, res) => {
-  res.header("Content-Type", "application/json");
-  res.send(JSON.stringify({}));
-});
-
-staticHttpServer.use("/log", express.static(LOG_FOLDER));
-
-staticHttpServer.listen(LOG_SERVER_PORT, () => {
-  logger.info("Log server listening on port", LOG_SERVER_PORT);
-});

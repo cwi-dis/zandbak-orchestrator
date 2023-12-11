@@ -62,7 +62,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
 
     logger.debug(EndpointNames.LOGOUT, "Logged out user", user.name);
 
-    callback(util.createCommandResponse(data, ErrorCodes.OK));
+    callback?.(util.createCommandResponse(data, ErrorCodes.OK));
   });
 
   /**
