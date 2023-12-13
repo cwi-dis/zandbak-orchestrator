@@ -3,6 +3,7 @@ import * as ntp from "ntp-client";
 import { createLogger, format, transports } from "winston";
 
 import ErrorCodes, { ErrorMessages } from "./endpoints/error_codes";
+import EndpointNames from "./endpoints/endpoint_names";
 
 export type Optional<T> = T | undefined;
 export type Dict = { [key: string]: any };
@@ -42,6 +43,10 @@ export const logger = createLogger({
       const metaArgs = info[Symbol.for("splat")]?.map(stringifyLogArg).join(" ");
 
       if (metaArgs) {
+        if (Object.values(EndpointNames).includes(info.message)) {
+          return `${info.timestamp} ${info.level}: [${info.message.toUpperCase()}] ${metaArgs}`;
+        }
+
         return `${info.timestamp} ${info.level}: ${info.message} ${metaArgs}`;
       }
 
