@@ -13,9 +13,9 @@ const installHandlers = (user: User) => {
   socket.on(EndpointNames.GET_ORCHESTRATOR_VERSION, (data, callback) => {
     logger.debug(EndpointNames.GET_ORCHESTRATOR_VERSION, "Getting orchestrator version");
 
-    callback(util.createCommandResponse(data, ErrorCodes.OK), {
+    callback(util.createCommandResponse(data, ErrorCodes.OK, {
       orchestratorVersion: util.ORCHESTRATOR_VERSION
-    });
+    }));
   });
 
   /**
