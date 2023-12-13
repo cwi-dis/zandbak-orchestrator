@@ -73,7 +73,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     user.session?.removeUser(user);
     orchestrator.removeUser(user);
 
-    logger.debug("DISCONNECT", "Disconnected user", user.name);
+    logger.debug("[DISCONNECT] Disconnected user", user.name);
   });
 };
 
