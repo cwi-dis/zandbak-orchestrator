@@ -4,4 +4,8 @@ const socket = io("ws://localhost:8090");
 
 socket.on("connect", () => {
   console.log("connected!");
+
+  socket.emit("Login", { userName: "test" }, (res: any) => {
+    console.log(res);
+  });
 });
