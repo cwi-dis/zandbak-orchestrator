@@ -39,18 +39,22 @@ const io = new Server(server, { allowEIO3: true });
  * Install handler functions once a new socket connects.
  **/
 io.on("connection", async (socket) => {
-  logger.debug("Client socket connected, awaiting login...");
-  const user = await installLoginHandler(orchestrator, socket);
+  try {
+    logger.debug("Client socket connected, awaiting login...");
+    const user = await installLoginHandler(orchestrator, socket);
 
-  logger.debug("Login process complete, installing event handlers");
-  installConnectionHandlers(orchestrator, user);
-  installSessionHandlers(orchestrator, user);
-  installUserDataHandlers(orchestrator, user);
-  installSceneEventHandlers(user);
-  installStreamHandlers(user);
-  installUtilHandlers(user);
+    logger.debug("Login process complete, installing event handlers");
+    installConnectionHandlers(orchestrator, user);
+    installSessionHandlers(orchestrator, user);
+    installUserDataHandlers(orchestrator, user);
+    installSceneEventHandlers(user);
+    installStreamHandlers(user);
+    installUtilHandlers(user);
 
-  logger.debug("Event handlers installed");
+    logger.debug("Event handlers installed");
+  } catch (err) {
+    logger.error("Login process failed:", err);
+  }
 });
 
 /**
