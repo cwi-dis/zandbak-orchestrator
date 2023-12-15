@@ -193,7 +193,7 @@ class User implements Serializable {
     return {
       userId: this.#id,
       userName: this.name,
-      userData: this.#userData,
+      userData: Object.fromEntries(this.#userData),
       dataStreams: mapHashToDict(this.#dataStreams, ([type, stream]) => {
         return [type, stream.serialize()];
       }),
