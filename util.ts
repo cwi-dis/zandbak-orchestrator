@@ -22,7 +22,7 @@ export const ORCHESTRATOR_VERSION = packageInfo.version;
 function stringifyLogArg(arg: any) {
   const strArg = JSON.stringify(arg);
 
-  if (strArg.startsWith("\"") && strArg.endsWith("\"")) {
+  if (strArg && strArg.startsWith("\"") && strArg.endsWith("\"")) {
     return strArg.slice(1, -1);
   }
 

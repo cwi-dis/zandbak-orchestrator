@@ -30,8 +30,8 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
       if (!userName) {
         callback(util.createResponse(ErrorCodes.MISSING_CREDENTIALS));
 
-        logger.warning(EndpointNames.LOGIN, "No username supplied");
-        reject();
+        logger.warn(EndpointNames.LOGIN, "No username supplied");
+        reject("No username supplied");
         return;
       }
 
