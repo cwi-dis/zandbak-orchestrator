@@ -264,6 +264,7 @@ class Session implements Serializable {
       sessionDescription: this.description,
       sessionAdministrator: this.#administrator.id,
       sessionMaster: this.#master && this.#master.id,
+      sessionScenarioId: this.scenario.id,
       sessionUsers: this.#users.map((u) => u.id),
       sessionUserDefinitions: this.#users.map((u) => u.serialize()),
       sessionProtocol: this.sessionProtocol

@@ -79,7 +79,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * session ID.
    */
   socket.on(EndpointNames.GET_SESSIONS, (data, callback) => {
-    logger.debug(EndpointNames.DELETE_SESSION, "Getting all sessions");
+    logger.debug(EndpointNames.GET_SESSIONS, "Getting all sessions");
 
     callback(util.createCommandResponse(
       data,
