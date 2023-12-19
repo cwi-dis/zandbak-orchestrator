@@ -31,9 +31,9 @@ const app = express();
 const server = createServer(app);
 
 /**
- * Set up Socket.IO server with protocol version 2/3 backward-compatibility.
+ * Set up Socket.IO server
  **/
-const io = new Server(server, { allowEIO3: true });
+const io = new Server(server);
 
 /**
  * Install handler functions once a new socket connects.
