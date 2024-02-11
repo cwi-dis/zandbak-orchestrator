@@ -84,6 +84,17 @@ class Orchestrator {
     this.#sessions = this.#sessions.filter((s) => s.id != session.id);
   }
 
+
+  /**
+   * Returns all sessions of which the given user is an admin of.
+   *
+   * @param user User which should be admin of the returned sessions
+   * @returns Sessions which the given user is an admin of
+   */
+  public getAdministratedSessions(user: User): Array<Session> {
+    return this.#sessions.filter((s) => s.administrator.id == user.id);
+  }
+
   /**
    * Returns an object of serialised sessions indexed by their session IDs.
    */
