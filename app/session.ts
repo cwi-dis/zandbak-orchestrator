@@ -247,7 +247,7 @@ class Session implements Serializable {
   public sendData(fromUser: User, type: string, data: any) {
     this.#users.forEach((u) => {
       if (u.hasRemoteDataStream(fromUser, type)) {
-        u.socket.emit("DataReceived", data);
+        u.socket.emit("DataReceived", fromUser.id, type, data);
       }
     });
   }
