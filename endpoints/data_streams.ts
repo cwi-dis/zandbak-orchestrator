@@ -41,7 +41,7 @@ const installHandlers = (user: User) => {
 
     logger.debug(EndpointNames.DECLARE_DATA_STREAM, "Data stream", streamType, "declared for", user.name);
 
-    callback(util.createResponse(ErrorCodes.OK, {
+    callback?.(util.createResponse(ErrorCodes.OK, {
       dataStreams, remoteDataStreams,
       connectionId: user.id,
       connectionLoggedAs: user.id
