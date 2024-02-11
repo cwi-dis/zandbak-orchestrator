@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import Session from "./session";
 import User from "./user";
-import { Optional } from "../util";
+import { Optional, Dict } from "../util";
 
 class Orchestrator {
   public id: string = uuidv4();
@@ -88,7 +88,7 @@ class Orchestrator {
    * Returns an object of serialised sessions indexed by their session IDs.
    */
   public get sessions() {
-    return this.#sessions.reduce((acc, s) => {
+    return this.#sessions.reduce<{[key: string]: Dict}>((acc, s) => {
       return {
         ...acc,
         [s.id]: s.serialize()
