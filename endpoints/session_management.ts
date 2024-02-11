@@ -157,6 +157,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     }
 
     logger.debug(EndpointNames.LEAVE_SESSION, "Removing user", user.name, "from session", session.name);
+    callback(util.createCommandResponse(data, ErrorCodes.OK));
     session.removeUser(user);
   });
 
