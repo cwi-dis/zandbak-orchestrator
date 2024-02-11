@@ -77,7 +77,7 @@ const installHandlers = (user: User) => {
 
     logger.debug(EndpointNames.REMOVE_DATA_STREAM, "Data stream", streamType, "removed for", user.name);
 
-    callback(util.createResponse(ErrorCodes.OK, {
+    callback?.(util.createResponse(ErrorCodes.OK, {
       dataStreams, remoteDataStreams,
       connectionId: user.id,
       connectionLoggedAs: user.id
@@ -129,7 +129,7 @@ const installHandlers = (user: User) => {
 
     logger.debug(EndpointNames.REGISTER_FOR_DATA_STREAM, "Remote data stream", streamType, "registered for", user.name, "from", fromUser.name);
 
-    callback(util.createResponse(ErrorCodes.OK, {
+    callback?.(util.createResponse(ErrorCodes.OK, {
       dataStreams, remoteDataStreams,
       connectionId: user.id,
       connectionLoggedAs: user.id
@@ -181,7 +181,7 @@ const installHandlers = (user: User) => {
 
     logger.debug(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "Remote data stream", streamType, "unregistered for", user.name, "from", fromUser.name);
 
-    callback(util.createResponse(ErrorCodes.OK, {
+    callback?.(util.createResponse(ErrorCodes.OK, {
       dataStreams, remoteDataStreams,
       connectionId: user.id,
       connectionLoggedAs: user.id
