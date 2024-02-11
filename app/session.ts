@@ -100,16 +100,16 @@ class Session implements Serializable {
    * @param user User to remove from the session
    */
   public removeUser(user: User) {
+    this.#users = this.#users.filter((u) => u.id != user.id);
+    this.selectMaster();
+    user.session = undefined;
+
     this.notifyUsers({
       "eventId": "USER_LEAVED_SESSION",
       "eventData": {
         "userId": user.id,
       }
     });
-
-    this.#users = this.#users.filter((u) => u.id != user.id);
-    this.selectMaster();
-    user.session = undefined;
   }
 
   /**
