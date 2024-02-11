@@ -89,11 +89,18 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   });
 
   /**
-   * Returns a serialised version of the user's current session. If the user
-   * is not in any session, an error is issued.
+   * Returns a serialised version of the user's current session or the session
+   * that this user is an admin of. If the user is not in any session or not an
+   * admin of any session, an error is issued.
    */
   socket.on(EndpointNames.GET_SESSION_INFO, (data, callback) => {
-    const { session } = user;
+    let { session } = user;
+
+    if (!session) {
+      // Check if user is admin of any session
+      logger.debug(EndpointNames.GET_SESSION_INFO, "Checking if user", user.name, "is admin of any session");
+      [ session ] = orchestrator.getAdministratedSessions(user);
+    }
 
     if (!session) {
       logger.debug(EndpointNames.GET_SESSION_INFO, "User", user.name, "not in any session");
