@@ -6,7 +6,6 @@ import Serializable from "./serializable";
 import { Dict } from "../util";
 import DataStream from "./data_stream";
 import RemoteDataStream from "./remote_data_stream";
-import { mapHashToDict } from "../util";
 
 class User implements Serializable {
   #id: string = uuidv4();
@@ -194,12 +193,7 @@ class User implements Serializable {
       userId: this.#id,
       userName: this.name,
       userData: Object.fromEntries(this.#userData),
-      dataStreams: mapHashToDict(this.#dataStreams, ([type, stream]) => {
-        return [type, stream.serialize()];
-      }),
-      remoteDataStreams: mapHashToDict(this.#remoteDataStreams, ([type, stream]) => {
-        return [type, stream.serialize()];
-      })
+      sfuData: { url_gen: "", audio_gen: "", pcc_gen: "" },
     };
   }
 }
