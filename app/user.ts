@@ -3,7 +3,7 @@ import io from "socket.io";
 
 import Session from "./session";
 import Serializable from "./serializable";
-import { Dict } from "../util";
+import { mapHashToDict, Dict } from "../util";
 import DataStream from "./data_stream";
 import RemoteDataStream from "./remote_data_stream";
 
@@ -39,6 +39,18 @@ class User implements Serializable {
 
   public get userData() {
     return Object.fromEntries(this.#userData);
+  }
+
+  public get dataStreams() {
+    return mapHashToDict(this.#dataStreams, ([type, stream]) => {
+      return [type, stream.serialize()];
+    });
+  }
+
+  public get remoteDataStreams() {
+    return mapHashToDict(this.#remoteDataStreams, ([type, stream]) => {
+      return [type, stream.serialize()];
+    });
   }
 
   /**
