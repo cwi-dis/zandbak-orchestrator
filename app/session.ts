@@ -154,6 +154,15 @@ class Session implements Serializable {
   }
 
   /**
+   * Closes the current session by sending the corresponding event to all users.
+   */
+  public closeSession() {
+    this.#users.forEach((u) => {
+      u.socket.emit("SessionClosed", {});
+    });
+  }
+
+  /**
    * Sends a given message to all users currently in the session. The message
    * can be any serialisable object.
    *
