@@ -34,7 +34,7 @@ const installHandlers = (user: User) => {
 
     const { master } = session;
     if (!master) {
-      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_MASTER, "Session has not master");
+      logger.warn(EndpointNames.SEND_SCENE_EVENT_TO_MASTER, "Session has no master");
 
       return callback?.(util.createResponse(
         ErrorCodes.SCENE_EVENT_NO_MASTER

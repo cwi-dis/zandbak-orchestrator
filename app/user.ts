@@ -87,7 +87,7 @@ class User implements Serializable {
    *
    * @param eventId ID of the scene event
    * @param fromUser Sender of the scene event
-   * @param sceneEventData Data associated to the event
+   * @param sceneEventData Data associated with the event
    */
   public sendSceneEvent(eventId: "SceneEventToMaster" | "SceneEventToUser", fromUser: User, sceneEventData: any) {
     this.socket.emit(eventId, {
