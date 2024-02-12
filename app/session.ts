@@ -190,11 +190,7 @@ class Session implements Serializable {
     }
 
     this.#users.forEach((user) => {
-      this.#master!.sendSceneEvent(
-        "SceneEventToUser",
-        user,
-        sceneEvent
-      );
+      user.sendSceneEvent("SceneEventToUser", this.#master!, sceneEvent);
     });
   }
 
