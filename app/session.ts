@@ -105,7 +105,7 @@ class Session implements Serializable {
     user.session = undefined;
 
     this.notifyUsers({
-      "eventId": "USER_LEAVED_SESSION",
+      "eventId": "USER_LEFT_SESSION",
       "eventData": {
         "userId": user.id,
       }
