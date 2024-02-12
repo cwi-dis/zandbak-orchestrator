@@ -57,11 +57,19 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * first.
    */
   socket.on(EndpointNames.LOGOUT, (data, callback) => {
-    user.session?.removeUser(user);
-    orchestrator.removeUser(user);
-
     logger.debug(EndpointNames.LOGOUT, "Logged out user", user.name);
 
+    const { session } = user;
+    session?.removeUser(user);
+
+    if (session?.administrator.id == user.id) {
+      logger.debug(EndpointNames.LOGOUT, "User was admin, closing session");
+
+      session.closeSession();
+      orchestrator.removeSession(session);
+    }
+
+    orchestrator.removeUser(user);
     callback?.(util.createCommandResponse(data, ErrorCodes.OK));
   });
 
@@ -70,10 +78,19 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * from their session and the orchestrator.
    */
   socket.on("disconnect", () => {
-    user.session?.removeUser(user);
-    orchestrator.removeUser(user);
-
     logger.debug("[DISCONNECT] Disconnected user", user.name);
+
+    const { session } = user;
+    session?.removeUser(user);
+
+    if (session?.administrator.id == user.id) {
+      logger.debug("[DISCONNECT] User was admin, closing session");
+
+      session.closeSession();
+      orchestrator.removeSession(session);
+    }
+
+    orchestrator.removeUser(user);
   });
 };
 
