@@ -11,6 +11,8 @@ export type Dict = { [key: string]: any };
 const packageInfo = require("./package.json");
 export const ORCHESTRATOR_VERSION = packageInfo.version;
 
+const [ LOG_LEVEL ] = getFromEnvironment("LOG_LEVEL");
+
 /**
  * Takes any type of value and tries to convert it to a string by means of
  * `JSON.stringify()`. If the resulting value is enclosed by quotation marks,
@@ -33,7 +35,7 @@ function stringifyLogArg(arg: any) {
  * Creates a new logger instance that prints log messages to stdout.
  */
 export const logger = createLogger({
-  level: "debug",
+  level: LOG_LEVEL,
   format: format.combine(
     format.colorize(),
     format.timestamp({
