@@ -18,9 +18,9 @@ enum EndpointNames {
   SEND_MESSAGE_TO_ALL = "SendMessageToAll",
   MESSAGE_SENT = "MessageSent",
 
-  SEND_SCENE_EVENT_TO_MASTER = "SceneEventToMaster",
-  SEND_SCENE_EVENT_TO_USER = "SceneEventToUser",
-  SEND_SCENE_EVENT_TO_ALL = "SceneEventToAllUsers",
+  SEND_SCENE_EVENT_TO_MASTER = "SendSceneEventToMaster",
+  SEND_SCENE_EVENT_TO_USER = "SendSceneEventToUser",
+  SEND_SCENE_EVENT_TO_ALL = "SendSceneEventToAllUsers",
 
   DECLARE_DATA_STREAM = "DeclareDataStream",
   REMOVE_DATA_STREAM = "RemoveDataStream",
