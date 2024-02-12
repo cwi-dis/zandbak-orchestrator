@@ -19,7 +19,7 @@ const installHandlers = (user: User) => {
     if (!session) {
       logger.warn(EndpointNames.DECLARE_DATA_STREAM, "User", user.name, "not in any session");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
@@ -27,7 +27,7 @@ const installHandlers = (user: User) => {
     if (!streamType) {
       logger.warn(EndpointNames.DECLARE_DATA_STREAM, "Stream type not specified");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_KIND
       ));
     }
@@ -59,7 +59,7 @@ const installHandlers = (user: User) => {
     if (!session) {
       logger.warn(EndpointNames.REMOVE_DATA_STREAM, "User", user.name, "not in any session");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
@@ -67,7 +67,7 @@ const installHandlers = (user: User) => {
     if (!streamType) {
       logger.warn(EndpointNames.REMOVE_DATA_STREAM, "Stream type not specified");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_KIND
       ));
     }
@@ -94,7 +94,7 @@ const installHandlers = (user: User) => {
     if (!session) {
       logger.warn(EndpointNames.REGISTER_FOR_DATA_STREAM, "User", user.name, "not in any session");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
@@ -102,7 +102,7 @@ const installHandlers = (user: User) => {
     if (!fromUserId) {
       logger.warn(EndpointNames.REGISTER_FOR_DATA_STREAM, "No sending user specified");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_USER_NOT_PROVIDED
       ));
     }
@@ -111,7 +111,7 @@ const installHandlers = (user: User) => {
     if (!fromUser) {
       logger.warn(EndpointNames.REGISTER_FOR_DATA_STREAM, "Sending user", fromUserId, "not found");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_SESSION
       ));
     }
@@ -119,7 +119,7 @@ const installHandlers = (user: User) => {
     if (!streamType) {
       logger.warn(EndpointNames.REGISTER_FOR_DATA_STREAM, "Stream type not specified");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_KIND
       ));
     }
@@ -146,7 +146,7 @@ const installHandlers = (user: User) => {
     if (!session) {
       logger.warn(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "User", user.name, "not in any session");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
       ));
     }
@@ -154,7 +154,7 @@ const installHandlers = (user: User) => {
     if (!fromUserId) {
       logger.warn(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "No sending user specified");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_USER_NOT_PROVIDED
       ));
     }
@@ -163,7 +163,7 @@ const installHandlers = (user: User) => {
     if (!fromUser) {
       logger.warn(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "Sending user", fromUserId, "not found");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.SESSION_USER_NOT_IN_SESSION
       ));
     }
@@ -171,7 +171,7 @@ const installHandlers = (user: User) => {
     if (!streamType) {
       logger.warn(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "Stream type not specified");
 
-      return callback(util.createResponse(
+      return callback?.(util.createResponse(
         ErrorCodes.STREAM_DATA_MISSING_KIND
       ));
     }
