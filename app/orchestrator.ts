@@ -81,6 +81,7 @@ class Orchestrator {
    * @param session Session to remove
    */
   public removeSession(session: Session) {
+    session.closeSession();
     this.#sessions = this.#sessions.filter((s) => s.id != session.id);
   }
 
