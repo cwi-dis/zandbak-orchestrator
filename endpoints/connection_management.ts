@@ -53,20 +53,36 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   const { socket } = user;
 
   /**
+   * Cleans up the session by removing the user from it. If the leaving user
+   * also was the admin of the session, the session itself is deleted. The
+   * function returns true if the session was deleted in addition to removing
+   * the user from it or false if the session itself was not removed.
+   *
+   * @returns True if the session was also deleted
+   */
+  const cleanUpSession = () => {
+    const { session } = user;
+    session?.removeUser(user);
+
+    if (session?.administrator.id == user.id) {
+      session.closeSession();
+      orchestrator.removeSession(session);
+
+      return true;
+    }
+
+    return false;
+  };
+
+  /**
    * Logs the user out from the orchestrator, removing them from their session
    * first.
    */
   socket.on(EndpointNames.LOGOUT, (data, callback) => {
     logger.debug(EndpointNames.LOGOUT, "Logged out user", user.name);
 
-    const { session } = user;
-    session?.removeUser(user);
-
-    if (session?.administrator.id == user.id) {
+    if (cleanUpSession()) {
       logger.debug(EndpointNames.LOGOUT, "User was admin, closing session");
-
-      session.closeSession();
-      orchestrator.removeSession(session);
     }
 
     orchestrator.removeUser(user);
@@ -80,14 +96,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on("disconnect", () => {
     logger.debug("[DISCONNECT] Disconnected user", user.name);
 
-    const { session } = user;
-    session?.removeUser(user);
-
-    if (session?.administrator.id == user.id) {
+    if (cleanUpSession()) {
       logger.debug("[DISCONNECT] User was admin, closing session");
-
-      session.closeSession();
-      orchestrator.removeSession(session);
     }
 
     orchestrator.removeUser(user);
