@@ -37,7 +37,7 @@ const installHandlers = (user: User) => {
     }
 
     user.declareDataStream(streamType, streamDescription);
-    const { dataStreams, remoteDataStreams } = user.serialize();
+    const { dataStreams, remoteDataStreams } = user;
 
     logger.debug(EndpointNames.DECLARE_DATA_STREAM, "Data stream", streamType, "declared for", user.name);
 
@@ -73,7 +73,7 @@ const installHandlers = (user: User) => {
     }
 
     user.removeDataStream(streamType);
-    const { dataStreams, remoteDataStreams } = user.serialize();
+    const { dataStreams, remoteDataStreams } = user;
 
     logger.debug(EndpointNames.REMOVE_DATA_STREAM, "Data stream", streamType, "removed for", user.name);
 
@@ -125,7 +125,7 @@ const installHandlers = (user: User) => {
     }
 
     user.declareRemoteDataStream(fromUser, streamType);
-    const { dataStreams, remoteDataStreams } = user.serialize();
+    const { dataStreams, remoteDataStreams } = user;
 
     logger.debug(EndpointNames.REGISTER_FOR_DATA_STREAM, "Remote data stream", streamType, "registered for", user.name, "from", fromUser.name);
 
@@ -177,7 +177,7 @@ const installHandlers = (user: User) => {
     }
 
     user.removeRemoteDataStream(fromUser, streamType);
-    const { dataStreams, remoteDataStreams } = user.serialize();
+    const { dataStreams, remoteDataStreams } = user;
 
     logger.debug(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "Remote data stream", streamType, "unregistered for", user.name, "from", fromUser.name);
 
