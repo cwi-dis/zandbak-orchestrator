@@ -201,6 +201,7 @@ const installHandlers = (user: User) => {
       return;
     }
 
+    logger.silly(EndpointNames.SEND_DATA, "Sending data with stream type", streamType);
     session.sendData(user, streamType, data);
   });
 };

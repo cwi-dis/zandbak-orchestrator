@@ -41,7 +41,7 @@ const installHandlers = (user: User) => {
       ));
     }
 
-    logger.debug(EndpointNames.SEND_SCENE_EVENT_TO_MASTER, "Sending scene event to master");
+    logger.silly(EndpointNames.SEND_SCENE_EVENT_TO_MASTER, "Sending scene event to master");
 
     master.sendSceneEvent(
       "SceneEventToMaster",
@@ -99,7 +99,7 @@ const installHandlers = (user: User) => {
       ));
     }
 
-    logger.debug(EndpointNames.SEND_SCENE_EVENT_TO_USER, "Sending scene event from master", user.name, "to", targetUser.name, "in session", session.name);
+    logger.silly(EndpointNames.SEND_SCENE_EVENT_TO_USER, "Sending scene event from master", user.name, "to", targetUser.name, "in session", session.name);
 
     user.sendSceneEvent(
       "SceneEventToUser",
@@ -140,7 +140,7 @@ const installHandlers = (user: User) => {
       ));
     }
 
-    logger.debug(EndpointNames.SEND_SCENE_EVENT_TO_ALL, "Sending scene event from master", user.name, "to all in session", session.name);
+    logger.silly(EndpointNames.SEND_SCENE_EVENT_TO_ALL, "Sending scene event from master", user.name, "to all in session", session.name);
     session.sendSceneEvent(sceneEvent);
   });
 };
