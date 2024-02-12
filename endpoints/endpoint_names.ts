@@ -7,8 +7,6 @@ enum EndpointNames {
   JOIN_SESSION = "JoinSession",
   LEAVE_SESSION = "LeaveSession",
   GET_SESSION_INFO = "GetSessionInfo",
-  SESSION_UPDATED = "SessionUpdated",
-  SESSION_CLOSED = "SessionClosed",
   GET_SESSIONS = "GetSessions",
 
   GET_USER_DATA = "GetUserData",
