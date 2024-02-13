@@ -7,5 +7,5 @@ RUN yarn install && \
     yarn build && \
     yarn cache clean --all
 
-EXPOSE 3000 3001
+EXPOSE 8090
 CMD ["yarn", "start"]
