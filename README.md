@@ -1,18 +1,36 @@
-# VR2Gather Orchestrator
+# VR2Gather Orchestrator v2
 
-Orchestrator application to go along with the VR2Gather archeitecture, handling
-communication between users over the network.
+Orchestrator application to go along with the VR2Gather architecture, handling
+user and session management as well as transmission of binary data between
+users over the network.
 
-## Building
+## Running the Orchestrator
 
-In order to build the application, first make sure you have `yarn` installed.
-Then, to install the dependencies and compile the application run:
+The easiest way to run the orchestrator is through Docker. First, make sure you
+have Docker and `docker-compose` installed. Then, simply build and start the
+container by running
+
+    docker compose up
+
+This will build the container if it hasn't already been build and launch it on
+port 8090.
+
+
+## Development
+
+### Building
+
+In order to build the application for development, first make sure you have
+`yarn` installed. Then, to install the dependencies and compile the application
+run:
 
     yarn install
     yarn build
 
-## Running
+### Running
 
-After compiling it, the application server can be launched as follows:
+After compiling it, make sure to copy the file `.env-sample` to `.env` and
+update the enviornment variables as needed. Then, the application server can be
+launched as follows:
 
     yarn start
