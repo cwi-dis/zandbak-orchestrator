@@ -4,6 +4,9 @@ services:
     build: .
     image: registry.dis.cwi.nl/vr2gather-orchestrator-v2
     restart: always
+    environment:
+      - PORT=8090
+      - LOG_LEVEL=debug
     ports:
       - "8090:8090"
     command: yarn start
