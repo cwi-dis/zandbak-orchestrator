@@ -11,7 +11,7 @@ export type Dict = { [key: string]: any };
 const packageInfo = require("./package.json");
 export const ORCHESTRATOR_VERSION = packageInfo.version;
 
-const [ LOG_LEVEL ] = getFromEnvironment("LOG_LEVEL");
+const [ LOG_LEVEL ] = getFromEnvironment(["LOG_LEVEL"]);
 
 /**
  * Takes any type of value and tries to convert it to a string by means of
@@ -62,18 +62,23 @@ export const logger = createLogger({
 
 /**
  * Tries to extract the values of the keys given as parameters from the
- * environment and throws an excaption if one of them cannot be found.
+ * environment and throws an excaption if one of them cannot be found. If the
+ * param `defaultValue` is provided, this value will be returned
  *
  * @param keys Names of the keys that shall be extracted from the environment
  * @returns The values of the extracted keys as an array of strings
  */
-export function getFromEnvironment(...keys: Array<string>): Array<string> {
+export function getFromEnvironment(keys: Array<string>, defaultValue?: any): Array<string> {
   return keys.reduce<Array<string>>((values, k) => {
     const value = process.env[k];
 
     // Throw exception if value is not present in environment
     if (value === undefined) {
-      throw new Error(`Environment has no key ${k}`);
+      if (defaultValue === undefined) {
+        throw new Error(`Environment has no key ${k}`);
+      }
+
+      return values.concat(defaultValue);
     }
 
     return values.concat(value);

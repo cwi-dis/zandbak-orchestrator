@@ -15,7 +15,7 @@ import installUserDataHandlers from "./endpoints/user_data";
 import installSceneEventHandlers from "./endpoints/scene_events";
 import installStreamHandlers from "./endpoints/data_streams";
 
-const [ PORT ] = getFromEnvironment("PORT");
+const [ PORT ] = getFromEnvironment(["PORT"]);
 
 logger.info("Launching orchestrator version", ORCHESTRATOR_VERSION);
 
