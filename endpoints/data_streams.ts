@@ -127,7 +127,7 @@ const installHandlers = (user: User) => {
     user.declareRemoteDataStream(fromUser, streamType);
     const { dataStreams, remoteDataStreams } = user;
 
-    logger.debug(EndpointNames.REGISTER_FOR_DATA_STREAM, "Remote data stream", streamType, "registered for", user.name, "from", fromUser.name);
+    logger.debug(EndpointNames.REGISTER_FOR_DATA_STREAM, "Subscribing", user.name, "for stream", streamType, "from", fromUser.name);
 
     callback?.(util.createResponse(ErrorCodes.OK, {
       dataStreams, remoteDataStreams,
@@ -179,7 +179,7 @@ const installHandlers = (user: User) => {
     user.removeRemoteDataStream(fromUser, streamType);
     const { dataStreams, remoteDataStreams } = user;
 
-    logger.debug(EndpointNames.UNREGISTER_FROM_DATA_STREAM, "Remote data stream", streamType, "unregistered for", user.name, "from", fromUser.name);
+    logger.debug(EndpointNames.REGISTER_FOR_DATA_STREAM, "Unsubscribing", user.name, "from stream", streamType, "from", fromUser.name);
 
     callback?.(util.createResponse(ErrorCodes.OK, {
       dataStreams, remoteDataStreams,
