@@ -30,7 +30,8 @@ run:
 ### Running
 
 After compiling it, make sure to copy the file `.env-sample` to `.env` and
-update the enviornment variables as needed. Then, the application server can be
-launched as follows:
+update the environment variables as needed. Moreover, check the file
+`config/ntp-config.json` and change the hostname/port of your time server if
+needed. Then, the application server can be launched as follows:
 
     yarn start
