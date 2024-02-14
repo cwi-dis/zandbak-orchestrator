@@ -12,6 +12,7 @@ const packageInfo = require("./package.json");
 export const ORCHESTRATOR_VERSION = packageInfo.version;
 
 const [ LOG_LEVEL ] = getFromEnvironment(["LOG_LEVEL"]);
+const [ LOG_FILE ] = getFromEnvironment(["LOG_FILE"], null);
 
 /**
  * Takes any type of value and tries to convert it to a string by means of
@@ -56,7 +57,12 @@ export const logger = createLogger({
     })
   ),
   transports: [
-    new transports.Console()
+    new transports.Console(),
+    new transports.File({
+      filename: LOG_FILE || "/dev/null",
+      maxsize: 500_000,
+      maxFiles: 10
+    })
   ]
 });
 
