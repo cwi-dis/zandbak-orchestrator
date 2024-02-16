@@ -1,7 +1,7 @@
 const webpack = require("webpack");
 const nodeExternals = require("webpack-node-externals")
 
-const backend = {
+module.exports = {
   mode: process.env.NODE_ENV || "development",
   target: "node",
   node: {
@@ -28,33 +28,3 @@ const backend = {
     ]
   }
 };
-
-const client = {
-  mode: process.env.NODE_ENV || "development",
-  target: "node",
-  node: {
-    __dirname: true
-  },
-  externals: [nodeExternals()],
-  entry: {
-    client: "./client.ts",
-  },
-  output: {
-    path: __dirname + "/bin",
-    filename: "[name].js"
-  },
-  devtool: "source-map",
-  resolve: {
-    extensions: [".js", ".ts"]
-  },
-  module: {
-    rules: [
-      {
-        test: /\.ts?$/,
-        use: "ts-loader"
-      }
-    ]
-  }
-}
-
-module.exports = [backend, client];
