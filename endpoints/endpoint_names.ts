@@ -28,7 +28,6 @@ enum EndpointNames {
 
   GET_ORCHESTRATOR_VERSION = "GetOrchestratorVersion",
   GET_NTP_TIME = "GetNTPTime",
-  EXIT_ORCHESTRATOR = "TerminateOrchestrator"
 }
 
 export default EndpointNames;

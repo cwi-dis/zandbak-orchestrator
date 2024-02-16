@@ -34,14 +34,6 @@ const installHandlers = (user: User) => {
       logger.error("Could not get NTP time:", err);
     }
   });
-
-  /**
-   * Ends the orchestrator process.
-   */
-  socket.on(EndpointNames.EXIT_ORCHESTRATOR, () => {
-    logger.debug(EndpointNames.EXIT_ORCHESTRATOR, "Received exit command");
-    process.exit(1);
-  });
 };
 
 export default installHandlers;
