@@ -6,6 +6,7 @@ import Serializable from "./serializable";
 import { mapHashToDict, Dict } from "../util";
 import DataStream from "./data_stream";
 import StreamSubscription from "./stream_subscription";
+import EmittedEvents from "./emitted_events";
 
 class User implements Serializable {
   #id: string = uuidv4();
@@ -89,7 +90,7 @@ class User implements Serializable {
    * @param fromUser Sender of the scene event
    * @param sceneEventData Data associated with the event
    */
-  public sendSceneEvent(eventId: "SceneEventToMaster" | "SceneEventToUser", fromUser: User, sceneEventData: any) {
+  public sendSceneEvent(eventId: EmittedEvents.SCENE_EVENT_TO_MASTER | EmittedEvents.SCENE_EVENT_TO_USER, fromUser: User, sceneEventData: any) {
     this.socket.emit(eventId, {
       sceneEventFrom: fromUser.id,
       sceneEventData

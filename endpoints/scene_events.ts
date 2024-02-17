@@ -4,6 +4,7 @@ import { logger } from "../util";
 import EndpointNames from "./endpoint_names";
 import User from "../app/user";
 import ErrorCodes  from "./error_codes";
+import EmittedEvents from "../app/emitted_events";
 
 const installHandlers = (user: User) => {
   const { socket } = user;
@@ -44,7 +45,7 @@ const installHandlers = (user: User) => {
     logger.silly(EndpointNames.SEND_SCENE_EVENT_TO_MASTER, "Sending scene event to master");
 
     master.sendSceneEvent(
-      "SceneEventToMaster",
+      EmittedEvents.SCENE_EVENT_TO_MASTER,
       user,
       sceneEvent
     );
@@ -102,7 +103,7 @@ const installHandlers = (user: User) => {
     logger.silly(EndpointNames.SEND_SCENE_EVENT_TO_USER, "Sending scene event from master", user.name, "to", targetUser.name, "in session", session.name);
 
     user.sendSceneEvent(
-      "SceneEventToUser",
+      EmittedEvents.SCENE_EVENT_TO_USER,
       targetUser,
       sceneEvent
     );

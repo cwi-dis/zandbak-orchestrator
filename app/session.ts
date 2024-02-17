@@ -6,6 +6,7 @@ import User from "./user";
 import Transport from "../transport/transport";
 import TransportManager, { TransportType } from "../transport/transport_manager";
 import Scenario from "./scenario";
+import EmittedEvents from "./emitted_events";
 
 class Session implements Serializable {
   #id: string = uuidv4();
@@ -158,7 +159,7 @@ class Session implements Serializable {
    */
   public closeSession() {
     this.#users.forEach((u) => {
-      u.socket.emit("SessionClosed", {});
+      u.socket.emit(EmittedEvents.SESSION_CLOSED, {});
     });
   }
 
@@ -170,7 +171,7 @@ class Session implements Serializable {
    */
   private notifyUsers(message: Dict) {
     this.#users.forEach((u) => {
-      u.socket.emit("SessionUpdated", message);
+      u.socket.emit(EmittedEvents.SESSION_UPDATED, message);
     });
   }
 
@@ -199,7 +200,7 @@ class Session implements Serializable {
     }
 
     this.#users.forEach((user) => {
-      user.sendSceneEvent("SceneEventToUser", this.#master!, sceneEvent);
+      user.sendSceneEvent(EmittedEvents.SCENE_EVENT_TO_USER, this.#master!, sceneEvent);
     });
   }
 
@@ -213,7 +214,7 @@ class Session implements Serializable {
    */
   public sendMessageToAll(fromUser: User, message: Dict) {
     this.#users.forEach((u) => {
-      u.socket.emit("MessageSent", {
+      u.socket.emit(EmittedEvents.MESSAGE_SENT, {
         messageFrom: fromUser.id,
         messageFromName: fromUser.name,
         message
@@ -234,7 +235,7 @@ class Session implements Serializable {
       return;
     }
 
-    toUser.socket.emit("MessageSent", {
+    toUser.socket.emit(EmittedEvents.MESSAGE_SENT, {
       messageFrom: fromUser.id,
       messageFromName: fromUser.name,
       message
@@ -252,7 +253,7 @@ class Session implements Serializable {
   public sendData(fromUser: User, type: string, data: any) {
     this.#users.forEach((u) => {
       if (u.hasStreamSubscription(fromUser, type)) {
-        u.socket.emit("DataReceived", fromUser.id, type, data);
+        u.socket.emit(EmittedEvents.DATA_RECEIVED, fromUser.id, type, data);
       }
     });
   }
