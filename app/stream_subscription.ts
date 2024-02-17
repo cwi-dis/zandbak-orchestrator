@@ -1,12 +1,12 @@
 import Serializable from "./serializable";
 import User from "./user";
 
-class RemoteDataStream implements Serializable {
+class StreamSubscription implements Serializable {
   #id: string;
   #userId: string;
 
   constructor(user: User, public type: string, public description: string = "") {
-    this.#id = RemoteDataStream.genId(user.id, type);
+    this.#id = StreamSubscription.genId(user.id, type);
     this.#userId = user.id;
   }
 
@@ -27,4 +27,4 @@ class RemoteDataStream implements Serializable {
   }
 }
 
-export default RemoteDataStream;
+export default StreamSubscription;

@@ -5,7 +5,7 @@ import Session from "./session";
 import Serializable from "./serializable";
 import { mapHashToDict, Dict } from "../util";
 import DataStream from "./data_stream";
-import RemoteDataStream from "./remote_data_stream";
+import StreamSubscription from "./stream_subscription";
 
 class User implements Serializable {
   #id: string = uuidv4();
@@ -14,7 +14,7 @@ class User implements Serializable {
   #userData: Map<string, any>;
 
   #dataStreams: Map<string, DataStream>;
-  #remoteDataStreams: Map<string, RemoteDataStream>;
+  #remoteDataStreams: Map<string, StreamSubscription>;
 
   public session?: Session;
 
@@ -145,7 +145,7 @@ class User implements Serializable {
    * @param description Stream description
    */
   public declareRemoteDataStream(user: User, type: string) {
-    const remoteStream = new RemoteDataStream(user, type);
+    const remoteStream = new StreamSubscription(user, type);
     this.#remoteDataStreams.set(remoteStream.id, remoteStream);
   }
 
@@ -159,7 +159,7 @@ class User implements Serializable {
    */
   public getRemoteDataStream(user: User, type: string) {
     return this.#remoteDataStreams.get(
-      RemoteDataStream.genId(user.id, type)
+      StreamSubscription.genId(user.id, type)
     ) || null;
   }
 
@@ -171,7 +171,7 @@ class User implements Serializable {
    * @param type Type of stream to remove
    */
   public removeRemoteDataStream(user: User, type: string) {
-    this.#remoteDataStreams.delete(RemoteDataStream.genId(user.id, type));
+    this.#remoteDataStreams.delete(StreamSubscription.genId(user.id, type));
   }
 
   /**
@@ -192,7 +192,7 @@ class User implements Serializable {
    * @returns True if this user has a remote data stream with the given parameters
    */
   public hasRemoteDataStream(user: User, type: string): boolean {
-    return this.#remoteDataStreams.has(RemoteDataStream.genId(user.id, type));
+    return this.#remoteDataStreams.has(StreamSubscription.genId(user.id, type));
   }
 
   /**
