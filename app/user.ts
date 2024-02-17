@@ -14,7 +14,7 @@ class User implements Serializable {
   #userData: Map<string, any>;
 
   #dataStreams: Map<string, DataStream>;
-  #remoteDataStreams: Map<string, StreamSubscription>;
+  #streamSubscriptions: Map<string, StreamSubscription>;
 
   public session?: Session;
 
@@ -22,7 +22,7 @@ class User implements Serializable {
     this.#userData = new Map(Object.entries(userData));
 
     this.#dataStreams = new Map();
-    this.#remoteDataStreams = new Map();
+    this.#streamSubscriptions = new Map();
   }
 
   public get id() {
@@ -48,7 +48,7 @@ class User implements Serializable {
   }
 
   public get remoteDataStreams() {
-    return mapHashToDict(this.#remoteDataStreams, ([type, stream]) => {
+    return mapHashToDict(this.#streamSubscriptions, ([type, stream]) => {
       return [type, stream.serialize()];
     });
   }
@@ -137,62 +137,62 @@ class User implements Serializable {
   }
 
   /**
-   * Adds a new remote data stream for the given user with the given type and
+   * Adds a new stream subscription for the given user with the given type and
    * description to this user.
    *
    * @param user User for stream
    * @param type Type of stream to add
-   * @param description Stream description
    */
-  public declareRemoteDataStream(user: User, type: string) {
+  public subscribeToDataStream(user: User, type: string) {
     const remoteStream = new StreamSubscription(user, type);
-    this.#remoteDataStreams.set(remoteStream.id, remoteStream);
+    this.#streamSubscriptions.set(remoteStream.id, remoteStream);
   }
 
   /**
-   * Returns a remote data stream of the given type for the given user. If no
-   * such stream exists, null is returned.
+   * Returns a stream subscription of the given type for the given user. If no
+   * such stream subscription exists, null is returned.
    *
    * @param user User for stream
    * @param type Type of data stream to get
    * @returns A data stream of the given type, null otherwise
    */
-  public getRemoteDataStream(user: User, type: string) {
-    return this.#remoteDataStreams.get(
+  public getStreamSubscription(user: User, type: string) {
+    return this.#streamSubscriptions.get(
       StreamSubscription.genId(user.id, type)
     ) || null;
   }
 
   /**
-   * Removes a remote data stream for the given user of the given type from
-   * this user. If the user has no such data stream, nothing happens.
+   * Removes a data stream subscription for the given user of the given type
+   * from this user. If the user has no such stream subscription, nothing
+   * happens.
    *
    * @param user User for stream
    * @param type Type of stream to remove
    */
-  public removeRemoteDataStream(user: User, type: string) {
-    this.#remoteDataStreams.delete(StreamSubscription.genId(user.id, type));
+  public removeStreamSubscription(user: User, type: string) {
+    this.#streamSubscriptions.delete(StreamSubscription.genId(user.id, type));
   }
 
   /**
-   * Removes all remote data streams from this user.
+   * Removes all streams subscriptions from this user.
    *
    * @param type Type of stream to remove
    */
-  public removeAllRemoteDataStreams() {
-    this.#remoteDataStreams.clear();
+  public removeAllStreamSubscriptions() {
+    this.#streamSubscriptions.clear();
   }
 
   /**
-   * Checks if this user object has a remote data stream for the given user and
-   * stream type.
+   * Checks if this user object has a stream subscription for the given user
+   * and stream type.
    *
    * @param user User for remote data stream
    * @param type Type of stream
    * @returns True if this user has a remote data stream with the given parameters
    */
-  public hasRemoteDataStream(user: User, type: string): boolean {
-    return this.#remoteDataStreams.has(StreamSubscription.genId(user.id, type));
+  public hasStreamSubscription(user: User, type: string): boolean {
+    return this.#streamSubscriptions.has(StreamSubscription.genId(user.id, type));
   }
 
   /**
