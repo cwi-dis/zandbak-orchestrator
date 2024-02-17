@@ -85,8 +85,8 @@ const installHandlers = (user: User) => {
   });
 
   /**
-   * Registers the current user for a remote data stream from the user with the
-   * given ID and the given stream type.
+   * Registers the current user for a data stream from the user with the given
+   * ID and the given stream type.
    */
   socket.on(EndpointNames.REGISTER_FOR_DATA_STREAM, (fromUserId, streamType, callback) => {
     const { session } = user;
@@ -124,7 +124,7 @@ const installHandlers = (user: User) => {
       ));
     }
 
-    user.declareRemoteDataStream(fromUser, streamType);
+    user.subscribeToDataStream(fromUser, streamType);
     const { dataStreams, remoteDataStreams } = user;
 
     logger.debug(EndpointNames.REGISTER_FOR_DATA_STREAM, "Subscribing", user.name, "for stream", streamType, "from", fromUser.name);
@@ -176,7 +176,7 @@ const installHandlers = (user: User) => {
       ));
     }
 
-    user.removeRemoteDataStream(fromUser, streamType);
+    user.removeStreamSubscription(fromUser, streamType);
     const { dataStreams, remoteDataStreams } = user;
 
     logger.debug(EndpointNames.REGISTER_FOR_DATA_STREAM, "Unsubscribing", user.name, "from stream", streamType, "from", fromUser.name);
