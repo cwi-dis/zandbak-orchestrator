@@ -10,7 +10,11 @@ class ExternalTransport implements Transport, Serializable {
   }
 
   public getUrls(): Dict {
-    return {};
+    return {
+      url_gen: "",
+      audio_gen: "",
+      pcc_gen: ""
+    };
   }
 
   public serialize(): Dict {
