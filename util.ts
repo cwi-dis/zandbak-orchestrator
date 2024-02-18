@@ -68,8 +68,9 @@ export const logger = createLogger({
 
 /**
  * Tries to extract the values of the keys given as parameters from the
- * environment and throws an excaption if one of them cannot be found. If the
- * param `defaultValue` is provided, this value will be returned
+ * environment and throws an exception if one of them cannot be found. If the
+ * param `defaultValue` is provided, this value will be returned for keys not
+ * found in the enironment
  *
  * @param keys Names of the keys that shall be extracted from the environment
  * @returns The values of the extracted keys as an array of strings
