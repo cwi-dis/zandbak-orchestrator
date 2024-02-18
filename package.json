@@ -1,6 +1,6 @@
 {
   "name": "vr2gather-orchestrator",
-  "version": "2.0.2-beta",
+  "version": "2.0.3-beta",
   "scripts": {
     "start": "node --enable-source-maps bin/build.js",
     "build": "webpack",
