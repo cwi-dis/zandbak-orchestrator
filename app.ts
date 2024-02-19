@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
-import { getFromEnvironment, logger, ORCHESTRATOR_VERSION } from "./util";
+import { getFromEnvironment, logger, onUnhandled, ORCHESTRATOR_VERSION } from "./util";
 import Orchestrator from "./app/orchestrator";
 
 import installConnectionHandlers, { installLoginHandler } from "./endpoints/connection_management";
@@ -39,6 +39,11 @@ const io = new Server(server);
  * Install handler functions once a new socket connects.
  **/
 io.on("connection", async (socket) => {
+  // Install handler for unhandled messages
+  onUnhandled(socket, (event, params) => {
+    logger.error("Unhandled event", event, "received with params", params);
+  });
+
   try {
     logger.debug("Client socket connected, awaiting login...");
     const user = await installLoginHandler(orchestrator, socket);
