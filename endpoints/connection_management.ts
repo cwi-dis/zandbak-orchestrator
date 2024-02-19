@@ -39,12 +39,11 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
       orchestrator.addUser(user);
 
       logger.debug(EndpointNames.LOGIN, "Added user", user.name, "to orchestrator");
+      resolve(user);
 
       callback(util.createCommandResponse(data, ErrorCodes.OK, {
         userId: user.id
       }));
-
-      resolve(user);
     });
   });
 };
