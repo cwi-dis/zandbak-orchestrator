@@ -216,7 +216,7 @@ export function onUnhandled(socket: any, fn: (event: string, params: any) => voi
   const eventRegex = new RegExp("\\[.+\\]");
 
   socket.conn.on("message", (msg: string) => {
-    if(!Object.keys((socket as any)._events).includes(msg.split("\"")[1])) {
+    if (typeof msg == "string" && !Object.keys((socket as any)._events).includes(msg.split("\"")[1])) {
       const match = eventRegex.exec(msg);
 
       if (match) {
