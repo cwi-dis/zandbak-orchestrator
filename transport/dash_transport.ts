@@ -1,13 +1,10 @@
 import { loadConfigSync } from "../util";
 import ExternalTransport from "./external_transport";
+import { TransportUrls } from "./transport";
 
 interface DashTransportPortMapping {
   port: number;
-  sfuData: {
-    url_gen: string,
-    url_audio: string,
-    url_pcc: string
-  }
+  sfuData: TransportUrls;
 }
 
 interface DashTransportConfig {

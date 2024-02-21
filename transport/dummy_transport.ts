@@ -1,5 +1,5 @@
 import { Dict } from "../util";
-import Transport from "./transport";
+import Transport, { TransportUrls } from "./transport";
 import Serializable from "app/serializable";
 
 class ExternalTransport implements Transport, Serializable {
@@ -9,7 +9,7 @@ class ExternalTransport implements Transport, Serializable {
   public destroy(): void {
   }
 
-  public getUrls(): Dict {
+  public getUrls(): TransportUrls {
     return {
       url_gen: "",
       url_audio: "",
