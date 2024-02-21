@@ -1,18 +1,18 @@
 import childProcess from "child_process";
 import { v4 as uuidv4 } from "uuid";
 
-import { Dict, logger } from "../util";
-import Transport from "./transport";
+import { logger } from "../util";
+import Transport, { TransportUrls } from "./transport";
 import Serializable from "app/serializable";
 
-class ExternalTransport implements Transport, Serializable {
+abstract class ExternalTransport implements Transport, Serializable {
   protected id = uuidv4();
   protected process?: childProcess.ChildProcessWithoutNullStreams;
 
-  protected type: string;
-  protected cmdLine: Array<string>;
-  protected port: number;
-  protected tls: boolean;
+  protected abstract type: string;
+  protected abstract cmdLine: Array<string>;
+  protected abstract port: number;
+  protected abstract tls: boolean;
 
   /**
    * Starts a new SFU process if one is not already running.
@@ -66,9 +66,7 @@ class ExternalTransport implements Transport, Serializable {
     this.process = undefined;
   }
 
-  public getUrls(): Dict {
-    return {};
-  }
+  public abstract getUrls(): TransportUrls;
 
   public serialize() {
     return {
