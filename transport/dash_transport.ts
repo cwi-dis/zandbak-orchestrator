@@ -1,6 +1,7 @@
 import { loadConfigSync } from "../util";
 import ExternalTransport from "./external_transport";
 import { TransportUrls } from "./transport";
+import User from "../app/user";
 
 interface DashTransportPortMapping {
   port: number;

@@ -72,7 +72,7 @@ abstract class ExternalTransport implements Transport, Serializable {
     this.process = undefined;
   }
 
-  public abstract getUrls(): TransportUrls;
+  public abstract getUrls(user: User): TransportUrls;
 
   public serialize() {
     return {

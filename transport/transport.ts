@@ -1,3 +1,5 @@
+import User from "../app/user";
+
 export interface TransportUrls {
   url_gen: string;
   url_audio: string;
@@ -7,7 +9,7 @@ export interface TransportUrls {
 interface Transport {
   start(): void;
   destroy(): void;
-  getUrls(): TransportUrls;
+  getUrls(user: User): TransportUrls;
 }
 
 export default Transport;
