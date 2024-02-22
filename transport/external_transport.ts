@@ -3,16 +3,22 @@ import { v4 as uuidv4 } from "uuid";
 
 import { logger } from "../util";
 import Transport, { TransportUrls } from "./transport";
-import Serializable from "app/serializable";
+import Serializable from "../app/serializable";
+import User from "../app/user";
 
 abstract class ExternalTransport implements Transport, Serializable {
   protected id = uuidv4();
   protected process?: childProcess.ChildProcessWithoutNullStreams;
+  protected externalHostname: string;
+  protected port: number;
 
   protected abstract type: string;
   protected abstract cmdLine: Array<string>;
-  protected abstract port: number;
   protected abstract tls: boolean;
+
+  public constructor(externalHostname: string) {
+    this.externalHostname = externalHostname;
+  }
 
   /**
    * Starts a new SFU process if one is not already running.
