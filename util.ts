@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as ntp from "ntp-client";
 import { createLogger, format, transports } from "winston";
+import { Socket } from "socket.io";
 
 import ErrorCodes, { ErrorMessages } from "./endpoints/error_codes";
 import EndpointNames from "./endpoints/endpoint_names";
@@ -212,17 +213,17 @@ function getNetworkTime(server: string, port: number = 123): Promise<Date> {
   });
 }
 
-export function onUnhandled(socket: any, fn: (event: string, params: any) => void) {
-  const eventRegex = new RegExp("\\[.+\\]");
-
-  socket.conn.on("message", (msg: string) => {
-    if (typeof msg == "string" && !Object.keys((socket as any)._events).includes(msg.split("\"")[1])) {
-      const match = eventRegex.exec(msg);
-
-      if (match) {
-        const [event, params] = JSON.parse(match[0]);
-        fn(event, params);
-      }
+/**
+ * Installs a handler on the given socket which triggers a callback whenever an
+ * unhandled event is received.
+ *
+ * @param socket SocketIO socket to install handler for
+ * @param fn Callback function to be triggered when an unhandled event is received
+ */
+export function onUnhandled(socket: Socket, fn: (event: string, params: any) => void) {
+  socket.onAny((event: string, ...params) => {
+    if (socket.listeners(event).length == 0) {
+      fn(event, params);
     }
   });
 }
