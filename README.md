@@ -35,3 +35,13 @@ update the environment variables as needed. Moreover, check the file
 needed. Then, the application server can be launched as follows:
 
     yarn start
+
+### Reading logs remotely
+
+If the property `LOG_SERVER` is set in `.env`, all Orchestrator log messages
+are forwarded via the Orchestrator's Socket.IO connection. To read them
+remotely, you can use the `logreader` script, which takes the Orchestrator's
+hostname as command line argument:
+
+    node logreader localhost
+
