@@ -1,7 +1,8 @@
 import * as fs from "fs";
 import * as ntp from "ntp-client";
 import { createLogger, format, transports } from "winston";
-import { Socket } from "socket.io";
+import { Socket, Server } from "socket.io";
+import socketIOTransport from "winston-socket.io";
 
 import ErrorCodes, { ErrorMessages } from "./endpoints/error_codes";
 import EndpointNames from "./endpoints/endpoint_names";
@@ -12,8 +13,8 @@ export type Dict = { [key: string]: any };
 const packageInfo = require("./package.json");
 export const ORCHESTRATOR_VERSION = packageInfo.version;
 
-const [ LOG_LEVEL ] = getFromEnvironment(["LOG_LEVEL"]);
-const [ LOG_FILE ] = getFromEnvironment(["LOG_FILE"], null);
+const [ LOG_LEVEL, PORT ] = getFromEnvironment(["LOG_LEVEL", "PORT"]);
+const [ LOG_FILE, LOG_SERVER ] = getFromEnvironment(["LOG_FILE", "LOG_SERVER"], null);
 
 /**
  * Takes any type of value and tries to convert it to a string by means of
@@ -66,6 +67,32 @@ export const logger = createLogger({
     })
   ]
 });
+
+// If LOG_SERVER variable is set, install Socket.IO transport for winston logger
+if (LOG_SERVER) {
+  logger.add(new socketIOTransport({
+    host: "localhost",
+    port: parseInt(PORT),
+    namespace: "log"
+  }));
+}
+
+/**
+ * Installs a handler on the given Socket.IO server, listening for the `log`
+ * event and forwards them by re-emitting them as event `message` to the
+ * namespace `/log`.
+ *
+ * @param io Socket.IO server
+ */
+export function installLogServerHandler(io: Server) {
+  io.of("/log").on("connection", (socket) => {
+    socket.on("log", (messages: Array<{message: string, level: string, timestamp: string}>) => {
+      messages.forEach((message) => {
+        io.of("/log").emit("message", message);
+      });
+    });
+  });
+}
 
 /**
  * Tries to extract the values of the keys given as parameters from the
