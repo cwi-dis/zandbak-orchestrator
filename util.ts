@@ -58,15 +58,17 @@ export const logger = createLogger({
       return `${info.timestamp} ${info.level}: ${info.message}`;
     })
   ),
-  transports: [
-    new transports.Console(),
-    new transports.File({
-      filename: LOG_FILE || "/dev/null",
-      maxsize: 500_000,
-      maxFiles: 10
-    })
-  ]
+  transports: [new transports.Console()]
 });
+
+// If LOG_FILE variable is set, send logs to filename specified in LOG_FILE
+if (LOG_FILE) {
+  logger.add(new transports.File({
+    filename: LOG_FILE,
+    maxsize: 500_000,
+    maxFiles: 10
+  }));
+}
 
 // If LOG_SERVER variable is set, install Socket.IO transport for winston logger
 if (LOG_SERVER) {
