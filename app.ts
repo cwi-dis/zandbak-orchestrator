@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
-import { getFromEnvironment, logger, onUnhandled, ORCHESTRATOR_VERSION } from "./util";
+import { getFromEnvironment, installLogServerHandler, logger, onUnhandled, ORCHESTRATOR_VERSION } from "./util";
 import Orchestrator from "./app/orchestrator";
 
 import installConnectionHandlers, { installLoginHandler } from "./endpoints/connection_management";
@@ -16,6 +16,7 @@ import installSceneEventHandlers from "./endpoints/scene_events";
 import installStreamHandlers from "./endpoints/data_streams";
 
 const [ PORT ] = getFromEnvironment(["PORT"]);
+const [ LOG_SERVER ] = getFromEnvironment(["LOG_SERVER"], null);
 
 logger.info("Launching orchestrator version", ORCHESTRATOR_VERSION);
 
@@ -34,6 +35,12 @@ const server = createServer(app);
  * Set up Socket.IO server
  **/
 const io = new Server(server);
+
+// Install handler for forwarding log messages if LOG_SERVER variable is set
+if (LOG_SERVER) {
+  logger.info("Installing handlers for log server in namespace /log");
+  installLogServerHandler(io);
+}
 
 /**
  * Install handler functions once a new socket connects.
