@@ -18,7 +18,8 @@
     "uuid": "^9.0.1",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "winston-socket.io": "^1.2.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.20",
