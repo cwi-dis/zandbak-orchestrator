@@ -5,7 +5,8 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
-import { getFromEnvironment, installLogServerHandler, logger, onUnhandled, ORCHESTRATOR_VERSION } from "./util";
+import { getFromEnvironment, installLogServerHandler, onUnhandled, ORCHESTRATOR_VERSION } from "./util";
+import logger from "./logger";
 import Orchestrator from "./app/orchestrator";
 
 import installConnectionHandlers, { installLoginHandler } from "./endpoints/connection_management";

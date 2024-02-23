@@ -1,7 +1,7 @@
 import childProcess from "child_process";
 import { v4 as uuidv4 } from "uuid";
 
-import { logger } from "../util";
+import logger from "../logger";
 import Transport, { TransportUrls } from "./transport";
 import Serializable from "../app/serializable";
 import User from "../app/user";
