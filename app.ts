@@ -51,8 +51,14 @@ io.on("connection", async (socket) => {
     logger.error("Unhandled event", event, "received with params", params);
   });
 
+  // Installing util handlers
+  installUtilHandlers(socket);
+
   try {
     logger.debug("Client socket connected, awaiting login...");
+
+    // Installing login handlers and waiting for login process to complete
+    // before installing other handlers
     const user = await installLoginHandler(orchestrator, socket);
 
     logger.debug("Login process complete, installing event handlers");
@@ -61,7 +67,6 @@ io.on("connection", async (socket) => {
     installUserDataHandlers(orchestrator, user);
     installSceneEventHandlers(user);
     installStreamHandlers(user);
-    installUtilHandlers(user);
 
     logger.debug("Event handlers installed");
   } catch (err) {
