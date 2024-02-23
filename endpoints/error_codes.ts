@@ -14,6 +14,8 @@ enum ErrorCodes {
   USER_DATA_USER_NOT_FOUND = 1301,
   USER_DATA_MISSING_DATA_JSON = 1700,
 
+  NTP_ERROR = 2001,
+
   SCENE_EVENT_NO_MASTER = 3001,
   SCENE_EVENT_NO_DATA = 3002,
   SCENE_EVENT_NO_TARGET_ID = 3014,
@@ -38,6 +40,8 @@ export const ErrorMessages: { [key in ErrorCodes]: string } = {
 
   [ErrorCodes.USER_DATA_USER_NOT_FOUND]: "The user was not found",
   [ErrorCodes.USER_DATA_MISSING_DATA_JSON]: "User data (JSON) missing",
+
+  [ErrorCodes.NTP_ERROR]: "Could not get NTP time",
 
   [ErrorCodes.SCENE_EVENT_NO_DATA]: "No event data has been provided",
   [ErrorCodes.SCENE_EVENT_NO_MASTER]: "No master for this session was found",

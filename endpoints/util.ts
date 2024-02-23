@@ -30,6 +30,7 @@ const installHandlers = (socket: Socket) => {
       }));
     } catch (err) {
       logger.error("Could not get NTP time:", err);
+      callback(util.createCommandResponse(data, ErrorCodes.NTP_ERROR));
     }
   });
 };
