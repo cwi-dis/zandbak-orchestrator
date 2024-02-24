@@ -2,7 +2,7 @@ import childProcess from "child_process";
 import { v4 as uuidv4 } from "uuid";
 
 import logger from "../logger";
-import Transport, { TransportUrls } from "./transport";
+import Transport, { TransportConfig, TransportUrls } from "./transport";
 import Serializable from "../app/serializable";
 import User from "../app/user";
 import Session from "../app/session";
@@ -10,7 +10,6 @@ import Session from "../app/session";
 abstract class ExternalTransport implements Transport, Serializable {
   protected id = uuidv4();
   protected process?: childProcess.ChildProcessWithoutNullStreams;
-  protected port: number;
 
   protected abstract type: string;
   protected abstract cmdLine: Array<string>;
@@ -18,7 +17,15 @@ abstract class ExternalTransport implements Transport, Serializable {
 
   #sessions: Array<Session> = [];
 
-  public constructor(protected externalHostname: string) {
+  public constructor(protected externalHostname: string, protected transportConfig: TransportConfig, protected port: number) {
+  }
+
+  public getPort() {
+    return this.port;
+  }
+
+  public addSession(session: Session) {
+    this.#sessions.push(session);
   }
 
   /**
