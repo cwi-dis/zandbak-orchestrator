@@ -1,0 +1,30 @@
+{
+  "tls": false,
+  "portMapping": [
+    {
+      "port": 8094,
+      "sfuData": {
+        "url_gen": "http://%EXTERNAL_HOSTNAME%:8094",
+        "url_audio": "",
+        "url_pcc": "",
+      }
+    },
+    {
+      "port": 8095,
+      "sfuData": {
+        "url_gen": "http://%EXTERNAL_HOSTNAME%:8095",
+        "url_audio": "",
+        "url_pcc": "",
+      }
+    }
+  ],
+  "autorestart": true,
+  "log": true,
+  "logFilePfx": "webrtc-",
+  "logFileSfx": ".log",
+  "commandLine": [
+    "webrtc-sfu",
+    "--addr",
+    ":%SFU_PORT%"
+  ]
+}
