@@ -5,19 +5,20 @@ import logger from "../logger";
 import Transport, { TransportUrls } from "./transport";
 import Serializable from "../app/serializable";
 import User from "../app/user";
+import Session from "../app/session";
 
 abstract class ExternalTransport implements Transport, Serializable {
   protected id = uuidv4();
   protected process?: childProcess.ChildProcessWithoutNullStreams;
-  protected externalHostname: string;
   protected port: number;
 
   protected abstract type: string;
   protected abstract cmdLine: Array<string>;
   protected abstract tls: boolean;
 
-  public constructor(externalHostname: string) {
-    this.externalHostname = externalHostname;
+  #sessions: Array<Session> = [];
+
+  public constructor(protected externalHostname: string) {
   }
 
   /**
@@ -73,6 +74,10 @@ abstract class ExternalTransport implements Transport, Serializable {
   }
 
   public abstract getUrls(user: User): TransportUrls;
+
+  public countSessions(): number {
+    return this.#sessions.length;
+  }
 
   public serialize() {
     return {

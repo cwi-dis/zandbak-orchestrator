@@ -10,6 +10,7 @@ interface Transport {
   start(): void;
   destroy(): void;
   getUrls(user: User): TransportUrls;
+  countSessions(): number;
 }
 
 export default Transport;

@@ -17,6 +17,10 @@ class DummyTransport implements Transport, Serializable {
     };
   }
 
+  public countSessions(): number {
+    return 0;
+  }
+
   public serialize(): Dict {
     return {};
   }
