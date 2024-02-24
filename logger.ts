@@ -8,24 +8,6 @@ const [ LOG_LEVEL, PORT ] = getFromEnvironment(["LOG_LEVEL", "PORT"]);
 const [ LOG_FILE, LOG_SERVER ] = getFromEnvironment(["LOG_FILE", "LOG_SERVER"], null);
 
 /**
- * Takes any type of value and tries to convert it to a string by means of
- * `JSON.stringify()`. If the resulting value is enclosed by quotation marks,
- * there are stripped before the value is returned.
- *
- * @param arg Argument to be stringified
- * @returns Stringified argument
- */
-function stringifyLogArg(arg: any) {
-  const strArg = JSON.stringify(arg);
-
-  if (strArg && strArg.startsWith("\"") && strArg.endsWith("\"")) {
-    return strArg.slice(1, -1);
-  }
-
-  return strArg;
-}
-
-/**
  * Creates a new logger instance that prints log messages to stdout.
  */
 const logger = createLogger({
@@ -36,16 +18,6 @@ const logger = createLogger({
       format: "[[]YYYY-MM-DD HH:mm:ss.SSS[]]"
     }),
     format.printf((info) => {
-      const metaArgs = info[Symbol.for("splat")]?.map(stringifyLogArg).join(" ");
-
-      if (metaArgs) {
-        if (Object.values(EndpointNames).includes(info.message)) {
-          return `${info.timestamp} ${info.level}: [${info.message.toUpperCase()}] ${metaArgs}`;
-        }
-
-        return `${info.timestamp} ${info.level}: ${info.message} ${metaArgs}`;
-      }
-
       return `${info.timestamp} ${info.level}: ${info.message}`;
     })
   ),
@@ -70,4 +42,36 @@ if (LOG_SERVER) {
   }));
 }
 
-export default logger;
+/**
+ * Augments a given logger function by allowing the passing in of a variable
+ * number of arguments. Moreover, if the first arugment is a valid endpoint
+ * name, it is uppercased and wrapped in square brackets for easier
+ * identification. Returns the augmented logger function.
+ *
+ * @param fn Logger function to augment
+ * @returns Augmented logger function taking variable arguments
+ */
+function formatLogMessage(fn: (msg: string) => void) {
+  return (...message: any[]) => {
+    const [endpoint] = message;
+
+    if (Object.values(EndpointNames).includes(endpoint)) {
+      fn([`[${endpoint.toUpperCase()}]`].concat(message.slice(1)).join(" "));
+      return;
+    }
+
+    fn(message.join(" "));
+  };
+}
+
+// Augment logger functions for each log level, allowing the passing in of a
+// variable number of arguments
+export default {
+  error: formatLogMessage(logger.error),
+  warn: formatLogMessage(logger.warn),
+  info: formatLogMessage(logger.info),
+  http: formatLogMessage(logger.http),
+  verbose: formatLogMessage(logger.verbose),
+  debug: formatLogMessage(logger.debug),
+  silly: formatLogMessage(logger.silly)
+};
