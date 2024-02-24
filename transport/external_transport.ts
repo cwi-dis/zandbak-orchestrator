@@ -20,16 +20,40 @@ abstract class ExternalTransport implements Transport, Serializable {
   public constructor(protected externalHostname: string, protected transportConfig: TransportConfig, protected port: number) {
   }
 
+  /**
+   * Returns the port that this transport is listening on.
+   *
+   * @returns Port that this transport is running on
+   */
   public getPort() {
     return this.port;
   }
 
+  /**
+   * Adds a new session to this transport.
+   *
+   * @param session Session to add to transport
+   */
   public addSession(session: Session) {
     this.#sessions.push(session);
   }
 
+  /**
+   * Removes a session from this transport.
+   *
+   * @param session Session to remove from transport
+   */
   public removeSession(session: Session) {
     this.#sessions = this.#sessions.filter((s) => s.id != session.id);
+  }
+
+  /**
+   * Returned the number of sessions that this transport is responsible for.
+   *
+   * @returns Number of sessions for this transport
+   */
+  public countSessions(): number {
+    return this.#sessions.length;
   }
 
   /**
@@ -85,11 +109,6 @@ abstract class ExternalTransport implements Transport, Serializable {
   }
 
   public abstract getUrls(user: User): TransportUrls;
-
-  public countSessions(): number {
-    return this.#sessions.length;
-  }
-
   public serialize() {
     return {
       sfuId: this.id,
