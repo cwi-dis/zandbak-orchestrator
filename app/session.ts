@@ -156,9 +156,12 @@ class Session implements Serializable {
   }
 
   /**
-   * Closes the current session by sending the corresponding event to all users.
+   * Closes the current session by sending the corresponding event to all users
+   * and removing the session from its transport
    */
   public closeSession() {
+    this.#transport.removeSession(this);
+
     this.#users.forEach((u) => {
       u.socket.emit(EmittedEvents.SESSION_CLOSED, {});
     });
