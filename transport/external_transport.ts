@@ -28,6 +28,10 @@ abstract class ExternalTransport implements Transport, Serializable {
     this.#sessions.push(session);
   }
 
+  public removeSession(session: Session) {
+    this.#sessions = this.#sessions.filter((s) => s.id != session.id);
+  }
+
   /**
    * Starts a new SFU process if one is not already running.
    */

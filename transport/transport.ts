@@ -1,3 +1,4 @@
+import Session from "../app/session";
 import User from "../app/user";
 
 interface WebRTCTransportPortMapping {
@@ -25,6 +26,9 @@ interface Transport {
   start(): void;
   destroy(): void;
   getUrls(user: User): TransportUrls;
+
+  addSession(session: Session): void;
+  removeSession(session: Session): void;
   countSessions(): number;
 }
 
