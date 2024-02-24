@@ -22,7 +22,7 @@ class Session implements Serializable {
     public scenario: Scenario,
     transportManager: TransportManager
   ) {
-    this.#transport = transportManager.assignTransportManger(sessionProtocol);
+    this.#transport = transportManager.assignTransport(sessionProtocol);
   }
 
   public get id() {
