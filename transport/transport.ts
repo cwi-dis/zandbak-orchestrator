@@ -1,7 +1,7 @@
 import Session from "../app/session";
 import User from "../app/user";
 
-interface WebRTCTransportPortMapping {
+interface TransportPortMapping {
   port: number;
   sfuData: TransportUrls;
 }
@@ -13,7 +13,7 @@ export interface TransportConfig {
   logPrefix: string;
   logSuffix: string;
   commandLine: Array<string>
-  portMapping: Array<WebRTCTransportPortMapping>
+  portMapping: Array<TransportPortMapping>
 }
 
 export interface TransportUrls {
