@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Session from "./session";
 import User from "./user";
 import { Optional, Dict } from "../util";
-import TransportManager from "transport/transport_manager";
+import TransportManager from "../transport/manager/transport_manager";
 
 class Orchestrator {
   public id: string = uuidv4();

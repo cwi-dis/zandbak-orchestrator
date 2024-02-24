@@ -4,7 +4,7 @@ import { Dict, Optional } from "../util";
 import Serializable from "./serializable";
 import User from "./user";
 import Transport from "../transport/transport";
-import TransportManager, { TransportType } from "../transport/transport_manager";
+import TransportManager, { TransportType } from "../transport/manager/transport_manager";
 import Scenario from "./scenario";
 import EmittedEvents from "./emitted_events";
 
@@ -22,7 +22,7 @@ class Session implements Serializable {
     public scenario: Scenario,
     transportManager: TransportManager
   ) {
-    this.#transport = TransportManager.instantiate(sessionProtocol);
+    this.#transport = transportManager.assignTransportManger(sessionProtocol);
   }
 
   public get id() {
