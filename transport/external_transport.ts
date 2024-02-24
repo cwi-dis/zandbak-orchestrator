@@ -3,11 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 
 import logger from "../logger";
 import Transport, { TransportConfig, TransportUrls } from "./transport";
-import Serializable from "../app/serializable";
 import User from "../app/user";
 import Session from "../app/session";
 
-abstract class ExternalTransport implements Transport, Serializable {
+abstract class ExternalTransport implements Transport {
   protected id = uuidv4();
   protected process?: childProcess.ChildProcessWithoutNullStreams;
 
@@ -109,14 +108,6 @@ abstract class ExternalTransport implements Transport, Serializable {
   }
 
   public abstract getUrls(user: User): TransportUrls;
-  public serialize() {
-    return {
-      sfuId: this.id,
-      sfuData: {},
-      sfuPort: this.port,
-      sfuTls: this.tls
-    };
-  }
 }
 
 export default ExternalTransport;
