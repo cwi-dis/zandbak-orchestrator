@@ -14,6 +14,14 @@ const [ EXTERNAL_HOSTNAME ] = getFromEnvironment(["EXTERNAL_HOSTNAME"], null);
 class TransportManager {
   #externalTransports: { [key in ExternalTransportType]: Array<ExternalTransport> };
 
+  /**
+   * Assigns a transport to the given session and returns the transport. The
+   * type of transport returned depends on the value of `protocol`.
+   *
+   * @param protocol Transport protocol
+   * @param session Session to assign new transport to
+   * @returns An instantiated transport, depending on the value of `protocol`
+   */
   public assignTransport(protocol: TransportType, session: Session): Transport {
     switch (protocol) {
     case "webrtc":
@@ -25,6 +33,18 @@ class TransportManager {
     }
   }
 
+  /**
+   * Assigns a child of `ExternalTransport` to the given session. The type of
+   * transport assigned depends on the value of the param `protocol`. The method
+   * reads the corresponding transport config and instantiates a new transport
+   * on an available port defined in the config. If all defined ports have
+   * already a running transport instance, assigns the session to the transport
+   * with the least number of assigned sessions.
+   *
+   * @param protocol Transport procotol to use
+   * @param session Session to assign transport to
+   * @returns An instantiated transport, subclass of `ExternalTransport`, depending on `protocol`
+   */
   private assignExternalTransport(protocol: ExternalTransportType, session: Session): ExternalTransport {
     // Load config for protocol type
     const transportConfig: TransportConfig = loadConfigSync(`config/${protocol}-config.json`);
@@ -58,6 +78,7 @@ class TransportManager {
       return 0;
     })[0];
 
+    // Add session to transport
     leastOccupiedTransport.addSession(session);
     return leastOccupiedTransport;
   }
