@@ -68,7 +68,7 @@ abstract class ExternalTransport implements Transport {
       return;
     }
 
-    const command = this.cmdLine[0];
+    const [ command ] = this.cmdLine;
     const params = this.cmdLine.slice(1).map((param) => {
       return param.replace("%SFU_PORT%", this.port.toString());
     });

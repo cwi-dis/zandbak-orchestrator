@@ -5,6 +5,7 @@ import DummyTransport from "../dummy_transport";
 import ExternalTransport from "../external_transport";
 import ExternalTransportBuilder from "./external_transport_builder";
 import Session from "../../app/session";
+import logger from "../../logger";
 
 export type ExternalTransportType = "dash" | "webrtc";
 export type TransportType = ExternalTransportType | "socketio" | "unknown";
@@ -26,9 +27,11 @@ class TransportManager {
     switch (protocol) {
     case "webrtc":
     case "dash":
+      logger.debug("Assigning external transport to session", session.name);
       return this.assignExternalTransport(protocol, session);
     case "unknown":
     default:
+      logger.debug("Assigning dummy transport to session", session.name);
       return new DummyTransport();
     }
   }
@@ -60,6 +63,8 @@ class TransportManager {
 
     // If we found a declared but not instantiated port
     if (availablePort) {
+      logger.debug("Found unassigned port", availablePort, "for starting", protocol, "transport for session", session.name);
+
       // Instantiate new transport and return it
       const transport = ExternalTransportBuilder.instantiate(protocol, EXTERNAL_HOSTNAME, availablePort, transportConfig, session);
       this.#externalTransports[protocol].push(transport);
@@ -77,6 +82,8 @@ class TransportManager {
 
       return 0;
     })[0];
+
+    logger.debug("Assigning session", session.name, "to", protocol, "transport with", leastOccupiedTransport.countSessions(), "sessions");
 
     // Add session to transport
     leastOccupiedTransport.addSession(session);
