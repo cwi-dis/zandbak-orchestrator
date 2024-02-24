@@ -19,7 +19,8 @@ class Session implements Serializable {
     public name: string,
     public description: string,
     public sessionProtocol: TransportType,
-    public scenario: Scenario
+    public scenario: Scenario,
+    transportManager: TransportManager
   ) {
     this.#transport = TransportManager.instantiate(sessionProtocol);
   }

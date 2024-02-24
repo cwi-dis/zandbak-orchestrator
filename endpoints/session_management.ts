@@ -27,7 +27,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       sessionName.trim(),
       sessionDescription,
       sessionProtocol,
-      new Scenario(scenarioId, scenarioName, scenarioDescription)
+      new Scenario(scenarioId, scenarioName, scenarioDescription),
+      orchestrator.transportManager
     );
 
     logger.debug(EndpointNames.ADD_SESSION, "Adding user", user.name, "as admin to new session", session.name);

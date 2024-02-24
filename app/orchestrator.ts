@@ -3,12 +3,18 @@ import { v4 as uuidv4 } from "uuid";
 import Session from "./session";
 import User from "./user";
 import { Optional, Dict } from "../util";
+import TransportManager from "transport/transport_manager";
 
 class Orchestrator {
   public id: string = uuidv4();
 
   #sessions: Array<Session> = [];
   #users: Array<User> = [];
+  #transportManager = new TransportManager();
+
+  public get transportManager() {
+    return this.#transportManager;
+  }
 
   /**
    * Adds a new user to the orchestrator.
