@@ -15,7 +15,6 @@ container by running
 This will build the container if it hasn't already been build and launch it on
 port 8090.
 
-
 ## Development
 
 ### Building
@@ -30,9 +29,10 @@ run:
 ### Running
 
 After compiling it, make sure to copy the file `.env-sample` to `.env` and
-update the environment variables as needed. Moreover, check the file
-`config/ntp-config.json` and change the hostname/port of your time server if
-needed. Then, the application server can be launched as follows:
+update the environment variables as needed. Moreover, copy the file
+`config/config-sample/ntp-config.json` to `config/ntp-config.json` and change
+the hostname/port of your time server if needed. Then, the application server
+can be launched as follows:
 
     yarn start
 
