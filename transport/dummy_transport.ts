@@ -1,12 +1,13 @@
-import { Dict } from "../util";
 import Transport, { TransportUrls } from "./transport";
-import Serializable from "../app/serializable";
 
-class DummyTransport implements Transport, Serializable {
-  public start(): void {
-  }
+class DummyTransport implements Transport {
+  public start() {}
+  public destroy() {}
+  public addSession() {}
+  public removeSession() {}
 
-  public destroy(): void {
+  public countSessions(): number {
+    return 0;
   }
 
   public getUrls(): TransportUrls {
@@ -15,20 +16,6 @@ class DummyTransport implements Transport, Serializable {
       url_audio: "",
       url_pcc: ""
     };
-  }
-
-  public addSession() {
-  }
-
-  public removeSession() {
-  }
-
-  public countSessions(): number {
-    return 0;
-  }
-
-  public serialize(): Dict {
-    return {};
   }
 }
 
