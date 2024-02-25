@@ -4,7 +4,7 @@ import logger from "../logger";
 import EndpointNames from "./endpoint_names";
 import Orchestrator from "../app/orchestrator";
 import User from "../app/user";
-import ErrorCodes  from "./error_codes";
+import ErrorCodes from "./error_codes";
 
 const installHandlers = (orchestrator: Orchestrator, user: User) => {
   const { socket } = user;

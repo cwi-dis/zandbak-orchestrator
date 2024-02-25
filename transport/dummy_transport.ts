@@ -1,6 +1,6 @@
 import { Dict } from "../util";
 import Transport, { TransportUrls } from "./transport";
-import Serializable from "app/serializable";
+import Serializable from "../app/serializable";
 
 class DummyTransport implements Transport, Serializable {
   public start(): void {
