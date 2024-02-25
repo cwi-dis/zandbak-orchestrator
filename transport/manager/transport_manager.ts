@@ -13,7 +13,7 @@ export type TransportType = ExternalTransportType | "socketio" | "unknown";
 const [ EXTERNAL_HOSTNAME ] = getFromEnvironment(["EXTERNAL_HOSTNAME"], null);
 
 class TransportManager {
-  #externalTransports: { [key in ExternalTransportType]: Array<ExternalTransport> };
+  #externalTransports: Map<ExternalTransportType, Array<ExternalTransport>> = new Map();
 
   /**
    * Assigns a transport to the given session and returns the transport. The
@@ -56,7 +56,7 @@ class TransportManager {
     // Get all ports delcared in the port mapping
     const declaredPorts = portMapping.map((p) => p.port );
     // Get ports of running transports
-    const runningPorts = this.#externalTransports[protocol].map((t) => t.getPort());
+    const runningPorts = this.#externalTransports.get(protocol)?.map((t) => t.getPort()) || [];
 
     // Get first port which has been declared but not instantiated yet
     const availablePort = declaredPorts.find((p) => !runningPorts.includes(p));
@@ -67,13 +67,17 @@ class TransportManager {
 
       // Instantiate new transport and return it
       const transport = ExternalTransportBuilder.instantiate(protocol, EXTERNAL_HOSTNAME, availablePort, transportConfig, session);
-      this.#externalTransports[protocol].push(transport);
+      if (this.#externalTransports.has(protocol)) {
+        this.#externalTransports.get(protocol)?.push(transport);
+      } else {
+        this.#externalTransports.set(protocol, [transport]);
+      }
 
       return transport;
     }
 
     // Otherwise, return existing transport with least sessions
-    const leastOccupiedTransport = this.#externalTransports[protocol].sort((a, b) => {
+    const leastOccupiedTransport = this.#externalTransports.get(protocol)?.sort((a, b) => {
       if (a.countSessions() < b.countSessions()) {
         return -1;
       } else if (b.countSessions() > b.countSessions()) {
@@ -83,11 +87,11 @@ class TransportManager {
       return 0;
     })[0];
 
-    logger.debug("Assigning session", session.name, "to", protocol, "transport with", leastOccupiedTransport.countSessions(), "sessions");
+    logger.debug("Assigning session", session.name, "to", protocol, "transport with", leastOccupiedTransport?.countSessions(), "sessions");
 
     // Add session to transport
-    leastOccupiedTransport.addSession(session);
-    return leastOccupiedTransport;
+    leastOccupiedTransport?.addSession(session);
+    return leastOccupiedTransport!;
   }
 }
 
