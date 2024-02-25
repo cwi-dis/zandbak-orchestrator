@@ -9,6 +9,8 @@ services:
       - LOG_LEVEL=debug
     ports:
       - "8090:8090"
+      - "8094:8094"
+      - "8095:8095"
     volumes:
       - ./bin:/code/bin
     command: yarn start
