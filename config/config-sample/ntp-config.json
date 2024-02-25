@@ -1,7 +1,7 @@
 {
   "ntpConfig": [
     {
-      "server": "time.cwi.nl",
+      "server": "nl.pool.ntp.org",
       "port": "123"
     }
   ]
