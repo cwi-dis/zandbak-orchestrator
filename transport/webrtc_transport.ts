@@ -13,12 +13,22 @@ class WebRTCTransport extends ExternalTransport {
   }
 
   public getUrls() {
-    const sfuUrls = this.transportConfig.portMapping[this.port].sfuData;
+    const portMapping = this.transportConfig.portMapping.find((p) => p.port == this.port);
+
+    if (portMapping) {
+      const { sfuData } = portMapping;
+
+      return {
+        url_gen: this.buildUrl(sfuData.url_gen),
+        url_audio: this.buildUrl(sfuData.url_audio),
+        url_pcc: this.buildUrl(sfuData.url_pcc),
+      };
+    }
 
     return {
-      url_gen: this.buildUrl(sfuUrls.url_gen),
-      url_audio: this.buildUrl(sfuUrls.url_audio),
-      url_pcc: this.buildUrl(sfuUrls.url_pcc),
+      url_gen: "",
+      url_audio: "",
+      url_pcc: "",
     };
   }
 }
