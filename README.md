@@ -7,8 +7,10 @@ users over the network.
 ## Running the Orchestrator
 
 The easiest way to run the orchestrator is through Docker. First, make sure you
-have Docker and `docker-compose` installed. Then, simply build and start the
-container by running
+have Docker and `docker-compose` installed. Rename the file `.env-sample` to
+`.env` and copy the file `config/config-sample/ntp-config.json` to
+`config/ntp-config.json` and adjust the values if needed. Then, simply build
+and start the container by running
 
     docker compose up
 
