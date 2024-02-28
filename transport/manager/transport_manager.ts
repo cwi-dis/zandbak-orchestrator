@@ -85,13 +85,13 @@ class TransportManager {
       }
 
       return 0;
-    })[0];
+    })[0]!;
 
     logger.debug("Assigning session", session.name, "to", protocol, "transport with", leastOccupiedTransport?.countSessions(), "sessions");
 
     // Add session to transport
-    leastOccupiedTransport?.addSession(session);
-    return leastOccupiedTransport!;
+    leastOccupiedTransport.addSession(session);
+    return leastOccupiedTransport;
   }
 }
 
