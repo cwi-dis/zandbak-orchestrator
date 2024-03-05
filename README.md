@@ -43,7 +43,7 @@ can be launched as follows:
 If the property `LOG_SERVER` is set in `.env`, all Orchestrator log messages
 are forwarded via the Orchestrator's Socket.IO connection. To read them
 remotely, you can use the `logreader` script, which takes the Orchestrator's
-hostname as command line argument:
+hostname (and optional port) as command line argument:
 
-    node logreader localhost
+    node logreader localhost:8090
 
