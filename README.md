@@ -45,5 +45,5 @@ are forwarded via the Orchestrator's Socket.IO connection. To read them
 remotely, you can use the `logreader` script, which takes the Orchestrator's
 hostname (and optional port) as command line argument:
 
-    node logreader localhost:8090
+    node scripts/logreader.js localhost:8090
 
