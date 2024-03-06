@@ -118,7 +118,9 @@ class Orchestrator implements Serializable {
   public serialize() {
     return {
       id: this.id,
-      sessions: this.#sessions.map((s) => s.serialize()),
+      sessions: this.#sessions.map((s) => {
+        return { ...s.serialize(), sessionUserDefinitions: undefined };
+      }),
       users: this.#users.map((u) => u.serialize())
     };
   }
