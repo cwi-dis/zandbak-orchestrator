@@ -206,7 +206,7 @@ class User implements Serializable {
       userId: this.#id,
       userName: this.name,
       userData: Object.fromEntries(this.#userData),
-      sfuData: this.session?.tranport.getUrls(this) || {},
+      sfuData: this.session?.transport.getUrls(this) || {},
     };
   }
 }

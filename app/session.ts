@@ -29,7 +29,7 @@ class Session implements Serializable {
     return this.#id;
   }
 
-  public get tranport() {
+  public get transport() {
     return this.#transport;
   }
 
