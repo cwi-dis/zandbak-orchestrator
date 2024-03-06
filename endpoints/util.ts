@@ -4,8 +4,9 @@ import * as util from "../util";
 import logger from "../logger";
 import EndpointNames from "./endpoint_names";
 import ErrorCodes from "./error_codes";
+import Orchestrator from "../app/orchestrator";
 
-const installHandlers = (socket: Socket) => {
+const installHandlers = (orchestrator: Orchestrator, socket: Socket) => {
   /**
    * Returns the version of the orchestrator inside a JSON object.
    */
@@ -33,6 +34,17 @@ const installHandlers = (socket: Socket) => {
       logger.error("Could not get NTP time:", err);
       callback(util.createCommandResponse(data, ErrorCodes.NTP_ERROR));
     }
+  });
+
+  /**
+   * Dumps the entire data tree of the orchestrator and sends it to the caller.
+   */
+  socket.on(EndpointNames.DUMP_DATA, (data, callback) => {
+    logger.debug(EndpointNames.DUMP_DATA, "Dumping all orchestrator data");
+
+    callback(
+      util.createCommandResponse(data, ErrorCodes.OK, orchestrator.serialize())
+    );
   });
 };
 
