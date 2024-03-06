@@ -53,7 +53,7 @@ io.on("connection", async (socket) => {
   });
 
   // Installing util handlers
-  installUtilHandlers(socket);
+  installUtilHandlers(orchestrator, socket);
 
   try {
     logger.debug("Client socket connected, awaiting login...");
