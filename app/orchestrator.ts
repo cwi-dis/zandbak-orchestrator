@@ -4,8 +4,9 @@ import Session from "./session";
 import User from "./user";
 import { Optional, Dict } from "../util";
 import TransportManager from "../transport/manager/transport_manager";
+import Serializable from "./serializable";
 
-class Orchestrator {
+class Orchestrator implements Serializable {
   public id: string = uuidv4();
 
   #sessions: Array<Session> = [];
@@ -112,6 +113,14 @@ class Orchestrator {
         [s.id]: s.serialize()
       };
     }, {});
+  }
+
+  public serialize() {
+    return {
+      id: this.id,
+      sessions: this.#sessions.map((s) => s.serialize()),
+      users: this.#users.map((u) => u.serialize())
+    };
   }
 }
 
