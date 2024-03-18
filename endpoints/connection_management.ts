@@ -73,6 +73,17 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     return false;
   };
 
+  const cleanUpDanglingSessions = () => {
+    const administratedSessions = orchestrator.getAdministratedSessions(user);
+
+    administratedSessions.forEach((s) => {
+      s.closeSession();
+      orchestrator.removeSession(s);
+    });
+
+    return administratedSessions.length;
+  };
+
   /**
    * Logs the user out from the orchestrator, removing them from their session
    * first.
@@ -83,6 +94,9 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     if (cleanUpActiveSession()) {
       logger.debug(EndpointNames.LOGOUT, "User was admin, closing session");
     }
+
+    const numSessionsCleaned = cleanUpDanglingSessions();
+    logger.debug(EndpointNames.LOGOUT, `Destroyed ${numSessionsCleaned} dangling sessions`);
 
     orchestrator.removeUser(user);
     callback?.(util.createCommandResponse(data, ErrorCodes.OK));
@@ -98,6 +112,9 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     if (cleanUpActiveSession()) {
       logger.debug("[DISCONNECT] User was admin, closing session");
     }
+
+    const numSessionsCleaned = cleanUpDanglingSessions();
+    logger.debug(EndpointNames.LOGOUT, `Destroyed ${numSessionsCleaned} dangling sessions`);
 
     orchestrator.removeUser(user);
   });
