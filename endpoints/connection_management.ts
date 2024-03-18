@@ -73,6 +73,12 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     return false;
   };
 
+  /**
+   * Gets all sessions that the given user is administrator of and forcibly
+   * closes them. This serves the purpose of cleaning up dangling sessions.
+   *
+   * @returns Number of sessions closed
+   */
   const cleanUpDanglingSessions = () => {
     const administratedSessions = orchestrator.getAdministratedSessions(user);
 
