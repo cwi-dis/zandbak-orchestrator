@@ -59,7 +59,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    *
    * @returns True if the session was also deleted
    */
-  const cleanUpSession = () => {
+  const cleanUpActiveSession = () => {
     const { session } = user;
     session?.removeUser(user);
 
@@ -80,7 +80,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on(EndpointNames.LOGOUT, (data, callback) => {
     logger.debug(EndpointNames.LOGOUT, "Logged out user", user.name);
 
-    if (cleanUpSession()) {
+    if (cleanUpActiveSession()) {
       logger.debug(EndpointNames.LOGOUT, "User was admin, closing session");
     }
 
@@ -95,7 +95,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on("disconnect", () => {
     logger.debug("[DISCONNECT] Disconnected user", user.name);
 
-    if (cleanUpSession()) {
+    if (cleanUpActiveSession()) {
       logger.debug("[DISCONNECT] User was admin, closing session");
     }
 
