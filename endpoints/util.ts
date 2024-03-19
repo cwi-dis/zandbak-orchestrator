@@ -50,8 +50,10 @@ const installHandlers = (orchestrator: Orchestrator, socket: Socket) => {
   /**
    * Terminates the orchestrator process.
    */
-  socket.on(EndpointNames.TERMINATE_ORCHESTRATOR, () => {
+  socket.on(EndpointNames.TERMINATE_ORCHESTRATOR, (callback) => {
     logger.debug(EndpointNames.TERMINATE_ORCHESTRATOR, "Terminating orchestrator");
+    callback();
+
     process.exit(1);
   });
 };
