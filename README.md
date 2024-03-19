@@ -38,6 +38,12 @@ can be launched as follows:
 
     yarn start
 
+## Utilities
+
+The orchestrator comes with a series of utilities which may come in handy for
+development and debugging. They are Node.js scripts and located in the
+`scripts/` folder.
+
 ### Reading logs remotely
 
 If the property `LOG_SERVER` is set in `.env`, all Orchestrator log messages
@@ -47,3 +53,16 @@ hostname (and optional port) as command line argument:
 
     node scripts/logreader.js localhost:8090
 
+### Dump data tree
+
+In order to dump the entire data tree of an orchestrator instance, you can use
+the `dump` script, passing in the hostname of an orchestrator instance:
+
+    node scripts/dump.js localhost:8090
+
+### Terminate orchestrator
+
+In order to restart/terminate a orchestrator instance, use the `terminate`
+script, passing along the hostname of an instance:
+
+    node scripts/terminate.js localhost:8090
