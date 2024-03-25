@@ -56,7 +56,7 @@ io.on("connection", async (socket) => {
   installUtilHandlers(orchestrator, socket);
 
   try {
-    logger.debug("Client socket connected, awaiting login...");
+    logger.debug(`Client socket connected from ${socket.handshake.address}, awaiting login...`);
 
     // Installing login handlers and waiting for login process to complete
     // before installing other handlers
