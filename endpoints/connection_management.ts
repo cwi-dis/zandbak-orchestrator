@@ -112,8 +112,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * Handles a disconnect received from a socket by removing the associated user
    * from their session and the orchestrator.
    */
-  socket.on("disconnect", () => {
-    logger.debug("[DISCONNECT] Disconnected user", user.name);
+  socket.on("disconnect", (reason) => {
+    logger.debug("[DISCONNECT] Disconnected user", user.name, "reason:", reason);
 
     if (cleanUpActiveSession()) {
       logger.debug("[DISCONNECT] User was admin, closing session");
