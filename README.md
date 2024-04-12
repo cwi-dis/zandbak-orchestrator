@@ -17,6 +17,14 @@ and start the container by running
 This will build the container if it hasn't already been build and launch it on
 port 8090.
 
+### Note for Ubuntu users
+
+It is recommended that you use the latest version of Docker and all associated
+tools. The versions found in Ubuntu's official APT repositories are sometimes a
+bit outdated, therefore, we recommend you download Docker from Docker's APT
+repositories. Follow [this guide](https://docs.docker.com/engine/install/ubuntu/)
+to do so.
+
 ## Development
 
 ### Building
