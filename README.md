@@ -70,7 +70,12 @@ the `dump` script, passing in the hostname of an orchestrator instance:
 
 ### Terminate orchestrator
 
-In order to restart/terminate a orchestrator instance, use the `terminate`
-script, passing along the hostname of an instance:
+In order to restart/terminate a remote orchestrator instance, use the
+`terminate` script, passing along the hostname of an instance:
 
     node scripts/terminate.js localhost:8090
+
+If the orchestrator instance is running inside a Docker container using the
+supplied `docker-compose.yml` configuration, the Docker daemon will relaunch
+the container immediately. All data stored in the orchestrator at the time of
+termination will be lost.
