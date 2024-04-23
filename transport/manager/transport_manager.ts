@@ -70,8 +70,11 @@ class TransportManager {
       if (availablePort) {
         logger.debug("Found unassigned port", availablePort, "for starting", protocol, "transport for session", session.name);
 
-        // Instantiate new transport and return it
+        // Instantiate new transport and start it
         const transport = ExternalTransportBuilder.instantiate(protocol, EXTERNAL_HOSTNAME, availablePort, transportConfig, session);
+        transport.start();
+
+        // Add to map of running transports
         if (this.#externalTransports.has(protocol)) {
           this.#externalTransports.get(protocol)?.push(transport);
         } else {
