@@ -6,7 +6,7 @@
       "sfuData": {
         "url_gen": "http://%EXTERNAL_HOSTNAME%:8094",
         "url_audio": "",
-        "url_pcc": "",
+        "url_pcc": ""
       }
     },
     {
@@ -14,7 +14,7 @@
       "sfuData": {
         "url_gen": "http://%EXTERNAL_HOSTNAME%:8095",
         "url_audio": "",
-        "url_pcc": "",
+        "url_pcc": ""
       }
     }
   ],

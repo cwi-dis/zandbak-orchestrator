@@ -137,6 +137,9 @@ export function mapHashToDict<T, U>(hash: Map<T, U>, fn: (tuple: [T, U]) => [T, 
  * inside a promise. If no servers returned a valid time, the promise will
  * reject with an error.
  *
+ * If a `server` field in the config contains the string `localtime`, the
+ * system's local time is returned without querying a NTP server.
+ *
  * @returns A promise which, when resolved, contains the current NTP time
  */
 export async function getCurrentTime(): Promise<Date> {
@@ -146,6 +149,10 @@ export async function getCurrentTime(): Promise<Date> {
     try {
       return await result;
     } catch {
+      if (server == "localtime") {
+        return new Date();
+      }
+
       return getNetworkTime(server, port);
     }
   }, Promise.reject<Date>());
