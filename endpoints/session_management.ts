@@ -23,25 +23,34 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
 
     logger.debug(EndpointNames.ADD_SESSION, "Creating new session with name", sessionName);
 
-    const session = new Session(
-      sessionName.trim(),
-      sessionDescription,
-      sessionProtocol,
-      new Scenario(scenarioId, scenarioName, scenarioDescription),
-      orchestrator.transportManager
-    );
+    try {
+      const session = new Session(
+        sessionName.trim(),
+        sessionDescription,
+        sessionProtocol,
+        new Scenario(scenarioId, scenarioName, scenarioDescription),
+        orchestrator.transportManager
+      );
 
-    logger.debug(EndpointNames.ADD_SESSION, "Adding user", user.name, "as admin to new session", session.name);
+      logger.debug(EndpointNames.ADD_SESSION, "Adding user", user.name, "as admin to new session", session.name);
 
-    session.addUser(user);
-    session.setAdministrator(user);
-    orchestrator.addSession(session);
+      session.addUser(user);
+      session.setAdministrator(user);
+      orchestrator.addSession(session);
 
-    callback(util.createCommandResponse(
-      data,
-      ErrorCodes.OK,
-      session.serialize()
-    ));
+      callback(util.createCommandResponse(
+        data,
+        ErrorCodes.OK,
+        session.serialize()
+      ));
+    } catch (err) {
+      logger.error(EndpointNames.ADD_SESSION, "Error during session creation:", err);
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_ADD_FAILED
+      ));
+    }
   });
 
   /**
