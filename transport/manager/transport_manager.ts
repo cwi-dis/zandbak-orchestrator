@@ -100,6 +100,24 @@ class TransportManager {
     leastOccupiedTransport.addSession(session);
     return leastOccupiedTransport;
   }
+
+  /**
+   * Stop all external transports that have no more sessions assigned to them.
+   */
+  public cleanupTransports() {
+    this.#externalTransports.forEach((transports, protocol) => {
+      this.#externalTransports.set(protocol, transports.reduce<Array<ExternalTransport>>((acc, transport) => {
+        if (transport.countSessions() == 0) {
+          logger.debug("Cleaning up transport", transport.id, "for protocol", protocol);
+          transport.destroy();
+
+          return acc;
+        }
+
+        return acc.concat(transport);
+      }, []));
+    });
+  }
 }
 
 export default TransportManager;

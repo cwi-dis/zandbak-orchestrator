@@ -7,7 +7,7 @@ import User from "../app/user";
 import Session from "../app/session";
 
 abstract class ExternalTransport implements Transport {
-  protected id = uuidv4();
+  public id = uuidv4();
   protected process?: childProcess.ChildProcessWithoutNullStreams;
 
   protected abstract type: string;
