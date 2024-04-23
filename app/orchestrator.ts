@@ -83,13 +83,15 @@ class Orchestrator implements Serializable {
   }
 
   /**
-   * Removes a given session from the orchestrator.
+   * Removes a given session from the orchestrator and clean up any external
+   * transports which have no more sessions.
    *
    * @param session Session to remove
    */
   public removeSession(session: Session) {
     session.closeSession();
     this.#sessions = this.#sessions.filter((s) => s.id != session.id);
+    this.#transportManager.cleanupTransports();
   }
 
 
