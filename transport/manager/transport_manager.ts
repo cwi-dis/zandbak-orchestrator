@@ -53,59 +53,52 @@ class TransportManager {
    * @returns An instantiated transport, subclass of `ExternalTransport`, depending on `protocol` or DummyTransport on error
    */
   private assignExternalTransport(protocol: ExternalTransportType, session: Session): ExternalTransport | DummyTransport {
-    try {
-      // Load config for protocol type
-      const transportConfig: TransportConfig = loadConfigSync(`config/${protocol}-config.json`);
-      const { portMapping } = transportConfig;
+    // Load config for protocol type
+    const transportConfig: TransportConfig = loadConfigSync(`config/${protocol}-config.json`);
+    const { portMapping } = transportConfig;
 
-      // Get all ports delcared in the port mapping
-      const declaredPorts = portMapping.map((p) => p.port );
-      // Get ports of running transports
-      const runningPorts = this.#externalTransports.get(protocol)?.map((t) => t.getPort()) || [];
+    // Get all ports delcared in the port mapping
+    const declaredPorts = portMapping.map((p) => p.port );
+    // Get ports of running transports
+    const runningPorts = this.#externalTransports.get(protocol)?.map((t) => t.getPort()) || [];
 
-      // Get first port which has been declared but not instantiated yet
-      const availablePort = declaredPorts.find((p) => !runningPorts.includes(p));
+    // Get first port which has been declared but not instantiated yet
+    const availablePort = declaredPorts.find((p) => !runningPorts.includes(p));
 
-      // If we found a declared but not instantiated port
-      if (availablePort) {
-        logger.debug("Found unassigned port", availablePort, "for starting", protocol, "transport for session", session.name);
+    // If we found a declared but not instantiated port
+    if (availablePort) {
+      logger.debug("Found unassigned port", availablePort, "for starting", protocol, "transport for session", session.name);
 
-        // Instantiate new transport and start it
-        const transport = ExternalTransportBuilder.instantiate(protocol, EXTERNAL_HOSTNAME, availablePort, transportConfig, session);
-        transport.start();
+      // Instantiate new transport and start it
+      const transport = ExternalTransportBuilder.instantiate(protocol, EXTERNAL_HOSTNAME, availablePort, transportConfig, session);
+      transport.start();
 
-        // Add to map of running transports
-        if (this.#externalTransports.has(protocol)) {
-          this.#externalTransports.get(protocol)?.push(transport);
-        } else {
-          this.#externalTransports.set(protocol, [transport]);
-        }
-
-        return transport;
+      // Add to map of running transports
+      if (this.#externalTransports.has(protocol)) {
+        this.#externalTransports.get(protocol)?.push(transport);
+      } else {
+        this.#externalTransports.set(protocol, [transport]);
       }
 
-      // Otherwise, return existing transport with least sessions
-      const leastOccupiedTransport = this.#externalTransports.get(protocol)?.sort((a, b) => {
-        if (a.countSessions() < b.countSessions()) {
-          return -1;
-        } else if (b.countSessions() > b.countSessions()) {
-          return 1;
-        }
-
-        return 0;
-      })[0]!;
-
-      logger.debug("Assigning session", session.name, "to", protocol, "transport with", leastOccupiedTransport?.countSessions(), "sessions");
-
-      // Add session to transport
-      leastOccupiedTransport.addSession(session);
-      return leastOccupiedTransport;
-    } catch {
-      logger.warn("No config for protocol type", protocol, "found! Using Socket.IO transport as fallback");
-
-      // Return DummyTransport in case of error
-      return new DummyTransport();
+      return transport;
     }
+
+    // Otherwise, return existing transport with least sessions
+    const leastOccupiedTransport = this.#externalTransports.get(protocol)?.sort((a, b) => {
+      if (a.countSessions() < b.countSessions()) {
+        return -1;
+      } else if (b.countSessions() > b.countSessions()) {
+        return 1;
+      }
+
+      return 0;
+    })[0]!;
+
+    logger.debug("Assigning session", session.name, "to", protocol, "transport with", leastOccupiedTransport?.countSessions(), "sessions");
+
+    // Add session to transport
+    leastOccupiedTransport.addSession(session);
+    return leastOccupiedTransport;
   }
 }
 
