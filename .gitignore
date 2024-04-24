@@ -77,7 +77,6 @@ typings/
 
 bin/
 docs/
-.vscode/
 REVISION
 
 *.swp
