@@ -4,7 +4,9 @@
   "scripts": {
     "start": "node --enable-source-maps bin/build.js",
     "build": "webpack",
-    "lint": "eslint --ext=ts,js ."
+    "lint": "eslint --ext=ts,js .",
+    "dump": "node scripts/dump.js",
+    "logs": "node scripts/logreader.js"
   },
   "author": "Thomas Röggla",
   "license": "BSD-2-Clause",
