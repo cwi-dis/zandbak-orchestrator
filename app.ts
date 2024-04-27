@@ -17,7 +17,7 @@ import installSceneEventHandlers from "./endpoints/scene_events";
 import installStreamHandlers from "./endpoints/data_streams";
 
 const [ PORT ] = getFromEnvironment(["PORT"]);
-const [ LOG_SERVER ] = getFromEnvironment(["LOG_SERVER"], null);
+const [ LOG_SERVER, EXTERNAL_HOSTNAME ] = getFromEnvironment(["LOG_SERVER", "EXTERNAL_HOSTNAME"], null);
 
 logger.info("Launching orchestrator version", ORCHESTRATOR_VERSION);
 
@@ -80,4 +80,8 @@ io.on("connection", async (socket) => {
  */
 server.listen(PORT, () => {
   logger.info("Socket.io server listening on port", PORT);
+
+  if (EXTERNAL_HOSTNAME) {
+    logger.info("Server available under external hostname:", EXTERNAL_HOSTNAME);
+  }
 });
