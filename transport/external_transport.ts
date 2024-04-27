@@ -12,7 +12,6 @@ abstract class ExternalTransport implements Transport {
 
   protected abstract type: string;
   protected abstract cmdLine: Array<string>;
-  protected abstract tls: boolean;
 
   #sessions: Array<Session> = [];
 

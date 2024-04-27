@@ -7,11 +7,6 @@ interface TransportPortMapping {
 }
 
 export interface TransportConfig {
-  tls: boolean;
-  autorestart: boolean;
-  log: boolean;
-  logPrefix: string;
-  logSuffix: string;
   commandLine: Array<string>
   portMapping: Array<TransportPortMapping>
 }
