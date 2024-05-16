@@ -29,6 +29,12 @@ bit outdated, therefore, we recommend you download Docker from Docker's APT
 repositories. Follow [this guide](https://docs.docker.com/engine/install/ubuntu/)
 to do so.
 
+### External SFUs
+
+External SFU binaries placed inside a folder `packages/` in the project root
+are placed inside to container during build time inside the folder `/packages`.
+Keep this in mind when writing SFU config files.
+
 ## Development
 
 ### Building
