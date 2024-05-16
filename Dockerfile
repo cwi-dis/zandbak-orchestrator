@@ -1,7 +1,7 @@
 FROM node:21-alpine3.17
 
 ADD . /code/
-ADD config/package[s] /packages
+ADD ./package[s] /packages
 
 WORKDIR /code
 

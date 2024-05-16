@@ -81,4 +81,4 @@ REVISION
 
 *.swp
 config/*.json
-config/packages/
+packages/
