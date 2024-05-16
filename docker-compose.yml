@@ -6,6 +6,9 @@ services:
     environment:
       - PORT=8090
       - LOG_LEVEL=debug
+    volumes:
+      - ./config/:/code/config
+      - ./.env:/code/.env
     ports:
       - "8090:8090"
       - "8094:8094"
