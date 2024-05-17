@@ -1,4 +1,4 @@
-import { getFromEnvironment, loadConfigSync } from "../../util";
+import { loadConfigSync } from "../../util";
 
 import Transport, { TransportConfig } from "../transport";
 import DummyTransport from "../dummy_transport";
@@ -10,8 +10,6 @@ import logger from "../../logger";
 export type ExternalTransportType = "dash" | "webrtc";
 export type TransportType = ExternalTransportType | "socketio" | "unknown";
 
-const [ EXTERNAL_HOSTNAME ] = getFromEnvironment(["EXTERNAL_HOSTNAME"], null);
-
 class TransportManager {
   #externalTransports: Map<ExternalTransportType, Array<ExternalTransport>> = new Map();
 
@@ -21,14 +19,15 @@ class TransportManager {
    *
    * @param protocol Transport protocol
    * @param session Session to assign new transport to
+   * @param externalHostname External hostname on which the transport is reachable
    * @returns An instantiated transport, depending on the value of `protocol`
    */
-  public assignTransport(protocol: TransportType, session: Session): Transport {
+  public assignTransport(protocol: TransportType, session: Session, externalHostname: string): Transport {
     switch (protocol) {
     case "webrtc":
     case "dash":
       logger.debug("Assigning external transport to session", session.name);
-      return this.assignExternalTransport(protocol, session);
+      return this.assignExternalTransport(protocol, session, externalHostname);
     case "unknown":
     default:
       logger.debug("Assigning dummy transport to session", session.name);
@@ -50,9 +49,10 @@ class TransportManager {
    *
    * @param protocol Transport procotol to use
    * @param session Session to assign transport to
+   * @param externalHostname External hostname on which the transport is reachable
    * @returns An instantiated transport, subclass of `ExternalTransport`, depending on `protocol` or DummyTransport on error
    */
-  private assignExternalTransport(protocol: ExternalTransportType, session: Session): ExternalTransport | DummyTransport {
+  private assignExternalTransport(protocol: ExternalTransportType, session: Session, hostname: string): ExternalTransport | DummyTransport {
     // Load config for protocol type
     const transportConfig: TransportConfig = loadConfigSync(`config/${protocol}-config.json`);
     const { portMapping } = transportConfig;
@@ -70,7 +70,7 @@ class TransportManager {
       logger.debug("Found unassigned port", availablePort, "for starting", protocol, "transport for session", session.name);
 
       // Instantiate new transport and start it
-      const transport = ExternalTransportBuilder.instantiate(protocol, EXTERNAL_HOSTNAME, availablePort, transportConfig, session);
+      const transport = ExternalTransportBuilder.instantiate(protocol, hostname, availablePort, transportConfig, session);
       transport.start();
 
       // Add to map of running transports

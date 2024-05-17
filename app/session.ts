@@ -20,9 +20,10 @@ class Session implements Serializable {
     public description: string,
     public sessionProtocol: TransportType,
     public scenario: Scenario,
-    transportManager: TransportManager
+    transportManager: TransportManager,
+    hostname: string
   ) {
-    this.#transport = transportManager.assignTransport(sessionProtocol, this);
+    this.#transport = transportManager.assignTransport(sessionProtocol, this, hostname);
   }
 
   public get id() {
