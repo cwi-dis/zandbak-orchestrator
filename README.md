@@ -9,12 +9,18 @@ users over the network.
 The easiest way to run the orchestrator is through Docker. First, make sure you
 have Docker and `docker-compose` installed. Rename the file `.env-sample` to
 `.env` and copy the file `config/config-sample/ntp-config.json` to
-`config/ntp-config.json` and adjust the values if needed. You can add multiple
-NTP servers to this config file, they will be tried in order until the first
-one returns a valid response. Adding an entry with the key-value pair
-`"server": "localtime"` will return the host's local time without querying an
-NTP server. After setting up the config, simply build and start the container
-by running
+`config/ntp-config.json` and adjust the values if needed.
+
+If you set the key `EXTERNAL_HOSTNAME` in `.env` to `dynamic` or leave it unset
+completely, the server will try to determine the external hostname using the
+request headers when creating a new session. If it fails to do so, an exception
+will be raised.
+
+You can add multiple NTP servers to this config file, they will be tried in
+order until the first one returns a valid response. Adding an entry with the
+key-value pair `"server": "localtime"` will return the host's local time
+without querying an NTP server. After setting up the config, simply build and
+start the container by running
 
     docker compose up
 
