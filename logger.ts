@@ -4,7 +4,7 @@ import socketIOTransport from "winston-socket.io";
 import { getFromEnvironment } from "./util";
 import EndpointNames from "./endpoints/endpoint_names";
 
-const [ PORT ] = getFromEnvironment(["LOG_LEVEL", "PORT"]);
+const [ PORT ] = getFromEnvironment(["PORT"]);
 const [ LOG_LEVEL ] = getFromEnvironment(["LOG_LEVEL"], "debug");
 const [ LOG_FILE, LOG_SERVER ] = getFromEnvironment(["LOG_FILE", "LOG_SERVER"], null);
 
