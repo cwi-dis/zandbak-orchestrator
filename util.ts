@@ -194,3 +194,21 @@ export function onUnhandled(socket: Socket, fn: (event: string, params: any) => 
     }
   });
 }
+
+/**
+ * Extracts the hostname through which the given client socket reached the
+ * server. The function will throw an exception if the request headers don't
+ * contain a `host` field.
+ *
+ * @param socket Client socket
+ * @returns Hostname through which the client reached the server
+ */
+export function getExternalHostname(socket: Socket): string {
+  const { host } = socket.handshake.headers;
+
+  if (host) {
+    return host.replace(/:[0-9]+/, "");
+  }
+
+  throw Error("Client headers don't contain server hostname");
+}
