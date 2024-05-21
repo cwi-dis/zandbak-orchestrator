@@ -1,7 +1,7 @@
 import ExternalTransport from "./external_transport";
 
 class WebRTCTransport extends ExternalTransport {
-  protected type = "WebRTC";
+  protected type = "TCPReflector";
   protected cmdLine: Array<string> = this.transportConfig.commandLine;
   protected port: number;
 
