@@ -24,7 +24,7 @@ class TCPReflectorHandler(socketserver.BaseRequestHandler):
         self.handle_receive()
 
     def log(self, msg : str):
-        print(f"{sys.argv[0]}: {self.client_address}: {msg}")
+        print(f"{sys.argv[0]}: {self.client_address}: {msg}", file=sys.stderr)
 
     def logVerbose(self, msg : str):
         server : TCPReflectorServer = cast(TCPReflectorServer, self.server)
@@ -116,11 +116,14 @@ def main():
     parser.add_argument("--verbose", action="store_true", help="Print verbose messages")
 
     args = parser.parse_args()
-    with TCPReflectorServer((args.host, args.port), TCPReflectorHandler) as server:
-        server.verbose = args.verbose
-        if args.verbose:
-            print(f"{sys.argv[0]}: serving on {server.server_address}")
-        server.serve_forever()
+    try:
+        with TCPReflectorServer((args.host, args.port), TCPReflectorHandler) as server:
+            server.verbose = args.verbose
+            if args.verbose:
+                print(f"{sys.argv[0]}: serving on {server.server_address}", file=sys.stderr)
+            server.serve_forever()
+    finally:
+        print(f"{sys.argv[0]}: Shutting down", file=sys.stderr)
 
 if __name__ == "__main__":
     main()
