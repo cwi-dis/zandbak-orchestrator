@@ -1,5 +1,6 @@
 import DashTransport from "../dash_transport";
 import WebRTCTransport from "../webrtc_transport";
+import TCPReflectorTransport from "../tcpreflector_transport"
 import ExternalTransport from "../external_transport";
 import { ExternalTransportType } from "./transport_manager";
 import Session from "../../app/session";
@@ -23,6 +24,8 @@ class ExternalTransportBuilder {
   public static instantiate(protocol: ExternalTransportType, externalHostname: string, port: number, transportConfig: TransportConfig, session: Session): ExternalTransport {
     const transport = (protocol == "webrtc") ? (
       new WebRTCTransport(externalHostname, transportConfig, port)
+    ) : (protocol == "tcpreflector") ? (
+      new TCPReflectorTransport(externalHostname, transportConfig, port)
     ) : (
       new DashTransport(externalHostname, transportConfig, port)
     );

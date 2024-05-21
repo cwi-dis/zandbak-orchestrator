@@ -7,7 +7,7 @@ import ExternalTransportBuilder from "./external_transport_builder";
 import Session from "../../app/session";
 import logger from "../../logger";
 
-export type ExternalTransportType = "dash" | "webrtc";
+export type ExternalTransportType = "dash" | "webrtc" | "tcpreflector";
 export type TransportType = ExternalTransportType | "socketio" | "unknown";
 
 class TransportManager {
@@ -26,7 +26,8 @@ class TransportManager {
     switch (protocol) {
     case "webrtc":
     case "dash":
-      logger.debug("Assigning external transport to session", session.name);
+    case "tcpreflector":
+      logger.debug("Assigning external transport " + protocol + "to session", session.name);
       return this.assignExternalTransport(protocol, session, externalHostname);
     case "unknown":
     default:
