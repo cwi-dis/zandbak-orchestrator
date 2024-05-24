@@ -6,8 +6,8 @@ import socket
 import queue
 from typing import List, cast, Tuple, Any
 
-HEADER_SIZE = 64
-HEADER_VERSION = 1
+HEADER_SIZE = 128
+HEADER_VERSION = 2
 MAX_OUTPUT_QUEUE = 10
 
 class TCPReflectorHandler(socketserver.BaseRequestHandler):
