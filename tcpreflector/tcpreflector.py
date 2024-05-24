@@ -72,8 +72,7 @@ class TCPReflectorHandler(socketserver.BaseRequestHandler):
     def handle_receive(self):
         self.logVerbose("Receiver started")
         while self.request != None:
-            sock : socket.socket = self.request
-            header = sock.recv(HEADER_SIZE)
+            header = self._recv_all(HEADER_SIZE)
             if len(header) != HEADER_SIZE:
                 self.log(f"Received short header, {len(header)} bytes: {header}")
                 self.stop()
@@ -82,7 +81,7 @@ class TCPReflectorHandler(socketserver.BaseRequestHandler):
             if datalen < 0:
                 self.stop()
                 break
-            payload = sock.recv(datalen)
+            payload = self._recv_all(datalen)
             if len(payload) != datalen:
                 self.log(f"Received short payload, wanted {datalen} bytes, got {len(payload)}")
                 self.stop()
@@ -94,6 +93,16 @@ class TCPReflectorHandler(socketserver.BaseRequestHandler):
             sock : socket.socket = self.request
             sock.shutdown(socket.SHUT_RD)
         self.logVerbose("Receiver stopped")
+
+    def _recv_all(self, datalen : int) -> bytes:
+        sock : socket = self.request
+        rv = b''
+        while True:
+            next = sock.recv(datalen)
+            datalen -= len(next)
+            rv += next
+            if len(next) == 0 or datalen == 0:
+                return rv 
 
     def _header_decode(self, header : bytes) -> Tuple[int, str]:
         header_fields = header.decode().split(',')
