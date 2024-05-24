@@ -63,7 +63,10 @@ class TCPReflectorHandler(socketserver.BaseRequestHandler):
             except queue.Empty:
                 continue
             sock.sendall(packet)
-            self.logVerbose(f"Transmitted {len(packet)} byte packet") 
+            self.logVerbose(f"Transmitted {len(packet)} byte packet")
+        if self.request != None:
+            sock : socket.socket = self.request
+            sock.shutdown(socket.SHUT_WR)
         self.logVerbose("Transmitter stopped")
 
     def handle_receive(self):
@@ -87,6 +90,9 @@ class TCPReflectorHandler(socketserver.BaseRequestHandler):
             packetLen = len(header) + len(payload)
             self.logVerbose(f"Received {packetLen} byte packet for stream {streamName}")
             self.receiver_forward(header, payload)
+        if self.request != None:
+            sock : socket.socket = self.request
+            sock.shutdown(socket.SHUT_RD)
         self.logVerbose("Receiver stopped")
 
     def _header_decode(self, header : bytes) -> Tuple[int, str]:
