@@ -1,6 +1,6 @@
 import ExternalTransport from "./external_transport";
 
-class WebRTCTransport extends ExternalTransport {
+class TCPReflectorTransport extends ExternalTransport {
   protected type = "TCPReflector";
   protected cmdLine: Array<string> = this.transportConfig.commandLine;
   protected port: number;
@@ -32,4 +32,4 @@ class WebRTCTransport extends ExternalTransport {
   }
 }
 
-export default WebRTCTransport;
+export default TCPReflectorTransport;
