@@ -1,6 +1,6 @@
 import DashTransport from "../dash_transport";
 import WebRTCTransport from "../webrtc_transport";
-import TCPReflectorTransport from "../tcpreflector_transport"
+import TCPReflectorTransport from "../tcpreflector_transport";
 import ExternalTransport from "../external_transport";
 import { ExternalTransportType } from "./transport_manager";
 import Session from "../../app/session";
