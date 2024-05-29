@@ -5,7 +5,7 @@ class StreamSubscription implements Serializable {
   #id: string;
   #userId: string;
 
-  constructor(user: User, public type: string, public description: string = "") {
+  public constructor(user: User, public type: string, public description: string = "") {
     this.#id = StreamSubscription.genId(user.id, type);
     this.#userId = user.id;
   }

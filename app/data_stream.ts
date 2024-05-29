@@ -2,7 +2,7 @@ import Serializable from "./serializable";
 import { Dict } from "../util";
 
 class DataStream implements Serializable {
-  constructor(public type: string, public description: string) {
+  public constructor(public type: string, public description: string) {
   }
 
   public get id() {
