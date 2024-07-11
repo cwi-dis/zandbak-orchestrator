@@ -64,7 +64,11 @@ corresponding config file must be placed into the folder `config/`. See the
 file `config/config-sample/webrtc-config.json` as a sample.
 
 If you have changed the configuration or SFU binaries you will have to rebuild
-the container, this does not happen automatically. Instructions will be provided.
+the container, this does not happen automatically:
+
+    docker compose stop
+    docker compose build
+    docker compose up
 
 ## Development
 
