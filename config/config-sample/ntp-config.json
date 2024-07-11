@@ -3,6 +3,9 @@
     {
       "server": "nl.pool.ntp.org",
       "port": "123"
+    },
+    {
+      "server":"localtime"
     }
   ]
 }

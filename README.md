@@ -25,6 +25,10 @@ In this case, contact your IT department and enquire whether they host an
 internal NTP server. Otherwise, opt for the `localtime` option described in the
 next paragraph.
 
+Install the required external tools (the Dash and WebRTC SFU's) into `config/packages`.
+There are scripts in `external-packages` to download and install the external tools,
+see [external-packages/README.md](external-packages/README.md).
+
 You can add multiple NTP servers to this config file, they will be tried in
 order until the first one returns a valid response. Adding an entry with the
 key-value pair `"server": "localtime"` will return the host's local time
@@ -59,6 +63,9 @@ the folder `/packages`. Keep this in mind when writing SFU config files. The
 corresponding config file must be placed into the folder `config/`. See the
 file `config/config-sample/webrtc-config.json` as a sample.
 
+If you have changed the configuration or SFU binaries you will have to rebuild
+the container, this does not happen automatically. Instructions will be provided.
+
 ## Development
 
 ### Building
@@ -75,7 +82,10 @@ run:
 After compiling it, make sure to copy the file `.env-sample` to `.env` and
 update the environment variables as needed. Moreover, copy the file
 `config/config-sample/ntp-config.json` to `config/ntp-config.json` and change
-the hostname/port of your time server if needed. Then, the application server
+the hostname/port of your time server if needed. 
+Then you may want to install versions of the Dash and WebRTC SFUs that are compatible with your development machine, and ensure that `dash-config.json` and `webrtc-config.json` have the right pathnames.
+
+Finally, the application server
 can be launched as follows:
 
     yarn start

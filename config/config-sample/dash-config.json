@@ -1,0 +1,30 @@
+{
+  "tls": false,
+  "portMapping":[
+    {
+      "port": 8096,
+      "sfuData": {
+		"url_gen": "http://%EXTERNAL_HOSTNAME%:8096/%USER_ID%/",
+        "url_audio": "http://%EXTERNAL_HOSTNAME%:8096/%USER_ID%/audio/",
+        "url_pcc": "http://%EXTERNAL_HOSTNAME%:8096/%USER_ID%/pcc/"
+      }
+    },
+    {
+      "port": 8097,
+      "sfuData": {
+		"url_gen": "http://%EXTERNAL_HOSTNAME%:8097/%USER_ID%/",
+        "url_audio": "http://%EXTERNAL_HOSTNAME%:8097/%USER_ID%/audio/",
+        "url_pcc": "http://%EXTERNAL_HOSTNAME%:8097/%USER_ID%/pcc/"
+      }
+    }
+  ],
+  "autorestart": true,
+  "log": true,
+  "logFilePfx": "sfu-",
+  "logFileSfx": ".log",
+  "commandLine": [
+    "/packages/evanescent/evanescent.exe",
+    "--port",
+    "%SFU_PORT%"
+  ]
+}

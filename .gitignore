@@ -65,6 +65,8 @@ typings/
 
 # Output of 'npm pack'
 *.tgz
+# But the tgz files in external-packages should be tracked
+!external-packages/*.tgz
 
 # Yarn Integrity file
 .yarn-integrity

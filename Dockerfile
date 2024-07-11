@@ -5,13 +5,15 @@ ADD ./package[s] /packages
 
 WORKDIR /code
 
+# These packages are needed to run evanescent and the webrtc sfu
+RUN apk add gcompat
+# Install Python for TCP reflector
 RUN apk add --update --no-cache python3
 
 RUN yarn install && \
     yarn build && \
     yarn cache clean --all
 
-#
 EXPOSE 8090
 EXPOSE 8091
 EXPOSE 8092
