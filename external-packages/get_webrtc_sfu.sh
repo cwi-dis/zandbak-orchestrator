@@ -28,7 +28,7 @@ Darwin)
 	xattr -d com.apple.quarantine tmp/webrtc/bin/*
 	;;
 esac
-rm -rf ../config/packages/webrtc
-mkdir -p ../config/packages/
-mv tmp/webrtc ../config/packages/webrtc
+rm -rf ../packages/webrtc
+mkdir -p ../packages/
+mv tmp/webrtc ../packages/webrtc
 rm -rf tmp
