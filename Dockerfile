@@ -7,6 +7,7 @@ WORKDIR /code
 
 # These packages are needed to run evanescent and the webrtc sfu
 RUN apk add gcompat
+# Add evanescent directory to search path
 RUN echo "/lib:/usr/local/lib:/usr/lib:/packages/evanescent" > /etc/ld-musl-x86_64.path
 # Install Python for TCP reflector
 RUN apk add --update --no-cache python3
