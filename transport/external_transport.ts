@@ -81,7 +81,8 @@ abstract class ExternalTransport implements Transport {
     );
 
     this.process.stdout.on("data", (data) => {
-      const lines = data.toString().split(/[\r\n]+/)
+      const lines = data.toString().split(/[\r\n]+/);
+
       for(const line of lines) {
         if(line.length > 0) { // Don't include empty new lines created by e.g. println
           logger.debug("SFU", this.id, "stdout:", line);
@@ -90,7 +91,8 @@ abstract class ExternalTransport implements Transport {
     });
 
     this.process.stderr.on("data", (data) => {
-      const lines = data.toString().split(/[\r\n]+/)
+      const lines = data.toString().split(/[\r\n]+/);
+
       for(const line of lines) {
         if(line.length > 0) { // Don't include empty new lines created by e.g. println
           logger.debug("SFU", this.id, "stderr:", line);

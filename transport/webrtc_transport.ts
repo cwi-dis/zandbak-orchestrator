@@ -8,12 +8,13 @@ class WebRTCTransport extends ExternalTransport {
   protected port: number;
 
   public constructor(externalHostname: string, transportConfig: TransportConfig, port: number) {
-      super(externalHostname, transportConfig, port);
-      this.transportConfig.commandLine.forEach( (arg) => {
-          this.cmdLine.push(arg.replace(
-            "%SFU_PORT%", this.transportConfig.portMapping[0].port.toString()
-          ));
-      });
+    super(externalHostname, transportConfig, port);
+
+    this.transportConfig.commandLine.forEach( (arg) => {
+      this.cmdLine.push(arg.replace(
+        "%SFU_PORT%", this.transportConfig.portMapping[0].port.toString()
+      ));
+    });
   }
 
   private buildUrl(urlTemplate: string, user: User) {
