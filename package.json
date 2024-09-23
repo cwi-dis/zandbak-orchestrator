@@ -4,7 +4,7 @@
   "scripts": {
     "start": "node --enable-source-maps bin/build.js",
     "build": "webpack",
-    "lint": "eslint --ext=ts,js .",
+    "lint": "eslint .",
     "dump": "node scripts/dump.js",
     "logs": "node scripts/logreader.js"
   },
