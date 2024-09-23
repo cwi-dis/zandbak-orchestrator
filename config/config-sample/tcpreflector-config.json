@@ -24,7 +24,7 @@
   "logFileSfx": ".log",
   "commandLine": [
     "python3",
-    "/code/tcpreflector/tcpreflector.py",
+    "tcpreflector/tcpreflector.py",
     "--host",
     "0.0.0.0",
     "--port",
