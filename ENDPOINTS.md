@@ -1,8 +1,11 @@
-# Orchestrator Event Interface
-
 This document specifies all the endpoints that the Orchestrator exposes to its
 clients through Socket.IO. The corresponding code can be found in the files
 located in the folder `endpoints/`.
+
+Moreover, the document presents some performance characteristics and presents
+suggestions for horizontal scaling of the application.
+
+# Orchestrator Event Interface
 
 ## User Management
 
@@ -147,3 +150,77 @@ Returns the version of the orchestrator inside a JSON object.
 ### TERMINATE_ORCHESTRATOR
 
 Terminates the orchestrator process.
+
+# Performance Considerations
+
+## Messaging Concurrency
+
+The orchestrator server has been tested on a desktop machine running inside a
+container with concurrent clients accessing an endpoint. The test measures the
+roundtrip packet delay on a test socket with concurrent traffic going on in the
+background over the course of 5 minutes. The test is performed in a local
+network over a standard Ethernet connection.
+
+- Packet delay with unloaded connection:
+  - Minimum: 4ms
+  - Maximum: 20ms
+  - Average: 4.26ms
+  - Dropped packets: 0
+- Packet delay with 100 concurrent clients:
+  - Minimum: 3ms
+  - Maximum: 12ms
+  - Average: 5.25ms
+  - Dropped packets: 0
+- Packet delay with 500 concurrent clients:
+  - Minimum: 4ms
+  - Maximum: 19ms
+  - Average: 7ms
+  - Dropped packets: 0
+- Packet delay with 1000 concurrent clients:
+  - Minimum: 3ms
+  - Maximum: 23ms
+  - Average: 8.95ms
+  - Dropped packets: 0
+- Packet delay with 2000 concurrent clients:
+  - Minimum: 4ms
+  - Maximum: 118ms
+  - Average: 36ms
+  - Dropped packets: 167
+
+With 1000 concurrent clients, the average packet delay on the test socket
+remains under 10ms, with no packets on the concurrent connections being
+dropped. Starting with 2000 concurrent clients, the average delay on the test
+socket climbs climbs to 36ms, with some packets on the background clients
+being dropped with 167 of a total of 240543 packets being dropped ~0.069%.
+
+The test was performed on consumer grade hardware over a standard copper-wired
+Ethernet connection with a message payload of 50KB.
+
+## Evaluation
+
+In a use case where the Orchestrator is solely responsible for session and user
+management as well as transmission of transform events of meshes between
+clients, as long as the number of clients stays below 1000, no vertical or
+horizontal scaling of the application will be necessary. This implies standard
+state management and messaging without transmisison of point clouds over the
+Orchestrator.
+
+In case of point cloud transmission, required network bandwidth increases
+exponentially. In an instance with two users sharing the same virtual space
+represented by full-body point clouds, we require a bandwidth of about 20MB/s
+at the Orchestrator.
+
+The Orchestrator offers horizontal scaling through the outsourcing of point
+cloud transmission to secondary processes and/or hosts via different protocols
+such as raw TCP, DASH or WebRTC. At the moment, these processes are allocated
+statically through configuration files in the Orchestrator. Spawning these
+processes dynamically and intelligently and allocating clients to them based on
+different load characteristics could be an avenue for future work if the use
+case requires it.
+
+If no point clouds are transmitted through the orchestrator, this will not be
+necessary. Still, it may be worth thinking about replicating the Orchestrator's
+internal state across multiple processes through a distributed data store or
+some sharding mechanism. The advantage of this would be to better
+geographically distribute data and load, should clients want to join the same
+session from geographically distant places.
