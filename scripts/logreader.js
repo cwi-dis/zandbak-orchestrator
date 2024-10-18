@@ -7,7 +7,9 @@ if (process.argv.length < 3) {
   process.exit(1);
 }
 
-const [ , , host ] = process.argv;
+let [ , , host ] = process.argv;
+host = host.replace(/^[a-zA-Z]+:\/\//, "");
+
 const url = new URL("/log", "ws://" + host);
 const socket = io(url.href);
 
