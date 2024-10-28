@@ -199,7 +199,9 @@ const installHandlers = (user: User) => {
     if (!session) {
       logger.warn(EndpointNames.SEND_DATA, "User is not in any session");
       return;
-    }if (!streamType || !data) {
+    }
+
+    if (!streamType || !data) {
       logger.warn(EndpointNames.SEND_DATA, "Missing parameter streamType or data");
       return;
     }
