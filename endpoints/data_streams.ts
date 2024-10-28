@@ -196,8 +196,11 @@ const installHandlers = (user: User) => {
   socket.on(EndpointNames.SEND_DATA, (streamType, data) => {
     const { session } = user;
 
-    if (!session || !streamType || !data) {
-      logger.warn(EndpointNames.SEND_DATA, "Missing parameters");
+    if (!session) {
+      logger.warn(EndpointNames.SEND_DATA, "User is not in any session");
+      return;
+    }if (!streamType || !data) {
+      logger.warn(EndpointNames.SEND_DATA, "Missing parameter streamType or data");
       return;
     }
 
