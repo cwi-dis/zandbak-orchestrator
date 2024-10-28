@@ -102,9 +102,9 @@ const installHandlers = (user: User) => {
 
     logger.silly(EndpointNames.SEND_SCENE_EVENT_TO_USER, "Sending scene event from master", user.name, "to", targetUser.name, "in session", session.name);
 
-    user.sendSceneEvent(
+    tagrteUser.sendSceneEvent(
       EmittedEvents.SCENE_EVENT_TO_USER,
-      targetUser,
+      user,
       sceneEvent
     );
   });
