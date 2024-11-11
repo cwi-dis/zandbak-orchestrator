@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
-import { getFromEnvironment, installLogServerHandler, onUnhandled, ORCHESTRATOR_VERSION } from "./util";
+import { getFromEnvironment, getRevision, installLogServerHandler, onUnhandled, ORCHESTRATOR_VERSION } from "./util";
 import logger from "./logger";
 import Orchestrator from "./app/orchestrator";
 
@@ -19,7 +19,13 @@ import installStreamHandlers from "./endpoints/data_streams";
 const [ PORT ] = getFromEnvironment(["PORT"]);
 const [ LOG_SERVER, EXTERNAL_HOSTNAME ] = getFromEnvironment(["LOG_SERVER", "EXTERNAL_HOSTNAME"], null);
 
-logger.info("Launching orchestrator version", ORCHESTRATOR_VERSION);
+/**
+ * Print version information and current HEAD revision if available.
+ */
+getRevision().then((revision) => {
+  logger.info("Launching orchestrator version", ORCHESTRATOR_VERSION);
+  logger.info("Revision:", revision);
+});
 
 /**
  * Create new orchestrator instance.
