@@ -11,6 +11,44 @@ const packageInfo = require("./package.json");
 export const ORCHESTRATOR_VERSION = packageInfo.version;
 
 /**
+ * Wraps `fs.readFile()` in a Promise which either resolves to a Buffer
+ * containing the file results or rejects with an error.
+ *
+ * @param path Path of the file to be read
+ * @returns A Promise which resolves to a buffer or rejects with an error
+ */
+function readFile(path: fs.PathOrFileDescriptor): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, (err, buffer) => {
+      // Reject the promise if there has been an error
+      if (err) {
+        return reject(err);
+      }
+
+      // Resolve the promise with the file contents
+      resolve(buffer);
+    });
+  });
+}
+
+/**
+ * Tries to retrieve the current HEAD revision from a file named REVISION.
+ * If the file REVISION exists, its contents are returned, which should contain
+ * the current git HEAD revision. If the file does not exist or could not be
+ * read, the string 'unknown' is returned.
+ *
+ * @returns The current revision or 'unknown' if an error occurred
+ */
+export async function getRevision() {
+  try {
+    const buffer = await readFile("./REVISION");
+    return buffer.toString().trim();
+  } catch {
+    return "unknown";
+  }
+}
+
+/**
  * Installs a handler on the given Socket.IO server, listening for the `log`
  * event and forwards them by re-emitting them as event `message` to the
  * namespace `/log`.
