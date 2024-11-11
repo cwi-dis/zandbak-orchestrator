@@ -10,11 +10,12 @@ const installHandlers = (orchestrator: Orchestrator, socket: Socket) => {
   /**
    * Returns the version of the orchestrator inside a JSON object.
    */
-  socket.on(EndpointNames.GET_ORCHESTRATOR_VERSION, (data, callback) => {
+  socket.on(EndpointNames.GET_ORCHESTRATOR_VERSION, async (data, callback) => {
     logger.debug(EndpointNames.GET_ORCHESTRATOR_VERSION, "Getting orchestrator version");
 
     callback(util.createCommandResponse(data, ErrorCodes.OK, {
-      orchestratorVersion: util.ORCHESTRATOR_VERSION
+      orchestratorVersion: util.ORCHESTRATOR_VERSION,
+      revision: await util.getRevision()
     }));
   });
 
