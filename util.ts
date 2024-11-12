@@ -93,15 +93,8 @@ export function getFromEnvironment(keys: Array<string>, defaultValue?: any): Arr
  * @returns A promise which, when resolved, contains the contents of the loaded file
  */
 export async function loadConfig<T>(path: string): Promise<T> {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, (err, data) => {
-      if (err) {
-        return reject(err);
-      }
-
-      resolve(JSON.parse(data.toString()));
-    });
-  });
+  const data = await readFile(path);
+  return JSON.parse(data.toString());
 }
 
 /**
