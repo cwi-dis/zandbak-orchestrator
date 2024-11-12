@@ -1,5 +1,6 @@
 import { exec } from "child_process";
 import * as fs from "fs";
+import { promisify } from "util";
 import * as ntp from "ntp-client";
 import { Socket, Server } from "socket.io";
 
@@ -11,45 +12,8 @@ export type Dict = { [key: string]: any };
 const packageInfo = require("./package.json");
 export const ORCHESTRATOR_VERSION = packageInfo.version;
 
-/**
- * Wraps `fs.readFile()` in a Promise which either resolves to a Buffer
- * containing the file results or rejects with an error.
- *
- * @param path Path of the file to be read
- * @returns A Promise which resolves to a buffer or rejects with an error
- */
-function readFile(path: fs.PathOrFileDescriptor): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, (err, buffer) => {
-      // Reject the promise if there has been an error
-      if (err) {
-        return reject(err);
-      }
-
-      // Resolve the promise with the file contents
-      resolve(buffer);
-    });
-  });
-}
-
-/**
- * Wraps `childProcess.exec()` in a Promise which either resolves to the stdout
- * of the called shell command or rejects with an error.
- *
- * @param command Command to be invoked
- * @returns A Promise which resolves to the invoked command's stdout or rejects with an error
- */
-function execCommand(command: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    exec(command, (err, stdout) => {
-      if (err) {
-        return reject(err);
-      }
-
-      resolve(stdout);
-    });
-  });
-}
+const readFile = promisify(fs.readFile);
+const execCommand = promisify(exec);
 
 /**
  * Tries to retrieve the current HEAD revision from a file named REVISION.
@@ -68,8 +32,8 @@ export async function getRevision() {
   } catch {
     try {
       // Try to get current revision using git rev-parse
-      const stdout = await execCommand("git rev-parse HEAD");
-      return stdout.trim();
+      const result = await execCommand("git rev-parse HEAD");
+      return result.stdout.trim();
     } catch {
       // Return 'unknown' if both attempts failed
       return "unknown";
