@@ -1,3 +1,4 @@
+import { exec } from "child_process";
 import * as fs from "fs";
 import * as ntp from "ntp-client";
 import { Socket, Server } from "socket.io";
@@ -27,6 +28,25 @@ function readFile(path: fs.PathOrFileDescriptor): Promise<Buffer> {
 
       // Resolve the promise with the file contents
       resolve(buffer);
+    });
+  });
+}
+
+/**
+ * Wraps `childProcess.exec()` in a Promise which either resolves to the stdout
+ * of the called shell command or rejects with an error.
+ *
+ * @param command Command to be invoked
+ * @returns A Promise which resolves to the invoked command's stdout or rejects with an error
+ */
+function execCommand(command: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    exec(command, (err, stdout) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve(stdout);
     });
   });
 }
