@@ -55,16 +55,25 @@ function execCommand(command: string): Promise<string> {
  * Tries to retrieve the current HEAD revision from a file named REVISION.
  * If the file REVISION exists, its contents are returned, which should contain
  * the current git HEAD revision. If the file does not exist or could not be
- * read, the string 'unknown' is returned.
+ * read, the function tries to call `git rev-parse` to retrieve the current
+ * revision. If that also fails, the string 'unknown' is returned.
  *
  * @returns The current revision or 'unknown' if an error occurred
  */
 export async function getRevision() {
   try {
+    // Try to read current REVISION from file
     const buffer = await readFile("./REVISION");
     return buffer.toString().trim();
   } catch {
-    return "unknown";
+    try {
+      // Try to get current revision using git rev-parse
+      const stdout = await execCommand("git rev-parse HEAD");
+      return stdout.trim();
+    } catch {
+      // Return 'unknown' if both attempts failed
+      return "unknown";
+    }
   }
 }
 
