@@ -23,7 +23,7 @@
   "logFilePfx": "sfu-",
   "logFileSfx": ".log",
   "commandLine": [
-    "/packages/evanescent/evanescent.exe",
+    "/packages/lldash/bin/evanescent.exe",
     "--port",
     "%SFU_PORT%"
   ]

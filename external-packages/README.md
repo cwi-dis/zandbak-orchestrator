@@ -14,9 +14,9 @@ Check <https://github.com/jvdrhoof/WebRTCSFU> for the latest current release _vX
 
 ##  dash sfu
 
-The dash SFU is called `evanescent`. It is currently not open source, but it is freely usable. It is obtained from the <https://github.com/cwi-dis/VR2G-Evanescent> repository.
+The dash SFU is called `evanescent`. It is part of the soon-to-be-open-source `lldash` package. It is obtained from the <https://github.com/cwi-dis/lldash> repository.
 
-To install it run
+To install it inspect the github repository for the latest release. Edit and run
 
 ```
 ./get_evanescent_sfu.sh
