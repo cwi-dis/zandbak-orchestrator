@@ -5,6 +5,9 @@ ADD ./package[s] /packages
 
 WORKDIR /code
 
+# Add evanescent directory to library search path
+RUN echo "/packages/evanescent" > /etc/ld.so.conf.d/evanescent.conf
+
 # Install Python for TCP reflector
 RUN apt update
 RUN apt install -y python3
