@@ -6,12 +6,10 @@ ADD ./package[s] /packages
 WORKDIR /code
 
 # Add evanescent directory to library search path
-RUN echo "/packages/evanescent" > /etc/ld.so.conf.d/evanescent.conf
-RUN ldconfig
+RUN echo "/packages/evanescent" > /etc/ld.so.conf.d/evanescent.conf && ldconfig
 
 # Install Python for TCP reflector
-RUN apt update
-RUN apt install -y python3
+RUN apt update && apt install -y python3
 
 RUN yarn install && \
     yarn build && \
