@@ -1,4 +1,4 @@
-FROM node:22
+FROM node:22-bookworm-slim
 
 ADD . /code/
 ADD ./package[s] /packages
