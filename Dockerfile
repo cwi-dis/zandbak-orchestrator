@@ -1,12 +1,13 @@
-FROM node:22-bookworm-slim
+FROM ubuntu:24.04
 
 ADD . /code/
 ADD ./package[s] /packages
 
 WORKDIR /code
 
-# Install Python for TCP reflector
-RUN apt update && apt install -y python3
+RUN apt update && \
+    apt install -y python3 npm && \
+    npm install -g yarn
 
 RUN yarn install && \
     yarn build && \
