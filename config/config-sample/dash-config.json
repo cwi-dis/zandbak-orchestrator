@@ -4,17 +4,17 @@
     {
       "port": 8096,
       "sfuData": {
-		"url_gen": "http://%EXTERNAL_HOSTNAME%:8096/%USER_ID%/",
-        "url_audio": "http://%EXTERNAL_HOSTNAME%:8096/%USER_ID%/audio/",
-        "url_pcc": "http://%EXTERNAL_HOSTNAME%:8096/%USER_ID%/pcc/"
+        "url_gen": "http://%EXTERNAL_HOSTNAME%:8096/%USER_ID%/",
+        "url_audio": "",
+        "url_pcc": ""
       }
     },
     {
       "port": 8097,
       "sfuData": {
-		"url_gen": "http://%EXTERNAL_HOSTNAME%:8097/%USER_ID%/",
-        "url_audio": "http://%EXTERNAL_HOSTNAME%:8097/%USER_ID%/audio/",
-        "url_pcc": "http://%EXTERNAL_HOSTNAME%:8097/%USER_ID%/pcc/"
+        "url_gen": "http://%EXTERNAL_HOSTNAME%:8097/%USER_ID%/",
+        "url_audio": "",
+        "url_pcc": ""
       }
     }
   ],
