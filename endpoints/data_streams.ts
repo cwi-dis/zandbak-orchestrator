@@ -209,6 +209,17 @@ const installHandlers = (user: User) => {
     logger.silly(EndpointNames.SEND_DATA, "Sending data with stream type", streamType);
     session.sendData(user, streamType, data);
   });
+
+  socket.on(EndpointNames.BROADCAST, (channel, data) => {
+    const { session } = user;
+
+    if (!session) {
+      logger.warn(EndpointNames.BROADCAST, "User is not in any session");
+      return;
+    }
+
+    session.broadcast(user, channel, data);
+  });
 };
 
 export default installHandlers;
