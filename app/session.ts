@@ -49,7 +49,9 @@ class Session implements Serializable {
    * @param user The user to be the session's administrator
    */
   public setAdministrator(user: User) {
-    this.#administrator = user;
+    if (this.hasUser(user)) {
+      this.#administrator = user;
+    }
   }
 
   /**
@@ -276,6 +278,10 @@ class Session implements Serializable {
     this.channels.forEach((channel) => {
       user.socket.leave(channel);
     });
+  }
+
+  public broadcast(fromUser: User, channel: string, data: any) {
+    fromUser.socket.to(channel).emit(EmittedEvents.BROADCAST, data);
   }
 
   /**
