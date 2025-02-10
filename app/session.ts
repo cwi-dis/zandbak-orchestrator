@@ -318,7 +318,8 @@ class Session implements Serializable {
       scenarioId: this.scenario.id,
       sessionUsers: this.#users.map((u) => u.id),
       sessionUserDefinitions: this.#users.map((u) => u.serialize()),
-      sessionProtocol: this.sessionProtocol
+      sessionProtocol: this.sessionProtocol,
+      sessionChannels: this.channels
     };
   }
 }
