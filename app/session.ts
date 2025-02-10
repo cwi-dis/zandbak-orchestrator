@@ -20,6 +20,7 @@ class Session implements Serializable {
     public description: string,
     public sessionProtocol: TransportType,
     public scenario: Scenario,
+    public channels: Array<string>,
     transportManager: TransportManager,
     hostname: string
   ) {
