@@ -210,11 +210,20 @@ const installHandlers = (user: User) => {
     session.sendData(user, streamType, data);
   });
 
+  /**
+   * Sends data from the current user to all users in the same session, on the
+   * given broadcast channel.
+   */
   socket.on(EndpointNames.BROADCAST, (channel, data) => {
     const { session } = user;
 
     if (!session) {
       logger.warn(EndpointNames.BROADCAST, "User is not in any session");
+      return;
+    }
+
+    if (!channel || !data) {
+      logger.warn(EndpointNames.BROADCAST, "Missing parameter channel or data");
       return;
     }
 
