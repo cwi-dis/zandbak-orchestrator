@@ -92,6 +92,7 @@ class Session implements Serializable {
       }
     });
 
+    this.addUserToChannels(user);
     this.#users.push(user);
     this.selectMaster();
     user.session = this;
@@ -104,6 +105,7 @@ class Session implements Serializable {
    * @param user User to remove from the session
    */
   public removeUser(user: User) {
+    this.removeUserFromChannels(user);
     this.#users = this.#users.filter((u) => u.id != user.id);
     this.selectMaster();
     user.session = undefined;
@@ -261,6 +263,18 @@ class Session implements Serializable {
       if (u.hasStreamSubscription(fromUser, type)) {
         u.socket.emit(EmittedEvents.DATA_RECEIVED, fromUser.id, type, data);
       }
+    });
+  }
+
+  private addUserToChannels(user: User) {
+    this.channels.forEach((channel) => {
+      user.socket.join(channel);
+    });
+  }
+
+  private removeUserFromChannels(user: User) {
+    this.channels.forEach((channel) => {
+      user.socket.leave(channel);
     });
   }
 
