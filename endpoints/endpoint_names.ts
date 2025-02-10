@@ -25,6 +25,8 @@ enum EndpointNames {
   UNREGISTER_FROM_DATA_STREAM = "UnregisterFromDataStream",
   SEND_DATA = "SendData",
 
+  BROADCAST = "Broadcast",
+
   GET_ORCHESTRATOR_VERSION = "GetOrchestratorVersion",
   GET_NTP_TIME = "GetNTPTime",
   DUMP_DATA = "DumpData",
