@@ -20,7 +20,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on(EndpointNames.ADD_SESSION, (data, callback) => {
     const {
       sessionName, sessionDescription, sessionProtocol = "unknown",
-      scenarioDefinition: { scenarioId, scenarioName, scenarioDescription }
+      scenarioDefinition: { scenarioId, scenarioName, scenarioDescription },
+      channels = []
     } = data;
 
     logger.debug(EndpointNames.ADD_SESSION, "Creating new session with name", sessionName);
@@ -39,6 +40,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         sessionDescription,
         sessionProtocol,
         new Scenario(scenarioId, scenarioName, scenarioDescription),
+        channels,
         orchestrator.transportManager,
         externalHostname
       );
