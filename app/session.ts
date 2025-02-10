@@ -268,18 +268,35 @@ class Session implements Serializable {
     });
   }
 
+  /**
+   * Adds the given user to all channels that are defined in this session.
+   * @param user The user to add to the channels
+   */
   private addUserToChannels(user: User) {
     this.channels.forEach((channel) => {
       user.socket.join(channel);
     });
   }
 
+  /**
+   * Removes the given user from all channels that are defined in this session.
+   * @param user The user to remove from the channels
+   */
   private removeUserFromChannels(user: User) {
     this.channels.forEach((channel) => {
       user.socket.leave(channel);
     });
   }
 
+  /**
+   * Sends a broadcast containing the given piece of data to the given channel
+   * originating from the given user. If the given channel does not exist on
+   * the session, nothing happens.
+   *
+   * @param fromUser User from which the broadcast originates
+   * @param channel Channel the broadcast shall be sent to
+   * @param data Data that shall be sent
+   */
   public broadcast(fromUser: User, channel: string, data: any) {
     if (this.channels.includes(channel)) {
       fromUser.socket.to(channel).emit(EmittedEvents.BROADCAST, data);
