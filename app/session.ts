@@ -299,7 +299,7 @@ class Session implements Serializable {
    */
   public broadcast(fromUser: User, channel: string, data: any) {
     if (this.channels.includes(channel)) {
-      fromUser.socket.to(channel).emit(EmittedEvents.BROADCAST, data);
+      fromUser.socket.to(channel).emit(EmittedEvents.BROADCAST, channel, data);
     }
   }
 
