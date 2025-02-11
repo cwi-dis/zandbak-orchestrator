@@ -14,17 +14,19 @@ class Session implements Serializable {
   #administrator: User;
   #master?: User;
   #transport: Transport;
+  #channels: Array<string>;
 
   public constructor(
     public name: string,
     public description: string,
     public sessionProtocol: TransportType,
     public scenario: Scenario,
-    public channels: Array<string>,
+    channels: Array<string>,
     transportManager: TransportManager,
     hostname: string
   ) {
     this.#transport = transportManager.assignTransport(sessionProtocol, this, hostname);
+    this.#channels = channels.map((c) => this.getInternalChannelName(c));
   }
 
   public get id() {
@@ -41,6 +43,10 @@ class Session implements Serializable {
 
   public get master() {
     return this.#master;
+  }
+
+  public get channels() {
+    return this.#channels.map((channel) => channel.split("/")[1]);
   }
 
   /**
@@ -273,7 +279,7 @@ class Session implements Serializable {
    * @param user The user to add to the channels
    */
   private addUserToChannels(user: User) {
-    this.channels.forEach((channel) => {
+    this.#channels.forEach((channel) => {
       user.socket.join(channel);
     });
   }
@@ -283,9 +289,19 @@ class Session implements Serializable {
    * @param user The user to remove from the channels
    */
   private removeUserFromChannels(user: User) {
-    this.channels.forEach((channel) => {
+    this.#channels.forEach((channel) => {
       user.socket.leave(channel);
     });
+  }
+
+  /**
+   * Returns the name of a given channel, scoped to this session.
+   *
+   * @param channel Public name of the channel
+   * @returns Name of the channel that is scoped to this session
+   */
+  private getInternalChannelName(channel: string) {
+    return `${this.#id}/${channel}`;
   }
 
   /**
@@ -298,8 +314,10 @@ class Session implements Serializable {
    * @param data Data that shall be sent
    */
   public broadcast(fromUser: User, channel: string, data: any) {
-    if (this.channels.includes(channel)) {
-      fromUser.socket.to(channel).emit(EmittedEvents.BROADCAST, channel, data);
+    const internalName = this.getInternalChannelName(channel);
+
+    if (this.#channels.includes(internalName)) {
+      fromUser.socket.to(internalName).emit(EmittedEvents.BROADCAST, channel, data);
     }
   }
 
