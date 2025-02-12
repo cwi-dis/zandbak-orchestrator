@@ -19,9 +19,12 @@ class User implements Serializable {
 
   public session?: Session;
 
-  public constructor(public name: string, public socket: io.Socket, userData: Dict = {}) {
-    this.#userData = new Map(Object.entries(userData));
+  public constructor(public name: string, public socket: io.Socket, id: string | undefined) {
+    if (id) {
+      this.#id = id;
+    }
 
+    this.#userData = new Map();
     this.#dataStreams = new Map();
     this.#streamSubscriptions = new Map();
   }

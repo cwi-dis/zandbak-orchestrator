@@ -24,7 +24,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
      * the promise to reject.
      */
     socket.on(EndpointNames.LOGIN, (data, callback) => {
-      const { userName }: { userName: string | undefined } = data;
+      const { userName, id }: { userName: string | undefined, id: string | undefined } = data;
       logger.debug(EndpointNames.LOGIN, "Starting login process with username", userName);
 
       if (!userName) {
@@ -35,7 +35,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
         return;
       }
 
-      const user = orchestrator.findUser(userName) || new User(userName, socket);
+      const user = orchestrator.findUser(userName) || new User(userName, socket, id);
       orchestrator.addUser(user);
 
       logger.debug(EndpointNames.LOGIN, "Added user", user.name, "to orchestrator");

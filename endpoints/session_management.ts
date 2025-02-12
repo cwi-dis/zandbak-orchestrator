@@ -57,7 +57,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         session.serialize()
       ));
     } catch (err) {
-      logger.error(EndpointNames.ADD_SESSION, "Error during session creation:", err);
+      logger.error(EndpointNames.ADD_SESSION, "Error during session creation:", err.stack);
 
       return callback(util.createCommandResponse(
         data,
