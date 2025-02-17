@@ -32,10 +32,20 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
 
         logger.warn(EndpointNames.LOGIN, "No username supplied");
         reject("No username supplied");
+
         return;
       }
 
-      const user = orchestrator.findUser(userName) || new User(userName, socket, id);
+      if (orchestrator.findUser(userName)) {
+        callback(util.createResponse(ErrorCodes.USER_EXISTS));
+
+        logger.warn(EndpointNames.LOGIN, "A user with the username", userName, "is already logged in");
+        reject("A user with the same username is already logged in");
+
+        return;
+      }
+
+      const user = new User(userName, socket, id);
       orchestrator.addUser(user);
 
       logger.debug(EndpointNames.LOGIN, "Added user", user.name, "to orchestrator");
