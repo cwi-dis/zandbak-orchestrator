@@ -16,6 +16,9 @@ enum EndpointNames {
   SEND_MESSAGE_TO_ALL = "SendMessageToAll",
   GET_MESSAGES = "GetMessages",
 
+  RAISE_HAND = "RaiseHand",
+  CLEAR_RAISED_HAND = "ClearRaisedHand",
+
   SEND_SCENE_EVENT_TO_MASTER = "SendSceneEventToMaster",
   SEND_SCENE_EVENT_TO_USER = "SendSceneEventToUser",
   SEND_SCENE_EVENT_TO_ALL = "SendSceneEventToAllUsers",
