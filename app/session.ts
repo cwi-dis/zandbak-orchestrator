@@ -261,6 +261,19 @@ class Session implements Serializable {
   }
 
   /**
+   * Returns the chat messages of this session. The messages are returned in
+   * reverse order, i.e. the most recent message is the first one in the array.
+   * The number of messages returned is limited by the given limit. If no limit
+   * is given, the default limit of 100 messages is used.
+   *
+   * @param limit Maximum number of messages to return
+   * @returns A serialised array of chat messages
+   */
+  public getMessages(limit: number = 100): Array<Dict> {
+    return this.#chat.reverse().slice(0, limit).map((c) => c.serialize());
+  }
+
+  /**
    * Sends raw data from the given user to all users in this session which are
    * registered for the data stream from the user with the given type.
    *
