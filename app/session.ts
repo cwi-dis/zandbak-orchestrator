@@ -7,11 +7,13 @@ import Transport from "../transport/transport";
 import TransportManager, { TransportType } from "../transport/manager/transport_manager";
 import Scenario from "./scenario";
 import EmittedEvents from "./emitted_events";
+import ChatMessage from "./chat_message";
 
 class Session implements Serializable {
   #id: string = uuidv4();
   #users: Array<User> = [];
   #administrator: User;
+  #chat: Array<ChatMessage> = [];
   #master?: User;
   #transport: Transport;
   #channels: Array<string>;
@@ -229,12 +231,11 @@ class Session implements Serializable {
    * @param message Message to send
    */
   public sendMessageToAll(fromUser: User, message: Dict) {
+    const chatMessage = new ChatMessage(fromUser, message);
+    this.#chat.push(chatMessage);
+
     this.#users.forEach((u) => {
-      u.socket.emit(EmittedEvents.MESSAGE_SENT, {
-        messageFrom: fromUser.id,
-        messageFromName: fromUser.name,
-        message
-      });
+      u.socket.emit(EmittedEvents.MESSAGE_SENT, chatMessage.serialize());
     });
   }
 
@@ -251,10 +252,11 @@ class Session implements Serializable {
       return;
     }
 
+    const chatMessage = new ChatMessage(fromUser, message);
+
     toUser.socket.emit(EmittedEvents.MESSAGE_SENT, {
-      messageFrom: fromUser.id,
-      messageFromName: fromUser.name,
-      message
+      ...chatMessage.serialize(),
+      private: true
     });
   }
 
@@ -337,7 +339,8 @@ class Session implements Serializable {
       sessionUsers: this.#users.map((u) => u.id),
       sessionUserDefinitions: this.#users.map((u) => u.serialize()),
       sessionProtocol: this.sessionProtocol,
-      sessionChannels: this.channels
+      sessionChannels: this.channels,
+      sessionChat: this.#chat.map((c) => c.serialize())
     };
   }
 }
