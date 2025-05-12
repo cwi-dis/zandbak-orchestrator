@@ -296,7 +296,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * is issued.
    */
   socket.on(EndpointNames.CLEAR_RAISED_HAND, (data, callback) => {
-    const { userId } = data;
+    const { userId }: { userId: string } = data;
     const { session } = user;
 
     if (!session) {
