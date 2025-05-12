@@ -235,6 +235,39 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   });
 
   /**
+   * Sends a given message from the current user to the user identified by the
+   * given user ID. If the receiver is not in the same session or the sender is
+   * not in any session, an error is issued.
+   */
+  socket.on(EndpointNames.SEND_MESSAGE, (data, callback) => {
+    const { session } = user;
+    const { message } = data;
+
+    if (!session) {
+      logger.warn(EndpointNames.SEND_MESSAGE, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    const receiver = session.getUser(data.userId);
+    if (!receiver) {
+      logger.warn(EndpointNames.SEND_MESSAGE, "Receiver with ID", data.userId, "is not in session", session.name);
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_SAME_SESSION
+      ));
+    }
+
+    logger.debug(EndpointNames.SEND_MESSAGE, "Sending message from", user.name, "to", receiver.name, "in session", session.name);
+    session.sendMessage(user, receiver, message);
+    callback(util.createCommandResponse(data, ErrorCodes.OK));
+  });
+
+  /**
    * Sets the raised hand status for the current user in the user's current session.
    * If the user is not in any session, an error is issued.
    */
@@ -299,39 +332,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         ErrorCodes.SESSION_DELETE_UNAUTHORIZED
       ));
     }
-  });
-
-  /**
-   * Sends a given message from the current user to the user identified by the
-   * given user ID. If the receiver is not in the same session or the sender is
-   * not in any session, an error is issued.
-   */
-  socket.on(EndpointNames.SEND_MESSAGE, (data, callback) => {
-    const { session } = user;
-    const { message } = data;
-
-    if (!session) {
-      logger.warn(EndpointNames.SEND_MESSAGE, "User", user.name, "is not in any session");
-
-      return callback(util.createCommandResponse(
-        data,
-        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
-      ));
-    }
-
-    const receiver = session.getUser(data.userId);
-    if (!receiver) {
-      logger.warn(EndpointNames.SEND_MESSAGE, "Receiver with ID", data.userId, "is not in session", session.name);
-
-      return callback(util.createCommandResponse(
-        data,
-        ErrorCodes.SESSION_USER_NOT_IN_SAME_SESSION
-      ));
-    }
-
-    logger.debug(EndpointNames.SEND_MESSAGE, "Sending message from", user.name, "to", receiver.name, "in session", session.name);
-    session.sendMessage(user, receiver, message);
-    callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
 };
 
