@@ -333,6 +333,26 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
   });
+
+  /**
+   * Returns a list of all users with their raised hand status in the user's
+   * current session. If the user is not in any session, an error is issued.
+   */
+  socket.on(EndpointNames.GET_RAISED_HANDS, (data, callback) => {
+    const { session } = user;
+
+    if (!session) {
+      logger.warn(EndpointNames.GET_RAISED_HANDS, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    logger.debug(EndpointNames.GET_RAISED_HANDS, "Getting raised hands for session", session.name);
+    callback(util.createCommandResponse(data, ErrorCodes.OK, session.getRaisedHands()));
+  });
 };
 
 export default installHandlers;
