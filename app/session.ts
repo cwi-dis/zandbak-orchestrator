@@ -14,6 +14,7 @@ class Session implements Serializable {
   #users: Array<User> = [];
   #administrator: User;
   #chat: Array<ChatMessage> = [];
+  #raisedHands: Array<User> = [];
   #master?: User;
   #transport: Transport;
   #channels: Array<string>;
@@ -257,6 +258,26 @@ class Session implements Serializable {
     toUser.socket.emit(EmittedEvents.MESSAGE_SENT, {
       ...chatMessage.serialize(),
       private: true
+    });
+  }
+
+  /**
+   * Adds the given user to the list of users that raised their hand. If the
+   * user is already in the list, nothing happens. The method notifies all
+   * users in the session of the new raised hand.
+   *
+   * @param user User that raised their hand
+   */
+  public raiseHand(user: User) {
+    if (!this.#raisedHands.includes(user)) {
+      this.#raisedHands.push(user);
+    }
+
+    this.notifyUsers({
+      eventId: "USER_RAISED_HAND",
+      eventData: {
+        userId: user.id
+      }
     });
   }
 
