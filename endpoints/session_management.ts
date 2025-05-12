@@ -192,6 +192,26 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   });
 
   /**
+   * Returns a serialised version of the last 100 messages in the user's
+   * current session. If the user is not in any session, an error is issued.
+   */
+  socket.on(EndpointNames.GET_MESSAGES, (data, callback) => {
+    const { session } = user;
+
+    if (!session) {
+      logger.warn(EndpointNames.GET_MESSAGES, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    logger.debug(EndpointNames.GET_MESSAGES, "Getting messages for session", session.name);
+    callback(util.createCommandResponse(data, ErrorCodes.OK, session.getMessages()));
+  });
+
+  /**
    * Sends a given message to all users in the user's current session. This also
    * includes the sender itself. If the user not in any session, an error is
    * issued.

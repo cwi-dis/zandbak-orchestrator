@@ -14,6 +14,7 @@ enum EndpointNames {
 
   SEND_MESSAGE = "SendMessage",
   SEND_MESSAGE_TO_ALL = "SendMessageToAll",
+  GET_MESSAGES = "GetMessages",
 
   SEND_SCENE_EVENT_TO_MASTER = "SendSceneEventToMaster",
   SEND_SCENE_EVENT_TO_USER = "SendSceneEventToUser",
