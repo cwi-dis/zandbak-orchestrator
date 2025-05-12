@@ -235,6 +235,27 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   });
 
   /**
+   * Sets the raised hand status for the current user in the user's current session.
+   * If the user is not in any session, an error is issued.
+   */
+  socket.on(EndpointNames.RAISE_HAND, (data, callback) => {
+    const { session } = user;
+
+    if (!session) {
+      logger.warn(EndpointNames.RAISE_HAND, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    logger.debug(EndpointNames.RAISE_HAND, "Raising hand for user", user.name, "in session", session.name);
+    session.raiseHand(user);
+    callback(util.createCommandResponse(data, ErrorCodes.OK));
+  });
+
+  /**
    * Sends a given message from the current user to the user identified by the
    * given user ID. If the receiver is not in the same session or the sender is
    * not in any session, an error is issued.
