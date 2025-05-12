@@ -299,6 +299,16 @@ class Session implements Serializable {
   }
 
   /**
+   * Returns the list of users that raised their hand in this session. The
+   * returned list is a serialised version of the users.
+   *
+   * @returns An array of all users that raised their hand in this session
+   */
+  public getRaisedHands(): Array<Dict> {
+    return this.#raisedHands.map((r) => r.serialize());
+  }
+
+  /**
    * Returns the chat messages of this session. The messages are returned in
    * reverse order, i.e. the most recent message is the first one in the array.
    * The number of messages returned is limited by the given limit. If no limit
