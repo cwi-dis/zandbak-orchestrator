@@ -266,6 +266,93 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     session.sendMessage(user, receiver, message);
     callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
+
+  /**
+   * Sets the raised hand status for the current user in the user's current session.
+   * If the user is not in any session, an error is issued.
+   */
+  socket.on(EndpointNames.RAISE_HAND, (data, callback) => {
+    const { session } = user;
+
+    if (!session) {
+      logger.warn(EndpointNames.RAISE_HAND, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    logger.debug(EndpointNames.RAISE_HAND, "Raising hand for user", user.name, "in session", session.name);
+    session.raiseHand(user);
+    callback(util.createCommandResponse(data, ErrorCodes.OK));
+  });
+
+  /**
+   * Clears the raised hand status for the user identified by the given user ID
+   * in the user's current session. A user can clear their own raised hand, or
+   * if the user is the session administrator, clear the raised hand for
+   * any other user in the session. If the user is not in any session, an error
+   * is issued.
+   */
+  socket.on(EndpointNames.CLEAR_RAISED_HAND, (data, callback) => {
+    const { userId } = data;
+    const { session } = user;
+
+    if (!session) {
+      logger.warn(EndpointNames.CLEAR_RAISED_HAND, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    const userToClear = session.getUser(userId);
+
+    if (!userToClear) {
+      logger.warn(EndpointNames.CLEAR_RAISED_HAND, "User with ID", userId, "is not in session", session.name);
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_SAME_SESSION
+      ));
+    }
+
+    logger.debug(EndpointNames.CLEAR_RAISED_HAND, "Clearing raised hand for user", user.name, "in session", session.name);
+
+    if (userToClear == user || session.isMaster(user)) {
+      session.clearRaisedHand(userToClear);
+      callback(util.createCommandResponse(data, ErrorCodes.OK));
+    } else {
+      logger.warn(EndpointNames.CLEAR_RAISED_HAND, "User with ID", userId, "is not authorized to clear raised hand for user", user.name);
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_DELETE_UNAUTHORIZED
+      ));
+    }
+  });
+
+  /**
+   * Returns a list of all users with their raised hand status in the user's
+   * current session. If the user is not in any session, an error is issued.
+   */
+  socket.on(EndpointNames.GET_RAISED_HANDS, (data, callback) => {
+    const { session } = user;
+
+    if (!session) {
+      logger.warn(EndpointNames.GET_RAISED_HANDS, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    logger.debug(EndpointNames.GET_RAISED_HANDS, "Getting raised hands for session", session.name);
+    callback(util.createCommandResponse(data, ErrorCodes.OK, session.getRaisedHands()));
+  });
 };
 
 export default installHandlers;
