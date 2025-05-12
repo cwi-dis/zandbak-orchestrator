@@ -282,6 +282,23 @@ class Session implements Serializable {
   }
 
   /**
+   * Clears the raised hand of the given user. If the user is not in the
+   * raised hand list, nothing happens. The method notifies all users in the
+   * session of the cleared raised hand.
+   *
+   * @param user User whose raised hand shall be cleared
+   */
+  public clearRaisedHand(user: User) {
+    this.#raisedHands = this.#raisedHands.filter((u) => u.id != user.id);
+    this.notifyUsers({
+      eventId: "USER_CLEARED_RAISED_HAND",
+      eventData: {
+        userId: user.id
+      }
+    });
+  }
+
+  /**
    * Returns the chat messages of this session. The messages are returned in
    * reverse order, i.e. the most recent message is the first one in the array.
    * The number of messages returned is limited by the given limit. If no limit
