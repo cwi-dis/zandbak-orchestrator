@@ -3,7 +3,7 @@
   "version": "2.7.0",
   "scripts": {
     "start": "node --enable-source-maps bin/build.js",
-    "build": "webpack && git rev-parse HEAD > REVISION",
+    "build": "webpack",
     "lint": "eslint .",
     "dump": "node scripts/dump.js",
     "logs": "node scripts/logreader.js"
