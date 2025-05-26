@@ -6,22 +6,26 @@ services:
     environment:
       - PORT=8090
       - LOG_LEVEL=debug
+      - MONGODB_CONNECTION=mongodb://user:pass@mongodb
     volumes:
       - ./config/:/code/config
       - ./.env:/code/.env
     ports:
       - "8090:8090"
-      - "8091:8091"
-      - "8092:8092"
-      - "8093:8093"
-      - "8094:8094"
-      - "8095:8095"
-      - "8096:8096"
-      - "8097:8097"
-      - "8098:8098"
-      - "8099:8099"
     command: yarn start
     logging:
       options:
         max-size: "200k"
         max-file: "3"
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongodb/mongodb-community-server:8.0-ubi8
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data/db
+

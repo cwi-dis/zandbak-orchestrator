@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import mongoose from "mongoose";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
@@ -16,8 +17,12 @@ import installUserDataHandlers from "./endpoints/user_data";
 import installSceneEventHandlers from "./endpoints/scene_events";
 import installStreamHandlers from "./endpoints/data_streams";
 
-const [ PORT ] = getFromEnvironment(["PORT"]);
+const [ PORT, MONGODB_CONNECTION ] = getFromEnvironment(["PORT", "MONGODB_CONNECTION"]);
 const [ LOG_SERVER, EXTERNAL_HOSTNAME ] = getFromEnvironment(["LOG_SERVER", "EXTERNAL_HOSTNAME"], null);
+
+mongoose.connect(MONGODB_CONNECTION).then((connection) => {
+  logger.info("MongoDB connection established:", connection);
+});
 
 /**
  * Print version information and current HEAD revision if available.
