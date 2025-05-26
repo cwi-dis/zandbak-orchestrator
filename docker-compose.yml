@@ -6,7 +6,7 @@ services:
     environment:
       - PORT=8090
       - LOG_LEVEL=debug
-      - CONN_STR=mongodb://user:pass@mongodb
+      - MONGODB_CONNECTION=mongodb://user:pass@mongodb
     volumes:
       - ./config/:/code/config
       - ./.env:/code/.env
