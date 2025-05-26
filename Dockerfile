@@ -1,13 +1,13 @@
 FROM ubuntu:24.04
 
+RUN apt update && \
+    apt install -y npm && \
+    npm install -g yarn
+
 ADD . /code/
 ADD ./package[s] /packages
 
 WORKDIR /code
-
-RUN apt update && \
-    apt install -y npm && \
-    npm install -g yarn
 
 RUN yarn install && \
     yarn build && \
