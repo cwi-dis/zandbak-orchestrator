@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
@@ -8,6 +9,23 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ["presenter"], default: "presenter"},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
+});
+
+userSchema.pre("save", async function (next) {
+  this.updatedAt = new Date();
+
+  if (!this.isModified("password")) {
+    return next();
+  }
+
+  try {
+    this.salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, this.salt);
+
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 const sessionSchema = new mongoose.Schema({
