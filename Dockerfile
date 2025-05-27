@@ -1,7 +1,6 @@
-FROM ubuntu:24.04
+FROM alpine:3.21.3
 
-RUN apt update && \
-    apt install -y npm && \
+RUN apk add --no-cache npm && \
     npm install -g yarn
 
 ADD . /code/
