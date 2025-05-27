@@ -11,6 +11,7 @@
   "author": "Thomas Röggla",
   "license": "BSD-2-Clause",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^16.3.1",
     "express": "^4.21.2",
     "mongoose": "^8.15.0",
