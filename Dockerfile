@@ -1,17 +1,21 @@
 FROM alpine:3.21.3
 
+WORKDIR /code
+EXPOSE 8090
+
 RUN apk add --no-cache npm && \
     npm install -g yarn
 
-ADD . /code/
 ADD ./package[s] /packages
 
-WORKDIR /code
+ADD ./package.json /code/
+ADD ./yarn.lock /code/
 
-RUN yarn install && \
-    yarn build && \
+RUN yarn install
+
+ADD . /code
+
+RUN yarn build && \
     yarn cache clean --all
-
-EXPOSE 8090
 
 CMD ["yarn", "start"]
