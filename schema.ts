@@ -28,6 +28,10 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+userSchema.methods.validatePassword = async function (password: string) {
+  return bcrypt.compare(password, this.password);
+};
+
 const sessionSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
