@@ -6,7 +6,7 @@ services:
     environment:
       - PORT=8090
       - LOG_LEVEL=debug
-      - MONGODB_CONNECTION=mongodb://user:pass@mongodb
+      - MONGODB_CONNECTION=mongodb://user:pass@mongodb/induxr?authSource=admin
     volumes:
       - ./config/:/code/config
       - ./.env:/code/.env
