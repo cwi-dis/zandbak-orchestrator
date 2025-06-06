@@ -2,6 +2,7 @@ enum ErrorCodes {
   OK = 0,
   MISSING_CREDENTIALS = 204,
   USER_EXISTS = 205,
+  INVALID_CREDENTIALS = 206,
 
   SESSION_ADD_FAILED = 404,
   SESSION_DELETE_UNAUTHORIZED = 501,
@@ -30,6 +31,7 @@ enum ErrorCodes {
 export const ErrorMessages: { [key in ErrorCodes]: string } = {
   [ErrorCodes.OK]: "OK",
   [ErrorCodes.MISSING_CREDENTIALS]: "The user credentials are missing",
+  [ErrorCodes.INVALID_CREDENTIALS]: "The user credentials are invalid",
   [ErrorCodes.USER_EXISTS]: "A user with the same name is already logged in",
 
   [ErrorCodes.SESSION_ADD_FAILED]: "Could not create session",
