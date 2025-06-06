@@ -196,6 +196,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * current session. If the user is not in any session, an error is issued.
    */
   socket.on(EndpointNames.GET_MESSAGES, (data, callback) => {
+    const { count }: { count: util.Optional<number> } = data;
     const { session } = user;
 
     if (!session) {
@@ -208,7 +209,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     }
 
     logger.debug(EndpointNames.GET_MESSAGES, "Getting messages for session", session.name);
-    callback(util.createCommandResponse(data, ErrorCodes.OK, session.getMessages()));
+    callback(util.createCommandResponse(data, ErrorCodes.OK, session.getMessages(count)));
   });
 
   /**
