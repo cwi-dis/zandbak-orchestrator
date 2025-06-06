@@ -401,7 +401,8 @@ class Session implements Serializable {
       sessionUserDefinitions: this.#users.map((u) => u.serialize()),
       sessionProtocol: this.sessionProtocol,
       sessionChannels: this.channels,
-      sessionChat: this.#chat.map((c) => c.serialize())
+      sessionChat: this.getMessages(),
+      sessionRaisedHands: this.getRaisedHands()
     };
   }
 }
