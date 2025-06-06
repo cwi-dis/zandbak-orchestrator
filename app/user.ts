@@ -13,6 +13,7 @@ class User implements Serializable {
   #loggedIn: boolean = false;
   #canBeMaster: boolean = true;
   #userData: Map<string, any>;
+  _userType: "user" | "presenter" = "user";
 
   #dataStreams: Map<string, DataStream>;
   #streamSubscriptions: Map<string, StreamSubscription>;
@@ -43,6 +44,10 @@ class User implements Serializable {
 
   public get userData() {
     return Object.fromEntries(this.#userData);
+  }
+
+  public get userType() {
+    return this._userType;
   }
 
   public get dataStreams() {
@@ -211,6 +216,13 @@ class User implements Serializable {
       userData: Object.fromEntries(this.#userData),
       sfuData: this.session?.transport.getUrls(this) || {},
     };
+  }
+}
+
+export class Presenter extends User {
+  public constructor(name: string, socket: io.Socket, id?: string) {
+    super(name, socket, id);
+    this._userType = "presenter";
   }
 }
 

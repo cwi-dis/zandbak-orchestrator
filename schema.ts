@@ -9,6 +9,24 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ["presenter"], default: "presenter"},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
+}, {
+  statics: {
+    login: async function (username: string, password: string) {
+      const user = await this.findOne({ username });
+
+      if (!user) {
+        return null;
+      }
+
+      const isValid = await bcrypt.compare(password, user.password);
+
+      if (!isValid) {
+        return null;
+      }
+
+      return user;
+    }
+  }
 });
 
 userSchema.pre("save", async function (next) {
@@ -27,10 +45,6 @@ userSchema.pre("save", async function (next) {
     next(error);
   }
 });
-
-userSchema.methods.validatePassword = async function (password: string) {
-  return bcrypt.compare(password, this.password);
-};
 
 const sessionSchema = new mongoose.Schema({
   title: { type: String, required: true },
