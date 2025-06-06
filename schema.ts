@@ -32,6 +32,22 @@ userSchema.methods.validatePassword = async function (password: string) {
   return bcrypt.compare(password, this.password);
 };
 
+userSchema.statics.login = async function (username: string, password: string) {
+  const user = await this.findOne({ username });
+
+  if (!user) {
+    return null;
+  }
+
+  const isValid = await user.validatePassword(password);
+
+  if (!isValid) {
+    return null;
+  }
+
+  return user;
+};
+
 const sessionSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
