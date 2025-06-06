@@ -1,10 +1,11 @@
 import io from "socket.io";
 
-import * as util from "../util";
+import { User as UserModel} from "../schema";
+import { Optional, createCommandResponse, createResponse } from "../util";
 import logger from "../logger";
 import EndpointNames from "./endpoint_names";
 import Orchestrator from "../app/orchestrator";
-import User from "../app/user";
+import User, { Presenter } from "../app/user";
 import ErrorCodes  from "./error_codes";
 
 /**
@@ -23,12 +24,12 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
      * enclosing promise. If the received data contained no username, causes
      * the promise to reject.
      */
-    socket.on(EndpointNames.LOGIN, (data, callback) => {
-      const { userName, id }: { userName: string | undefined, id: string | undefined } = data;
+    socket.on(EndpointNames.LOGIN, async (data, callback) => {
+      const { userName, password, id }: { userName: Optional<string>, password: Optional<string>, id: Optional<string> } = data;
       logger.debug(EndpointNames.LOGIN, "Starting login process with username", userName);
 
       if (!userName) {
-        callback(util.createResponse(ErrorCodes.MISSING_CREDENTIALS));
+        callback(createResponse(ErrorCodes.MISSING_CREDENTIALS));
 
         logger.warn(EndpointNames.LOGIN, "No username supplied");
         reject("No username supplied");
@@ -36,8 +37,35 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
         return;
       }
 
+      // User supplied a password, try to authenticate with the database
+      if (password) {
+        logger.debug(EndpointNames.LOGIN, "Password supplied, trying database authentication");
+
+        const account = await UserModel.login(userName, password);
+
+        if (!account) {
+          callback(createResponse(ErrorCodes.INVALID_CREDENTIALS));
+
+          logger.warn(EndpointNames.LOGIN, "Invalid credentials for user", userName);
+          reject("Invalid credentials");
+
+          return;
+        }
+
+        logger.debug(EndpointNames.LOGIN, "User", userName, "authenticated with database");
+        const user = new Presenter(userName, socket, id);
+        orchestrator.addUser(user);
+
+        resolve(user);
+
+        return callback(createCommandResponse(data, ErrorCodes.OK, {
+          userId: user.id
+        }));
+      }
+
+      // Check if a user with the given username already exists in the orchestrator
       if (orchestrator.findUser(userName)) {
-        callback(util.createResponse(ErrorCodes.USER_EXISTS));
+        callback(createResponse(ErrorCodes.USER_EXISTS));
 
         logger.warn(EndpointNames.LOGIN, "A user with the username", userName, "is already logged in");
         reject("A user with the same username is already logged in");
@@ -45,13 +73,14 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
         return;
       }
 
+      // Create a new user without database authentication
       const user = new User(userName, socket, id);
       orchestrator.addUser(user);
 
       logger.debug(EndpointNames.LOGIN, "Added user", user.name, "to orchestrator");
       resolve(user);
 
-      callback(util.createCommandResponse(data, ErrorCodes.OK, {
+      callback(createCommandResponse(data, ErrorCodes.OK, {
         userId: user.id
       }));
     });
@@ -115,7 +144,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     logger.debug(EndpointNames.LOGOUT, `Destroyed ${numSessionsCleaned} dangling sessions`);
 
     orchestrator.removeUser(user);
-    callback?.(util.createCommandResponse(data, ErrorCodes.OK));
+    callback?.(createCommandResponse(data, ErrorCodes.OK));
   });
 
   /**
