@@ -3,7 +3,7 @@ import io from "socket.io";
 
 import Session from "./session";
 import Serializable from "./serializable";
-import { mapHashToDict, Dict } from "../util";
+import { mapHashToDict, Dict, Transform } from "../util";
 import DataStream from "./data_stream";
 import StreamSubscription from "./stream_subscription";
 import EmittedEvents from "./emitted_events";
@@ -13,12 +13,14 @@ class User implements Serializable {
   #loggedIn: boolean = false;
   #canBeMaster: boolean = true;
   #userData: Map<string, any>;
-  _userType: "user" | "presenter" = "user";
 
   #dataStreams: Map<string, DataStream>;
   #streamSubscriptions: Map<string, StreamSubscription>;
 
+  _userType: "user" | "presenter" = "user";
+
   public session?: Session;
+  public transform?: Transform;
 
   public constructor(public name: string, public socket: io.Socket, id: string | undefined) {
     if (id) {
@@ -215,6 +217,7 @@ class User implements Serializable {
       userName: this.name,
       userData: Object.fromEntries(this.#userData),
       sfuData: this.session?.transport.getUrls(this) || {},
+      transform: this.transform
     };
   }
 }

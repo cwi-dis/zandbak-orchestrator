@@ -236,3 +236,14 @@ export function getExternalHostname(socket: Socket): string {
 
   throw Error("Client headers don't contain server hostname");
 }
+
+export type Vector3 = { x: number, y: number, z: number };
+export type Quaternion = { x: number, y: number, z: number, w: number };
+
+export type Transform = {
+  position: Vector3;
+  rotation: Quaternion;
+  bones: {
+    [name: string]: { position: Vector3, rotation: Quaternion }
+  }
+};
