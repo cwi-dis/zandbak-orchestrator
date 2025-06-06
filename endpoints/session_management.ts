@@ -321,7 +321,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
 
     logger.debug(EndpointNames.CLEAR_RAISED_HAND, "Clearing raised hand for user", user.name, "in session", session.name);
 
-    if (userToClear == user || session.isMaster(user)) {
+    if (userToClear == user || session.isMaster(user) || user.userType == "presenter") {
       session.clearRaisedHand(userToClear);
       callback(util.createCommandResponse(data, ErrorCodes.OK));
     } else {
@@ -329,7 +329,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
 
       return callback(util.createCommandResponse(
         data,
-        ErrorCodes.SESSION_DELETE_UNAUTHORIZED
+        ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED
       ));
     }
   });
