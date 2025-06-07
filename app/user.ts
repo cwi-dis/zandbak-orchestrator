@@ -207,6 +207,15 @@ class User implements Serializable {
   }
 
   /**
+   * Checks if this user has raised their hand in the current session.
+   *
+   * @returns True if this user has a hand raised, false otherwise
+   */
+  public hasHandRaised(): boolean {
+    return !!this.session?.raisedHands.find((u) => u.id == this.id);
+  }
+
+  /**
    * Returns the user's properties as an object
    *
    * @returns Object with serialised user fields

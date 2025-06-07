@@ -52,6 +52,10 @@ class Session implements Serializable {
     return this.#channels.map((channel) => channel.split("/")[1]);
   }
 
+  public get raisedHands() {
+    return this.#raisedHands;
+  }
+
   /**
    * Sets the given user to be the administrator of the session.
    *
@@ -290,6 +294,7 @@ class Session implements Serializable {
    */
   public clearRaisedHand(user: User) {
     this.#raisedHands = this.#raisedHands.filter((u) => u.id != user.id);
+
     this.notifyUsers({
       eventId: "USER_CLEARED_RAISED_HAND",
       eventData: {
