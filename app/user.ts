@@ -3,7 +3,7 @@ import io from "socket.io";
 
 import Session from "./session";
 import Serializable from "./serializable";
-import { mapHashToDict, Dict, Transform } from "../util";
+import { mapHashToDict, Dict, Transform, DeviceType } from "../util";
 import DataStream from "./data_stream";
 import StreamSubscription from "./stream_subscription";
 import EmittedEvents from "./emitted_events";
@@ -22,7 +22,7 @@ class User implements Serializable {
   public session?: Session;
   public transform?: Transform;
 
-  public constructor(public name: string, public socket: io.Socket, id: string | undefined) {
+  public constructor(public name: string, public socket: io.Socket, public deviceType: DeviceType, id: string | undefined) {
     if (id) {
       this.#id = id;
     }
@@ -226,14 +226,15 @@ class User implements Serializable {
       userName: this.name,
       userData: Object.fromEntries(this.#userData),
       sfuData: this.session?.transport.getUrls(this) || {},
-      transform: this.transform
+      transform: this.transform,
+      deviceType: this.deviceType
     };
   }
 }
 
 export class Presenter extends User {
-  public constructor(name: string, socket: io.Socket, id?: string) {
-    super(name, socket, id);
+  public constructor(name: string, socket: io.Socket, deviceType: DeviceType, id?: string) {
+    super(name, socket, deviceType, id);
     this._userType = "presenter";
   }
 }
