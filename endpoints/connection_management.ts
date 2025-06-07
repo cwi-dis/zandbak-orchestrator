@@ -1,7 +1,7 @@
 import io from "socket.io";
 
 import { User as UserModel} from "../schema";
-import { Optional, createCommandResponse, createResponse } from "../util";
+import { Optional, createCommandResponse, createResponse, DeviceType } from "../util";
 import logger from "../logger";
 import EndpointNames from "./endpoint_names";
 import Orchestrator from "../app/orchestrator";
@@ -25,7 +25,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
      * the promise to reject.
      */
     socket.on(EndpointNames.LOGIN, async (data, callback) => {
-      const { userName, password, id }: { userName: Optional<string>, password: Optional<string>, id: Optional<string> } = data;
+      const { userName, password, deviceType, id }: { userName: Optional<string>, password: Optional<string>, deviceType: Optional<DeviceType>, id: Optional<string> } = data;
       logger.debug(EndpointNames.LOGIN, "Starting login process with username", userName);
 
       if (!userName) {
@@ -53,7 +53,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
         }
 
         logger.debug(EndpointNames.LOGIN, "User", userName, "authenticated with database");
-        const user = new Presenter(userName, socket, id);
+        const user = new Presenter(userName, socket, deviceType || "unknown", id);
         orchestrator.addUser(user);
 
         resolve(user);
@@ -74,7 +74,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
       }
 
       // Create a new user without database authentication
-      const user = new User(userName, socket, id);
+      const user = new User(userName, socket, deviceType || "unknown", id);
       orchestrator.addUser(user);
 
       logger.debug(EndpointNames.LOGIN, "Added user", user.name, "to orchestrator");
