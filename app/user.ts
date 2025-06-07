@@ -227,7 +227,8 @@ class User implements Serializable {
       userData: Object.fromEntries(this.#userData),
       sfuData: this.session?.transport.getUrls(this) || {},
       transform: this.transform,
-      deviceType: this.deviceType
+      deviceType: this.deviceType,
+      hasHandRaised: this.hasHandRaised()
     };
   }
 }
