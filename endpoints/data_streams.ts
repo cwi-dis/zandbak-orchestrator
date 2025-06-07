@@ -227,6 +227,15 @@ const installHandlers = (user: User) => {
       return;
     }
 
+    if (channel == "transform") {
+      const transform: util.Transform = JSON.parse(data);
+      const user = session.getUser(transform.userId);
+
+      if (user) {
+        user.transform = transform;
+      }
+    }
+
     session.broadcast(user, channel, data);
   });
 };

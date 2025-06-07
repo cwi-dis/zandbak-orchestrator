@@ -241,9 +241,11 @@ export type Vector3 = { x: number, y: number, z: number };
 export type Quaternion = { x: number, y: number, z: number, w: number };
 
 export type Transform = {
+  userId: string;
+  timestamp: number;
   position: Vector3;
   rotation: Quaternion;
   bones: {
-    [name: string]: { position: Vector3, rotation: Quaternion }
+    [name: string]: { pos: Vector3, rot: Quaternion }
   }
 };
