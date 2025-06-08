@@ -305,6 +305,41 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   });
 
   /**
+   * Sets the current presentation for the user's current session. If the user
+   * is not in any session, an error is issued. Only presenters or the session
+   * administrator are allowed to set the current presentation.
+   */
+  socket.on(EndpointNames.SET_SESSION_PRESENTATION, (data, callback) => {
+    const { session } = user;
+    const { presentation } = data;
+
+    if (!session) {
+      logger.warn(EndpointNames.SET_SESSION_PRESENTATION, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    if (user.userType !== "presenter" && !session.isMaster(user)) {
+      logger.warn(EndpointNames.SET_SESSION_PRESENTATION, "User", user.name, "is not allowed to set session presentation");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED
+      ));
+    }
+
+    session.currentPresentation = presentation;
+    logger.debug(EndpointNames.SET_SESSION_PRESENTATION, "Setting current presentation for session", session.name, "to", presentation.name);
+    callback(util.createCommandResponse(data, ErrorCodes.OK, {
+      sessionId: session.id,
+      sessionCurrentPresentation: session.currentPresentation
+    }));
+  });
+
+  /**
    * Sets the raised hand status for the current user in the user's current session.
    * If the user is not in any session, an error is issued.
    */
