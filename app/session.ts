@@ -9,6 +9,12 @@ import Scenario from "./scenario";
 import EmittedEvents from "./emitted_events";
 import ChatMessage from "./chat_message";
 
+interface Presentation {
+  name: string;
+  description: string;
+  presenter: string;
+}
+
 class Session implements Serializable {
   #id: string = uuidv4();
   #users: Array<User> = [];
@@ -18,6 +24,10 @@ class Session implements Serializable {
   #master?: User;
   #transport: Transport;
   #channels: Array<string>;
+
+  status: string = "scheduled";
+  schedule: Array<Presentation> = [];
+  currentPresentation?: Presentation;
 
   public constructor(
     public name: string,
