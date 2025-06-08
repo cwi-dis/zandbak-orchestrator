@@ -1,6 +1,7 @@
 import * as util from "../util";
 import logger from "../logger";
 
+import { Session as SessionModel } from "../schema";
 import EndpointNames from "./endpoint_names";
 import Orchestrator from "../app/orchestrator";
 import User from "../app/user";
@@ -64,6 +65,52 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         ErrorCodes.SESSION_ADD_FAILED
       ));
     }
+  });
+
+  /**
+   * Schedules a session from a session defined in the database by passing the
+   * session ID as parameter. The creating user is added as an administrator to
+   * the session. If no session with the given ID exists, an error is returned.
+   */
+  socket.on(EndpointNames.SCHEDULE_SESSION, async (data, callback) => {
+    const { sessionId } = data;
+
+    const dbSession = await SessionModel.findById(sessionId);
+
+    if (!dbSession) {
+      logger.warn(EndpointNames.SCHEDULE_SESSION, "Session with ID", sessionId, "not found");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_NOT_FOUND));
+    }
+
+    let externalHostname = EXTERNAL_HOSTNAME;
+
+    if (!externalHostname || externalHostname == "dynamic") {
+      logger.debug(EndpointNames.ADD_SESSION, "Trying to determine external hostname from request headers");
+      externalHostname = util.getExternalHostname(socket);
+      logger.debug(EndpointNames.ADD_SESSION, "External hostname:", externalHostname);
+    }
+
+    const session = new Session(
+      dbSession.title,
+      dbSession.description,
+      "socketio",
+      new Scenario("", "", ""),
+      ["transform"],
+      orchestrator.transportManager,
+      externalHostname
+    );
+
+    logger.debug(EndpointNames.ADD_SESSION, "Adding user", user.name, "as admin to new session", session.name);
+
+    session.addUser(user);
+    session.setAdministrator(user);
+    orchestrator.addSession(session);
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      session.serialize()
+    ));
   });
 
   /**

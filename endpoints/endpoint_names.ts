@@ -10,6 +10,7 @@ enum EndpointNames {
   GET_SESSIONS = "GetSessions",
   SET_SESSION_STATUS = "SetSessionStatus",
   SET_SESSION_PRESENTATION = "SetSessionPresentation",
+  SCHEDULE_SESSION = "ScheduleSession",
 
   GET_USER_DATA = "GetUserData",
   UPDATE_USER_DATA = "UpdateUserDataJson",
