@@ -8,12 +8,7 @@ import TransportManager, { TransportType } from "../transport/manager/transport_
 import Scenario from "./scenario";
 import EmittedEvents from "./emitted_events";
 import ChatMessage from "./chat_message";
-
-interface Presentation {
-  name: string;
-  description: string;
-  presenter: string;
-}
+import Presentation from "./presentation";
 
 class Session implements Serializable {
   #id: string = uuidv4();
@@ -417,7 +412,8 @@ class Session implements Serializable {
       sessionProtocol: this.sessionProtocol,
       sessionChannels: this.channels,
       sessionChat: this.getMessages(),
-      sessionRaisedHands: this.getRaisedHands()
+      sessionRaisedHands: this.getRaisedHands(),
+      sessionCurrentPresentation: this.currentPresentation?.serialize(),
     };
   }
 }
