@@ -20,7 +20,7 @@ class Session implements Serializable {
   #transport: Transport;
   #channels: Array<string>;
 
-  status: string = "scheduled";
+  #status: string = "scheduled";
   schedule: Array<Presentation> = [];
   currentPresentation?: Presentation;
 
@@ -59,6 +59,21 @@ class Session implements Serializable {
 
   public get raisedHands() {
     return this.#raisedHands;
+  }
+
+  public get status() {
+    return this.#status;
+  }
+
+  public set status(status: string) {
+    this.#status = status;
+
+    this.notifyUsers({
+      eventId: "SESSION_STATUS_CHANGED",
+      eventData: {
+        status: this.#status
+      }
+    });
   }
 
   /**
