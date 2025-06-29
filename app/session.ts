@@ -192,6 +192,42 @@ class Session implements Serializable {
   }
 
   /**
+   * Switches the current presentation to the next one in the schedule.
+   * If there is no current presentation, the first one in the schedule will
+   * be selected. If there is no schedule or all presentations have been shown,
+   * the method returns undefined.
+   *
+   * If the current presentation is changed, all users in the session
+   * will be notified of the change.
+   *
+   * @returns The current presentation in the session, or undefined if there is
+   * no schedule or all presentations have been shown.
+   */
+  public gotoNextPresentation(): Optional<Presentation> {
+    if (this.schedule.length == 0) {
+      return;
+    }
+
+    if (!this.currentPresentation) {
+      this.currentPresentation = this.schedule[0];
+    }
+
+    const currentIndex = this.schedule.indexOf(this.currentPresentation);
+    const nextPresentation = this.schedule.at(currentIndex + 1);
+
+    this.currentPresentation = nextPresentation;
+
+    this.notifyUsers({
+      eventId: "PRESENTATION_CHANGED",
+      eventData: {
+        currentPresentation: this.currentPresentation?.serialize()
+      }
+    });
+
+    return this.currentPresentation;
+  }
+
+  /**
    * Sends a given message to all users currently in the session. The message
    * can be any serialisable object.
    *
