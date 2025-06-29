@@ -358,7 +358,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    */
   socket.on(EndpointNames.SET_SESSION_PRESENTATION, (data, callback) => {
     const { session } = user;
-    const { presentation } = data;
 
     if (!session) {
       logger.warn(EndpointNames.SET_SESSION_PRESENTATION, "User", user.name, "is not in any session");
@@ -378,11 +377,53 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
-    session.currentPresentation = presentation;
-    logger.debug(EndpointNames.SET_SESSION_PRESENTATION, "Setting current presentation for session", session.name, "to", presentation.name);
+    const currentPresentation = session.gotoNextPresentation();
+
+    logger.debug(EndpointNames.SET_SESSION_PRESENTATION, "Setting current presentation for session", session.name, "to", currentPresentation?.name);
     callback(util.createCommandResponse(data, ErrorCodes.OK, {
       sessionId: session.id,
-      sessionCurrentPresentation: session.currentPresentation
+      sessionCurrentPresentation: currentPresentation?.serialize() || null
+    }));
+  });
+
+  /**
+   * Changes the current presentation slide for the user's current session.
+   * If the user is not in any session, an error is issued. Only presenters or
+   * the session administrator are allowed to change the current presentation
+   * slide.
+   * The endpoint accepts a `slideOffset` parameter which is added to the
+   * current slide index to determine the new slide index. If the offset is
+   * negative, the slide index is decreased, if it is positive, the slide index
+   * is increased.
+   */
+  socket.on(EndpointNames.CHANGE_SLIDE, (data, callback) => {
+    const { session } = user;
+    const { slideOffset = 0 }: { slideOffset: number } = data;
+
+    if (!session) {
+      logger.warn(EndpointNames.CHANGE_SLIDE, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    if (user.userType !== "presenter" && !session.isMaster(user)) {
+      logger.warn(EndpointNames.CHANGE_SLIDE, "User", user.name, "is not allowed to set session presentation");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED
+      ));
+    }
+
+    session.changeSlide(slideOffset);
+
+    logger.debug(EndpointNames.CHANGE_SLIDE, "Setting current presentation slide for session", session.name, "to", session.currentPresentation?.currentSlide);
+    callback(util.createCommandResponse(data, ErrorCodes.OK, {
+      sessionId: session.id,
+      sessionCurrentPresentation: session.currentPresentation?.serialize() || null
     }));
   });
 
