@@ -228,6 +228,35 @@ class Session implements Serializable {
   }
 
   /**
+   * Changes the current slide of the current presentation by the given number
+   * of slides. If the current presentation is not set, nothing happens.
+   * If the slide offset is smaller than zero, the current slide will be set to
+   * the first slide.
+   *
+   * @param slideOffset Offset to change the current slide by. If the offset is
+   * positive, the slide will be changed to the next one. If it is negative, the
+   * slide will be changed to the previous one.
+   */
+  public changeSlide(slideOffset: number) {
+    if (!this.currentPresentation) {
+      return;
+    }
+
+    this.currentPresentation.currentSlide += slideOffset;
+
+    if (this.currentPresentation.currentSlide < 0) {
+      this.currentPresentation.currentSlide = 0;
+    }
+
+    this.notifyUsers({
+      eventId: "SLIDE_CHANGED",
+      eventData: {
+        currentPresentation: this.currentPresentation.serialize()
+      }
+    });
+  }
+
+  /**
    * Sends a given message to all users currently in the session. The message
    * can be any serialisable object.
    *
