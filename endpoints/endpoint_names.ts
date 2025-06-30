@@ -1,5 +1,3 @@
-import { Dict } from "../util";
-
 enum EndpointNames {
   LOGIN = "Login",
   LOGOUT = "Logout",
@@ -42,20 +40,6 @@ enum EndpointNames {
   GET_NTP_TIME = "GetNTPTime",
   DUMP_DATA = "DumpData",
   TERMINATE_ORCHESTRATOR = "TerminateOrchestrator"
-}
-
-export type SessionEventName =
-  "USER_LEFT_SESSION" |
-  "USER_JOINED_SESSION" |
-  "USER_RAISED_HAND" |
-  "USER_CLEARED_RAISED_HAND" |
-  "SESSION_STATUS_CHANGED" |
-  "PRESENTATION_CHANGED" |
-  "SLIDE_CHANGED";
-
-export interface SessionEvent {
-  eventId: SessionEventName,
-  eventData: Dict
 }
 
 export default EndpointNames;

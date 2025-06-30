@@ -1,15 +1,15 @@
 import { v4 as uuidv4 } from "uuid";
-import { Dict, Optional } from "../util";
 
+import { Dict, Optional } from "../util";
 import Serializable from "./serializable";
 import User from "./user";
 import Transport from "../transport/transport";
 import TransportManager, { TransportType } from "../transport/manager/transport_manager";
 import Scenario from "./scenario";
-import EmittedEvents from "./emitted_events";
+import EmittedEvents, { SessionEvent, SessionEventName } from "./emitted_events";
 import ChatMessage from "./chat_message";
 import Presentation from "./presentation";
-import { SessionEvent, SessionEventName } from "endpoints/endpoint_names";
+
 
 class Session implements Serializable {
   #id: string = uuidv4();
