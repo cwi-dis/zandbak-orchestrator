@@ -495,6 +495,7 @@ class Session implements Serializable {
       sessionChat: this.getMessages(),
       sessionRaisedHands: this.getRaisedHands(),
       sessionCurrentPresentation: this.currentPresentation?.serialize(),
+      sessionPresentations: this.schedule.map((p) => p.serialize()),
       sessionStatus: this.#status
     };
   }
