@@ -9,6 +9,7 @@ import Scenario from "./scenario";
 import EmittedEvents from "./emitted_events";
 import ChatMessage from "./chat_message";
 import Presentation from "./presentation";
+import { SessionEvent, SessionEventName } from "endpoints/endpoint_names";
 
 class Session implements Serializable {
   #id: string = uuidv4();
@@ -277,7 +278,7 @@ class Session implements Serializable {
    *
    * @param message Message to send
    */
-  private notifyUsers(message: Dict) {
+  private notifyUsers(message: SessionEvent) {
     this.#users.forEach((u) => {
       u.socket.emit(EmittedEvents.SESSION_UPDATED, message);
     });
@@ -289,7 +290,7 @@ class Session implements Serializable {
    * @param eventId Event ID
    * @param eventData Event data
    */
-  public sendSessionUpdate(eventId: string, eventData: Dict) {
+  public sendSessionUpdate(eventId: SessionEventName, eventData: Dict) {
     this.notifyUsers({
       eventId, eventData
     });
