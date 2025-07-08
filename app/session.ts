@@ -1,19 +1,15 @@
 import { v4 as uuidv4 } from "uuid";
-import { Dict, Optional } from "../util";
 
+import { Dict, Optional } from "../util";
 import Serializable from "./serializable";
 import User from "./user";
 import Transport from "../transport/transport";
 import TransportManager, { TransportType } from "../transport/manager/transport_manager";
 import Scenario from "./scenario";
-import EmittedEvents from "./emitted_events";
+import EmittedEvents, { SessionEvent, SessionEventName } from "./emitted_events";
 import ChatMessage from "./chat_message";
+import Presentation from "./presentation";
 
-interface Presentation {
-  name: string;
-  description: string;
-  presenter: string;
-}
 
 class Session implements Serializable {
   #id: string = uuidv4();
@@ -25,7 +21,7 @@ class Session implements Serializable {
   #transport: Transport;
   #channels: Array<string>;
 
-  status: string = "scheduled";
+  #status: string = "scheduled";
   schedule: Array<Presentation> = [];
   currentPresentation?: Presentation;
 
@@ -64,6 +60,21 @@ class Session implements Serializable {
 
   public get raisedHands() {
     return this.#raisedHands;
+  }
+
+  public get status() {
+    return this.#status;
+  }
+
+  public set status(status: string) {
+    this.#status = status;
+
+    this.notifyUsers({
+      eventId: "SESSION_STATUS_CHANGED",
+      eventData: {
+        status: this.#status
+      }
+    });
   }
 
   /**
@@ -197,12 +208,77 @@ class Session implements Serializable {
   }
 
   /**
+   * Switches the current presentation to the next one in the schedule.
+   * If there is no current presentation, the first one in the schedule will
+   * be selected. If there is no schedule or all presentations have been shown,
+   * the method returns undefined.
+   *
+   * If the current presentation is changed, all users in the session
+   * will be notified of the change.
+   *
+   * @returns The current presentation in the session, or undefined if there is
+   * no schedule or all presentations have been shown.
+   */
+  public gotoNextPresentation(): Optional<Presentation> {
+    if (this.schedule.length == 0) {
+      return;
+    }
+
+    if (!this.currentPresentation) {
+      this.currentPresentation = this.schedule[0];
+    }
+
+    const currentIndex = this.schedule.indexOf(this.currentPresentation);
+    const nextPresentation = this.schedule.at(currentIndex + 1);
+
+    this.currentPresentation = nextPresentation;
+
+    this.notifyUsers({
+      eventId: "PRESENTATION_CHANGED",
+      eventData: {
+        currentPresentation: this.currentPresentation?.serialize()
+      }
+    });
+
+    return this.currentPresentation;
+  }
+
+  /**
+   * Changes the current slide of the current presentation by the given number
+   * of slides. If the current presentation is not set, nothing happens.
+   * If the slide offset is smaller than zero, the current slide will be set to
+   * the first slide.
+   *
+   * @param slideOffset Offset to change the current slide by. If the offset is
+   * positive, the slide will be changed to the next one. If it is negative, the
+   * slide will be changed to the previous one.
+   */
+  public changeSlide(slideOffset: number) {
+    if (!this.currentPresentation) {
+      return;
+    }
+
+    this.currentPresentation.currentSlide += slideOffset;
+
+    if (this.currentPresentation.currentSlide < 0) {
+      this.currentPresentation.currentSlide = 0;
+    }
+
+    this.notifyUsers({
+      eventId: "SLIDE_CHANGED",
+      eventData: {
+        currentPresentation: this.currentPresentation.serialize()
+      }
+    });
+  }
+
+  /**
    * Sends a given message to all users currently in the session. The message
    * can be any serialisable object.
    *
    * @param message Message to send
    */
-  private notifyUsers(message: Dict) {
+  private notifyUsers(message: SessionEvent) {
     this.#users.forEach((u) => {
       u.socket.emit(EmittedEvents.SESSION_UPDATED, message);
     });
@@ -214,7 +290,7 @@ class Session implements Serializable {
    * @param eventId Event ID
    * @param eventData Event data
    */
-  public sendSessionUpdate(eventId: string, eventData: Dict) {
+  public sendSessionUpdate(eventId: SessionEventName, eventData: Dict) {
     this.notifyUsers({
       eventId, eventData
     });
@@ -417,7 +493,10 @@ class Session implements Serializable {
       sessionProtocol: this.sessionProtocol,
       sessionChannels: this.channels,
       sessionChat: this.getMessages(),
-      sessionRaisedHands: this.getRaisedHands()
+      sessionRaisedHands: this.getRaisedHands(),
+      sessionCurrentPresentation: this.currentPresentation?.serialize(),
+      sessionPresentations: this.schedule.map((p) => p.serialize()),
+      sessionStatus: this.#status
     };
   }
 }
