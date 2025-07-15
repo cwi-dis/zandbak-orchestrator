@@ -191,6 +191,11 @@ class Session implements Serializable {
     }
 
     foundUser.isSpeaking = status;
+    this.sendSessionUpdate("USER_IS_SPEAKING", {
+      userId: foundUser.id,
+      isSpeaking: foundUser.isSpeaking
+    });
+
     return true;
   }
 
