@@ -521,6 +521,15 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on(EndpointNames.IS_SPEAKING, (data, callback) => {
     const { isSpeaking }: { isSpeaking: boolean } = data;
 
+    if (isSpeaking == undefined) {
+      logger.warn(EndpointNames.IS_SPEAKING, "isSpeaking parameter is not set");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_IS_SPEAKING_FLAG_NOT_SET
+      ));
+    }
+
     user.isSpeaking = isSpeaking;
     callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
