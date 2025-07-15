@@ -20,7 +20,8 @@ export type SessionEventName =
   "USER_DATA_UPDATED" |
   "SESSION_STATUS_CHANGED" |
   "PRESENTATION_CHANGED" |
-  "SLIDE_CHANGED";
+  "SLIDE_CHANGED" |
+  "USER_IS_SPEAKING";
 
 export interface SessionEvent {
   eventId: SessionEventName,

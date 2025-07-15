@@ -21,6 +21,7 @@ class User implements Serializable {
 
   public session?: Session;
   public transform?: Transform;
+  public isSpeaking: boolean = true;
 
   public constructor(public name: string, public socket: io.Socket, public deviceType: DeviceType, id: string | undefined) {
     if (id) {
@@ -229,7 +230,8 @@ class User implements Serializable {
       userType: this._userType,
       transform: this.transform,
       deviceType: this.deviceType,
-      hasHandRaised: this.hasHandRaised()
+      hasHandRaised: this.hasHandRaised(),
+      isSpeaking: this.isSpeaking
     };
   }
 }
