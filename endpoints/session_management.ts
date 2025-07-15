@@ -519,6 +519,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * the parameters.
    */
   socket.on(EndpointNames.IS_SPEAKING, (data, callback) => {
+    const { session } = user;
     const { isSpeaking }: { isSpeaking: boolean } = data;
 
     if (isSpeaking == undefined) {
@@ -530,7 +531,24 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
-    user.isSpeaking = isSpeaking;
+    if (!session) {
+      logger.warn(EndpointNames.IS_SPEAKING, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    if (!session.setSpeakingUser(user, isSpeaking)) {
+      logger.warn(EndpointNames.IS_SPEAKING, "Could not set isSpeaking flag for current user");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_IS_SPEAKING_FLAG_NOT_SET
+      ));
+    }
+
     callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
 };

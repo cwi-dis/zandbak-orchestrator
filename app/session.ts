@@ -175,6 +175,26 @@ class Session implements Serializable {
   }
 
   /**
+   * Sets the value of the isSpeaking flag for the given user and returns true
+   * if the flag was set successfully. If the given user is not in this session,
+   * false is returned.
+   *
+   * @param user User to set the speaking flag for
+   * @param status Value to set the flag to
+   * @returns True if the flas was set successfully, false otherwise
+   */
+  public setSpeakingUser(user: User, status: boolean): boolean {
+    const foundUser = this.getUser(user.id);
+
+    if (!foundUser) {
+      return false;
+    }
+
+    foundUser.isSpeaking = status;
+    return true;
+  }
+
+  /**
    * Checks if the session has a master user.
    *
    * @returns True if the session has a master, false otherwise
