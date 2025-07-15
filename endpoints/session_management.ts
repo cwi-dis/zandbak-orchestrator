@@ -513,6 +513,17 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     logger.debug(EndpointNames.GET_RAISED_HANDS, "Getting raised hands for session", session.name);
     callback(util.createCommandResponse(data, ErrorCodes.OK, session.getRaisedHands()));
   });
+
+  /**
+   * Sets the isSpeaking flag of the current user to the boolean value given in
+   * the parameters.
+   */
+  socket.on(EndpointNames.IS_SPEAKING, (data, callback) => {
+    const { isSpeaking }: { isSpeaking: boolean } = data;
+
+    user.isSpeaking = isSpeaking;
+    callback(util.createCommandResponse(data, ErrorCodes.OK));
+  });
 };
 
 export default installHandlers;
