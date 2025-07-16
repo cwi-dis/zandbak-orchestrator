@@ -560,7 +560,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
-    callback(util.createCommandResponse(data, ErrorCodes.OK));
+    callback(util.createCommandResponse(data, ErrorCodes.OK, { isSpeaking }));
   });
 };
 
