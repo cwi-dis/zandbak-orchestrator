@@ -21,7 +21,7 @@ class User implements Serializable {
 
   public session?: Session;
   public transform?: Transform;
-  public isSpeaking: boolean = true;
+  public isSpeaking: boolean = false;
 
   public constructor(public name: string, public socket: io.Socket, public deviceType: DeviceType, id: string | undefined) {
     if (id) {
