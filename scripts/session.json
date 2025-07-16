@@ -1,0 +1,11 @@
+{
+  "title": "Session 1",
+  "description": "This is a test session",
+  "presentations": [
+    {
+      "title": "Presentation 1",
+      "description": "This is the first presentation",
+      "slidesUrl": "URL_TO_SLIDES"
+    }
+  ]
+}
