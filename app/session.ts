@@ -181,7 +181,7 @@ class Session implements Serializable {
    *
    * @param user User to set the speaking flag for
    * @param status Value to set the flag to
-   * @returns True if the flas was set successfully, false otherwise
+   * @returns True if the flag was set successfully, false otherwise
    */
   public setSpeakingUser(user: User, status: boolean): boolean {
     const foundUser = this.getUser(user.id);
@@ -197,6 +197,17 @@ class Session implements Serializable {
     });
 
     return true;
+  }
+
+  /**
+   * Returns a list of users which have their `isSpeaking` flag set to true.
+   *
+   * @returns User objects which have their `isSpeaking` flag set to true
+   */
+  public getSpeakingUsers(): Array<User> {
+    return this.#users.filter((u) => {
+      return u.isSpeaking;
+    });
   }
 
   /**
