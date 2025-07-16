@@ -251,12 +251,13 @@ class Session implements Serializable {
 
     if (!this.currentPresentation) {
       this.currentPresentation = this.schedule[0];
+    } else {
+      const currentIndex = this.schedule.indexOf(this.currentPresentation);
+      const nextPresentation = this.schedule.at(currentIndex + 1);
+
+      this.currentPresentation = nextPresentation;
     }
 
-    const currentIndex = this.schedule.indexOf(this.currentPresentation);
-    const nextPresentation = this.schedule.at(currentIndex + 1);
-
-    this.currentPresentation = nextPresentation;
 
     this.notifyUsers({
       eventId: "PRESENTATION_CHANGED",
