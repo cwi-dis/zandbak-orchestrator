@@ -8,6 +8,7 @@ import User from "../app/user";
 import ErrorCodes  from "./error_codes";
 import Session from "../app/session";
 import Scenario from "../app/scenario";
+import Presentation from "../app/presentation";
 
 const [ EXTERNAL_HOSTNAME ] = util.getFromEnvironment(["EXTERNAL_HOSTNAME"], null);
 
@@ -99,6 +100,16 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       orchestrator.transportManager,
       externalHostname
     );
+
+    session.status = "ongoing";
+    session.schedule = dbSession.presentations.map((p) => {
+      return new Presentation(
+        p.title,
+        p.description,
+        p.presenter._id.toString(),
+        p.slidesUrl
+      );
+    });
 
     logger.debug(EndpointNames.ADD_SESSION, "Adding user", user.name, "as admin to new session", session.name);
 
