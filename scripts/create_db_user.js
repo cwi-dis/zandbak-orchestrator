@@ -61,8 +61,8 @@ mongoose.connect(dbUrl).then(() => {
   console.log("MongoDB connection established");
   console.log("Creating new user with username", username, "and password", password);
 
-  User.create({ username, password }).then(() => {
-    console.log("User created successfully!");
+  User.create({ username, password }).then((u) => {
+    console.log("User created successfully! User ID:", u._id);
     process.exit(0);
   }).catch((e) => {
     console.error("Could not create user:", e);
