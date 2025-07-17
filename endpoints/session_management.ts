@@ -560,6 +560,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
+    logger.debug(EndpointNames.IS_SPEAKING, "Set isSpeaking flag for", user.name, "to", user.isSpeaking);
     callback(util.createCommandResponse(data, ErrorCodes.OK, { isSpeaking }));
   });
 };
