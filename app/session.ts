@@ -309,6 +309,19 @@ class Session implements Serializable {
     });
   }
 
+  public setPresentationIsSharing(isSharing: boolean): boolean {
+    if (!this.currentPresentation) {
+      return false;
+    }
+
+    this.currentPresentation.isSharing = isSharing;
+    this.sendSessionUpdate("PRESENTATION_IS_SHARING", {
+      currentPresentation: this.currentPresentation
+    });
+
+    return true;
+  }
+
   /**
    * Sends a given message to all users currently in the session. The message
    * can be any serialisable object.
