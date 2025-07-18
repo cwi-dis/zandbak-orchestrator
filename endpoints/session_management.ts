@@ -86,9 +86,9 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     let externalHostname = EXTERNAL_HOSTNAME;
 
     if (!externalHostname || externalHostname == "dynamic") {
-      logger.debug(EndpointNames.ADD_SESSION, "Trying to determine external hostname from request headers");
+      logger.debug(EndpointNames.SCHEDULE_SESSION, "Trying to determine external hostname from request headers");
       externalHostname = util.getExternalHostname(socket);
-      logger.debug(EndpointNames.ADD_SESSION, "External hostname:", externalHostname);
+      logger.debug(EndpointNames.SCHEDULE_SESSION, "External hostname:", externalHostname);
     }
 
     const session = new Session(
@@ -111,7 +111,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       );
     });
 
-    logger.debug(EndpointNames.ADD_SESSION, "Adding user", user.name, "as admin to new session", session.name);
+    logger.debug(EndpointNames.SCHEDULE_SESSION, "Adding user", user.name, "as admin to new scheduled session", session.name);
 
     session.addUser(user);
     session.setAdministrator(user);
