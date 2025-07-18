@@ -439,6 +439,60 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   });
 
   /**
+   * Sets the isSharing flag of the current presentation to the boolean value
+   * given in the parameters. Only presenters and session admins are allowed to
+   * preform this action.
+   */
+  socket.on(EndpointNames.IS_SHARING, (data, callback) => {
+    const { session } = user;
+    const { isSharing }: { isSharing: boolean } = data;
+
+    if (isSharing == undefined) {
+      logger.warn(EndpointNames.IS_SHARING, "isSharing parameter is not set");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_IS_SPEAKING_FLAG_NOT_SET
+      ));
+    }
+
+    if (!session) {
+      logger.warn(EndpointNames.IS_SHARING, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    if (!session.isMaster(user) || user.userType != "presenter") {
+      logger.warn(EndpointNames.IS_SHARING, "User with ID", user.id, "is not authorized to set sharing static for current presentation");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED
+      ));
+    }
+
+    if (!session.setPresentationIsSharing(isSharing)) {
+      logger.warn(EndpointNames.IS_SHARING, "Could not set isSharing flag for current presentation");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_IS_SHARING_FLAG_NOT_SET
+      ));
+    }
+
+    const { currentPresentation } = session;
+    logger.debug(EndpointNames.IS_SHARING, "Set isSharing flag for current presentation to", currentPresentation?.isSharing);
+
+    callback(util.createCommandResponse(data, ErrorCodes.OK, {
+      sessionId: session.id,
+      sessionCurrentPresentation: currentPresentation?.serialize()
+    }));
+  });
+
+  /**
    * Sets the raised hand status for the current user in the user's current session.
    * If the user is not in any session, an error is issued.
    */
