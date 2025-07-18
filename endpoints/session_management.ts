@@ -438,6 +438,11 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     }));
   });
 
+  /**
+   * Sets the isSharing flag of the current presentation to the boolean value
+   * given in the parameters. Only presenters and session admins are allowed to
+   * preform this action.
+   */
   socket.on(EndpointNames.IS_SHARING, (data, callback) => {
     const { session } = user;
     const { isSharing }: { isSharing: boolean } = data;
