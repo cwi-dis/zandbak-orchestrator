@@ -484,7 +484,10 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     }
 
     logger.debug(EndpointNames.IS_SHARING, "Set isSharing flag for current presentation to", isSharing);
-    callback(util.createCommandResponse(data, ErrorCodes.OK, { isSharing }));
+    callback(util.createCommandResponse(data, ErrorCodes.OK, {
+      sessionId: session.id,
+      sessionCurrentPresentation: session.currentPresentation?.serialize()
+    }));
   });
 
   /**
