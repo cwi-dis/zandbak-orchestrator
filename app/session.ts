@@ -68,13 +68,7 @@ class Session implements Serializable {
 
   public set status(status: string) {
     this.#status = status;
-
-    this.notifyUsers({
-      eventId: "SESSION_STATUS_CHANGED",
-      eventData: {
-        status: this.#status
-      }
-    });
+    this.sendSessionUpdate("SESSION_STATUS_CHANGED", { status: this.#status });
   }
 
   /**
@@ -120,12 +114,9 @@ class Session implements Serializable {
    * @param user User to add to the session
    */
   public addUser(user: User) {
-    this.notifyUsers({
-      "eventId": "USER_JOINED_SESSION",
-      "eventData": {
-        "userId": user.id,
-        "userData": user.serialize(),
-      }
+    this.sendSessionUpdate("USER_JOINED_SESSION", {
+      userId: user.id,
+      userData: user.serialize()
     });
 
     this.addUserToChannels(user);
@@ -146,12 +137,7 @@ class Session implements Serializable {
     this.selectMaster();
     user.session = undefined;
 
-    this.notifyUsers({
-      "eventId": "USER_LEFT_SESSION",
-      "eventData": {
-        "userId": user.id,
-      }
-    });
+    this.sendSessionUpdate("USER_LEFT_SESSION", { userId: user.id });
   }
 
   /**
@@ -270,11 +256,8 @@ class Session implements Serializable {
     }
 
 
-    this.notifyUsers({
-      eventId: "PRESENTATION_CHANGED",
-      eventData: {
-        currentPresentation: this.currentPresentation?.serialize()
-      }
+    this.sendSessionUpdate("PRESENTATION_CHANGED", {
+      currentPresentation: this.currentPresentation?.serialize()
     });
 
     return this.currentPresentation;
@@ -301,11 +284,8 @@ class Session implements Serializable {
       this.currentPresentation.currentSlide = 0;
     }
 
-    this.notifyUsers({
-      eventId: "SLIDE_CHANGED",
-      eventData: {
-        currentPresentation: this.currentPresentation.serialize()
-      }
+    this.sendSessionUpdate("SLIDE_CHANGED", {
+      currentPresentation: this.currentPresentation.serialize()
     });
   }
 
@@ -413,12 +393,7 @@ class Session implements Serializable {
       this.#raisedHands.push(user);
     }
 
-    this.notifyUsers({
-      eventId: "USER_RAISED_HAND",
-      eventData: {
-        userId: user.id
-      }
-    });
+    this.sendSessionUpdate( "USER_RAISED_HAND", { userId: user.id });
   }
 
   /**
@@ -431,12 +406,7 @@ class Session implements Serializable {
   public clearRaisedHand(user: User) {
     this.#raisedHands = this.#raisedHands.filter((u) => u.id != user.id);
 
-    this.notifyUsers({
-      eventId: "USER_CLEARED_RAISED_HAND",
-      eventData: {
-        userId: user.id
-      }
-    });
+    this.sendSessionUpdate("USER_CLEARED_RAISED_HAND", { userId: user.id });
   }
 
   /**
