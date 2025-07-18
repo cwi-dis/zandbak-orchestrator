@@ -12,6 +12,7 @@ enum EndpointNames {
   SET_SESSION_PRESENTATION = "SetSessionPresentation",
   SCHEDULE_SESSION = "ScheduleSession",
   CHANGE_SLIDE = "ChangeSlide",
+  IS_SHARING = "IsSharing",
 
   GET_USER_DATA = "GetUserData",
   UPDATE_USER_DATA = "UpdateUserDataJson",

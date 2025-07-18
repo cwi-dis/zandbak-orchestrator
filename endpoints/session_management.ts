@@ -438,6 +438,41 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     }));
   });
 
+  socket.on(EndpointNames.IS_SHARING, (data, callback) => {
+    const { session } = user;
+    const { isSharing }: { isSharing: boolean } = data;
+
+    if (isSharing == undefined) {
+      logger.warn(EndpointNames.IS_SHARING, "isSharing parameter is not set");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_IS_SPEAKING_FLAG_NOT_SET
+      ));
+    }
+
+    if (!session) {
+      logger.warn(EndpointNames.IS_SHARING, "User", user.name, "is not in any session");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION
+      ));
+    }
+
+    if (!session.setPresentationIsSharing(isSharing)) {
+      logger.warn(EndpointNames.IS_SHARING, "Could not set isSharing flag for current presentation");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_IS_SHARING_FLAG_NOT_SET
+      ));
+    }
+
+    logger.debug(EndpointNames.IS_SHARING, "Set isSharing flag for current presentation to", isSharing);
+    callback(util.createCommandResponse(data, ErrorCodes.OK, { isSharing }));
+  });
+
   /**
    * Sets the raised hand status for the current user in the user's current session.
    * If the user is not in any session, an error is issued.
