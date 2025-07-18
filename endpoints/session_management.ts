@@ -460,6 +460,15 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
+    if (!session.isMaster(user) || user.userType != "presenter") {
+      logger.warn(EndpointNames.IS_SHARING, "User with ID", user.id, "is not authorized to set sharing static for current presentation");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED
+      ));
+    }
+
     if (!session.setPresentationIsSharing(isSharing)) {
       logger.warn(EndpointNames.IS_SHARING, "Could not set isSharing flag for current presentation");
 
