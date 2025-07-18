@@ -7,6 +7,7 @@ class Presentation implements Serializable {
 
   #slidesUrl: string;
   #currentSlide: number = 0;
+  #isSharing = false;
 
   constructor(name: string, description: string, presenter: string, slidesUrl: string) {
     this.#name = name;
@@ -39,13 +40,18 @@ class Presentation implements Serializable {
     this.#currentSlide = slide;
   }
 
+  public get isSharing() {
+    return this.#isSharing;
+  }
+
   public serialize() {
     return {
       name: this.#name,
       description: this.#description,
       presenter: this.#presenter,
       slidesUrl: this.#slidesUrl,
-      currentSlide: this.#currentSlide
+      currentSlide: this.#currentSlide,
+      isSharing: this.#isSharing
     };
   }
 }
