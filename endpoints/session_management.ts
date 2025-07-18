@@ -521,7 +521,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * is issued.
    */
   socket.on(EndpointNames.CLEAR_RAISED_HAND, (data, callback) => {
-    const { userId }: { userId: string } = data;
+    const { userId }: { userId: util.Optional<string> } = data;
     const { session } = user;
 
     if (!session) {
@@ -533,7 +533,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
-    const userToClear = session.getUser(userId);
+    const userToClear = session.getUser(userId || user.id);
 
     if (!userToClear) {
       logger.warn(EndpointNames.CLEAR_RAISED_HAND, "User with ID", userId, "is not in session", session.name);
