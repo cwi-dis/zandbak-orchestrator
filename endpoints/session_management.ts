@@ -7,7 +7,6 @@ import Orchestrator from "../app/orchestrator";
 import User from "../app/user";
 import ErrorCodes  from "./error_codes";
 import Session from "../app/session";
-import Scenario from "../app/scenario";
 import Presentation from "../app/presentation";
 
 const [ EXTERNAL_HOSTNAME ] = util.getFromEnvironment(["EXTERNAL_HOSTNAME"], null);
@@ -22,7 +21,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on(EndpointNames.ADD_SESSION, (data, callback) => {
     const {
       sessionName, sessionDescription, sessionProtocol = "unknown",
-      scenarioDefinition: { scenarioId, scenarioName, scenarioDescription },
       channels = []
     } = data;
 
@@ -41,7 +39,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         sessionName.trim(),
         sessionDescription,
         sessionProtocol,
-        new Scenario(scenarioId, scenarioName, scenarioDescription),
         channels,
         orchestrator.transportManager,
         externalHostname
@@ -95,7 +92,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       dbSession.title,
       dbSession.description,
       "socketio",
-      new Scenario("", "", ""),
       ["transform"],
       orchestrator.transportManager,
       externalHostname
