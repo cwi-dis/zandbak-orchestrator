@@ -5,7 +5,6 @@ import Serializable from "./serializable";
 import User from "./user";
 import Transport from "../transport/transport";
 import TransportManager, { TransportType } from "../transport/manager/transport_manager";
-import Scenario from "./scenario";
 import EmittedEvents, { SessionEvent, SessionEventName } from "./emitted_events";
 import ChatMessage from "./chat_message";
 import Presentation from "./presentation";
@@ -29,7 +28,6 @@ class Session implements Serializable {
     public name: string,
     public description: string,
     public sessionProtocol: TransportType,
-    public scenario: Scenario,
     channels: Array<string>,
     transportManager: TransportManager,
     hostname: string
@@ -507,7 +505,6 @@ class Session implements Serializable {
       sessionDescription: this.description,
       sessionAdministrator: this.#administrator.id,
       sessionMaster: this.#master && this.#master.id,
-      scenarioId: this.scenario.id,
       sessionUsers: this.#users.map((u) => u.id),
       sessionUserDefinitions: this.#users.map((u) => u.serialize()),
       sessionProtocol: this.sessionProtocol,
