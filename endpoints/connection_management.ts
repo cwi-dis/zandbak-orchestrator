@@ -53,13 +53,13 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
         }
 
         logger.debug(EndpointNames.LOGIN, "User", userName, "authenticated with database");
-        const user = new Presenter(userName, socket, deviceType || "unknown", id);
+        const user = new Presenter(userName, socket, deviceType || "unknown", account._id.toString());
         orchestrator.addUser(user);
 
         resolve(user);
 
         return callback(createCommandResponse(data, ErrorCodes.OK, {
-          userId: account._id.toString()
+          userId: user.id
         }));
       }
 
