@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VR2Gather Orchestrator Admin Interface</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
+
+    <style>
+      #log {
+        height: 400px;
+        overflow-y: auto;
+        background-color: #F4F5F6;
+        padding: 10px;
+        border-radius: 5px;
+      }
+    </style>
+
+    <script type="text/javascript" src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script type="text/javascript">
+      // @ts-check
+
+      class RingBuffer {
+        constructor(size) {
+          this.size = size;
+          this.buffer = [];
+        }
+
+        add(item) {
+          if (this.buffer.length >= this.size) {
+            this.buffer.shift();
+          }
+
+          this.buffer.push(item);
+        }
+
+        get() {
+          return this.buffer;
+        }
+      }
+
+      function removeAnsiColorCodes(str) {
+        return str.replace(/\x1B\[[0-9;]*m/g, '');
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const utilSocket = io();
+
+        const treeContainer = document.querySelector("#tree");
+        const lastUpdate = document.querySelector("#last-update");
+        const logContainer = document.querySelector("#log");
+
+        const connectedTag = document.querySelector("#connected-tag");
+        const disconnectedTag = document.querySelector("#disconnected-tag");
+
+        if (!treeContainer || !lastUpdate || !logContainer || !connectedTag || !disconnectedTag) {
+          console.error("Required elements not found in the DOM.");
+          return;
+        }
+
+        const fetchTree = () => {
+          utilSocket.emit("DumpData", {}, (data) => {
+            const { message, body } = data;
+
+            if (message == "OK") {
+              treeContainer.innerHTML = `<pre>${JSON.stringify(body, null, 2)}</pre>`
+              lastUpdate.textContent = new Date().toLocaleString();
+            }
+          });
+        };
+
+        utilSocket.on("connect", () => {
+          connectedTag.classList.remove("is-hidden");
+          disconnectedTag.classList.add("is-hidden");
+
+          const treeInterval = setInterval(fetchTree, 1000);
+          fetchTree();
+        });
+
+        utilSocket.on("disconnect", () => {
+          connectedTag.classList.add("is-hidden");
+          disconnectedTag.classList.remove("is-hidden");
+        });
+
+        utilSocket.on("error", () => {
+          connectedTag.classList.add("is-hidden");
+          disconnectedTag.classList.remove("is-hidden");
+        });
+
+        const logSocket = io("/log");
+
+        logSocket.on("connect", () => {
+          if (logContainer) {
+            const logBuffer = new RingBuffer(1000);
+
+            logSocket.on("message", ({ timestamp, level, message}) => {
+              const sanitisedLevel = removeAnsiColorCodes(level);
+
+              if (message.startsWith("[DUMPDATA]") || sanitisedLevel === "http") {
+                return;
+              }
+
+              logBuffer.add({ timestamp, level: sanitisedLevel, message});
+
+              logContainer.innerHTML = logBuffer.get().map((log) => {
+                return `<p class="is-family-monospace">[${new Date(timestamp.slice(1, -1)).toLocaleString()}] ${log.level}: ${log.message}</p>`;
+              }).join("");
+
+              logContainer.scrollTop = logContainer.scrollHeight;
+            });
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <section class="section">
+        <h1 class="title is-3">VR2Gather Orchestrator Admin Interface</h1>
+        <h2 class="subtitle is-4">Version: <%= orchestrator_version %></h2>
+
+        <div class="block">
+          <span id="connected-tag" class="tag is-success is-hidden">Connected</span>
+          <span id="disconnected-tag" class="tag is-danger is-hidden">Disconnected</span>
+        </div>
+
+        <div class="block">
+          <h2 class="title is-4">State Tree</h2>
+          <p>Last Update: <span id="last-update"></span></p>
+          <div id="tree" class="block"></div>
+        </div>
+
+        <div class="block">
+          <h2 class="title is-4">Debug Log</h2>
+          <div id="log" class="block"></div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
