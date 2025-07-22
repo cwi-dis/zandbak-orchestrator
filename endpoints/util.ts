@@ -47,16 +47,6 @@ const installHandlers = (orchestrator: Orchestrator, socket: Socket) => {
       util.createCommandResponse(data, ErrorCodes.OK, orchestrator.serialize())
     );
   });
-
-  /**
-   * Terminates the orchestrator process.
-   */
-  socket.on(EndpointNames.TERMINATE_ORCHESTRATOR, (callback) => {
-    logger.debug(EndpointNames.TERMINATE_ORCHESTRATOR, "Terminating orchestrator");
-    callback();
-
-    process.exit(1);
-  });
 };
 
 export default installHandlers;
