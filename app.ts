@@ -3,11 +3,13 @@ import express from "express";
 import mongoose from "mongoose";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import path from "path";
 
 dotenv.config();
 
 import { getFromEnvironment, getRevision, installLogServerHandler, onUnhandled, ORCHESTRATOR_VERSION } from "./util";
 import logger from "./logger";
+import routes from "./routes";
 import Orchestrator from "./app/orchestrator";
 
 import installConnectionHandlers, { installLoginHandler } from "./endpoints/connection_management";
@@ -41,6 +43,12 @@ const orchestrator = new Orchestrator();
  * Set up express app and create HTTP server.
  */
 const app = express();
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(logger.http);
+app.use(routes);
+
 const server = createServer(app);
 
 /**
