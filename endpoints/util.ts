@@ -41,7 +41,7 @@ const installHandlers = (orchestrator: Orchestrator, socket: Socket) => {
    * Dumps the entire data tree of the orchestrator and sends it to the caller.
    */
   socket.on(EndpointNames.DUMP_DATA, (data, callback) => {
-    logger.debug(EndpointNames.DUMP_DATA, "Dumping all orchestrator data");
+    logger.silly(EndpointNames.DUMP_DATA, "Dumping all orchestrator data");
 
     callback(
       util.createCommandResponse(data, ErrorCodes.OK, orchestrator.serialize())
