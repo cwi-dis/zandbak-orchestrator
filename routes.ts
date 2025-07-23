@@ -10,7 +10,7 @@ try {
   const [ ADMIN_USER, ADMIN_PASSWORD ] = getFromEnvironment(["ADMIN_USER", "ADMIN_PASSWORD"]);
 
   router.use(basicAuth({
-    users: { [ADMIN_USER]: ADMIN_PASSWORD},
+    users: { [ADMIN_USER]: ADMIN_PASSWORD },
     challenge: true
   }));
 

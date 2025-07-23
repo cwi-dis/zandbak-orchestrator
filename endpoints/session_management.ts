@@ -73,6 +73,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on(EndpointNames.SCHEDULE_SESSION, async (data, callback) => {
     const { sessionId } = data;
 
+    logger.debug(EndpointNames.SCHEDULE_SESSION, "Searching for session", sessionId);
     const dbSession = await SessionModel.findById(sessionId);
 
     if (!dbSession) {
