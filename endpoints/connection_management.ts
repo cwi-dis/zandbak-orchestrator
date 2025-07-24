@@ -60,7 +60,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
 
         return callback(createCommandResponse(data, ErrorCodes.OK, {
           userId: user.id,
-          userData: user
+          userData: user.serialize()
         }));
       }
 
@@ -82,7 +82,8 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
       resolve(user);
 
       callback(createCommandResponse(data, ErrorCodes.OK, {
-        userId: user.id
+        userId: user.id,
+        userData: user.serialize()
       }));
     });
   });
