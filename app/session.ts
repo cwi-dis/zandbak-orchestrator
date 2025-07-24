@@ -294,7 +294,7 @@ class Session implements Serializable {
 
     this.currentPresentation.isSharing = isSharing;
     this.sendSessionUpdate("PRESENTATION_IS_SHARING", {
-      currentPresentation: this.currentPresentation
+      currentPresentation: this.currentPresentation.serialize()
     });
 
     return true;
