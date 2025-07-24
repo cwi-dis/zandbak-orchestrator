@@ -59,7 +59,8 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
         resolve(user);
 
         return callback(createCommandResponse(data, ErrorCodes.OK, {
-          userId: user.id
+          userId: user.id,
+          userData: user
         }));
       }
 
