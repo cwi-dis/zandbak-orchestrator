@@ -1,8 +1,9 @@
 import Serializable from "./serializable";
 import { Dict } from "../util";
 
-class DataStream implements Serializable {
+class DataStream extends Serializable {
   public constructor(public type: string, public description: string) {
+    super();
   }
 
   public get id() {

@@ -8,7 +8,7 @@ import DataStream from "./data_stream";
 import StreamSubscription from "./stream_subscription";
 import EmittedEvents from "./emitted_events";
 
-class User implements Serializable {
+class User extends Serializable {
   #id: string = uuidv4();
   #loggedIn: boolean = false;
   #canBeMaster: boolean = true;
@@ -24,6 +24,8 @@ class User implements Serializable {
   public isSpeaking: boolean = false;
 
   public constructor(public name: string, public socket: io.Socket, public deviceType: DeviceType, id: string | undefined) {
+    super();
+
     if (id) {
       this.#id = id;
     }

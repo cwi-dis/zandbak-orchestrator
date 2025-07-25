@@ -1,6 +1,6 @@
 import Serializable from "./serializable";
 
-class Presentation implements Serializable {
+class Presentation extends Serializable {
   #name: string;
   #description: string;
   #presenter: string;
@@ -11,6 +11,8 @@ class Presentation implements Serializable {
   isSharing = false;
 
   constructor(name: string, description: string, presenter: string, slidesUrl: string) {
+    super();
+
     this.#name = name;
     this.#description = description;
     this.#presenter = presenter;

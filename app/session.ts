@@ -10,7 +10,7 @@ import ChatMessage from "./chat_message";
 import Presentation from "./presentation";
 
 
-class Session implements Serializable {
+class Session extends Serializable {
   #id: string = uuidv4();
   #users: Array<User> = [];
   #administrator: User;
@@ -32,6 +32,8 @@ class Session implements Serializable {
     transportManager: TransportManager,
     hostname: string
   ) {
+    super();
+
     this.#transport = transportManager.assignTransport(sessionProtocol, this, hostname);
     this.#channels = channels.map((c) => this.getInternalChannelName(c));
   }

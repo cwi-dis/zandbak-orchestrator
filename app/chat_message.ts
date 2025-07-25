@@ -4,13 +4,15 @@ import { Dict } from "../util";
 import Serializable from "./serializable";
 import User from "./user";
 
-class ChatMessage implements Serializable {
+class ChatMessage extends Serializable {
   #id: string;
   #sender: User;
   #message: Dict;
   #timestamp: Date;
 
   constructor(sender: User, message: Dict) {
+    super();
+
     this.#id = uuidv4();
     this.#sender = sender;
     this.#message = message;

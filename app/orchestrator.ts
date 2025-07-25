@@ -6,7 +6,7 @@ import { Optional, Dict } from "../util";
 import TransportManager from "../transport/manager/transport_manager";
 import Serializable from "./serializable";
 
-class Orchestrator implements Serializable {
+class Orchestrator extends Serializable {
   public id: string = uuidv4();
 
   #sessions: Array<Session> = [];

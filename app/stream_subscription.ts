@@ -1,11 +1,13 @@
 import Serializable from "./serializable";
 import User from "./user";
 
-class StreamSubscription implements Serializable {
+class StreamSubscription extends Serializable {
   #id: string;
   #userId: string;
 
   public constructor(user: User, public type: string, public description: string = "") {
+    super();
+
     this.#id = StreamSubscription.genId(user.id, type);
     this.#userId = user.id;
   }
