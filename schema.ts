@@ -67,5 +67,9 @@ const sessionSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
+sessionSchema.set("toJSON", {
+  virtuals: true
+});
+
 export const User = mongoose.model("User", userSchema);
 export const Session = mongoose.model("Session", sessionSchema);
