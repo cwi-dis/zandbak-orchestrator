@@ -167,6 +167,37 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   });
 
   /**
+   * Returns a list of scheduled sessions from the database, provided their
+   * status has not been set to `completed` yet. Only users of type `presenter`
+   * are allowed to call this endpoint. All other users will receive an error
+   * response.
+   */
+  socket.on(EndpointNames.GET_SCHEDULED_SESSIONS, async (data, callback) => {
+    logger.debug(EndpointNames.GET_SCHEDULED_SESSIONS, "Getting scheduled sessions");
+
+    if (user.userType !== "presenter") {
+      logger.warn(EndpointNames.GET_SCHEDULED_SESSIONS, "User", user.name, "is not allowed to get scheduled sessions");
+
+      return callback(util.createCommandResponse(
+        data,
+        ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED
+      ));
+    }
+
+    const dbSessions = await SessionModel.find({
+      status: { $ne: "completed" }
+    }, {
+      __v: 0
+    });
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      dbSessions
+    ));
+  });
+
+  /**
    * Returns a serialised version of the user's current session or the session
    * that this user is an admin of. If the user is not in any session or not an
    * admin of any session, an error is issued.
