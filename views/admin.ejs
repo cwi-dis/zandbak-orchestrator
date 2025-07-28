@@ -95,7 +95,7 @@
           if (logContainer) {
             const logBuffer = new RingBuffer(1000);
 
-            logSocket.on("message", ({ timestamp, level, message}) => {
+            logSocket.on("message", ({ timestamp, level, message }) => {
               const sanitisedLevel = removeAnsiColorCodes(level);
 
               if (message.startsWith("[DUMPDATA]") || sanitisedLevel === "http") {
@@ -105,7 +105,7 @@
               logBuffer.add({ timestamp, level: sanitisedLevel, message});
 
               logContainer.innerHTML = logBuffer.get().map((log) => {
-                return `<p class="is-family-monospace">[${new Date(timestamp.slice(1, -1)).toLocaleString()}] ${log.level}: ${log.message}</p>`;
+                return `<p class="is-family-monospace">[${new Date(log.timestamp.slice(1, -1)).toLocaleString()}] ${log.level}: ${log.message}</p>`;
               }).join("");
 
               logContainer.scrollTop = logContainer.scrollHeight;
