@@ -119,3 +119,5 @@ If you set the environment variables `ADMIN_USER` and `ADMIN_PASSWORD` in your
 to inspect the current state tree and log messages through a web interface.
 The debugging interface can be accessed by opening `http://localhost:8090/admin`
 (or whatever host/port the Orchestrator is running on) in a web browser.
+
+Leaving these environment variables unset disables the web admin interface.
