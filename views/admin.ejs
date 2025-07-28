@@ -36,8 +36,8 @@
           this.buffer.push(item);
         }
 
-        get() {
-          return this.buffer;
+        map(fn) {
+          return this.buffer.map(fn);
         }
       }
 
@@ -104,7 +104,7 @@
 
               logBuffer.add({ timestamp, level: sanitisedLevel, message});
 
-              logContainer.innerHTML = logBuffer.get().map((log) => {
+              logContainer.innerHTML = logBuffer.map((log) => {
                 return `<p class="is-family-monospace">[${new Date(log.timestamp.slice(1, -1)).toLocaleString()}] ${log.level}: ${log.message}</p>`;
               }).join("");
 
