@@ -72,8 +72,6 @@ export const setupHandlers = async (socket: Socket) => {
   installUtilHandlers(orchestrator, socket);
 
   try {
-    logger.debug(`Client socket connected from ${socket.handshake.address}, awaiting login...`);
-
     // Installing login handlers and waiting for login process to complete
     // before installing other handlers
     const user = await installLoginHandler(orchestrator, socket);
@@ -94,7 +92,10 @@ export const setupHandlers = async (socket: Socket) => {
 /**
  * Install handler functions once a new socket connects.
  **/
-io.on("connection", setupHandlers);
+io.on("connection", (socket) => {
+  logger.debug(`Client socket connected from ${socket.handshake.address}, awaiting login...`);
+  setupHandlers(socket);
+});
 
 /**
  * Launch server on port given by environment variable PORT
