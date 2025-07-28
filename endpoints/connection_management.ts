@@ -1,5 +1,6 @@
 import io from "socket.io";
 
+import { setupHandlers } from "../app";
 import { User as UserModel} from "../schema";
 import { Optional, createCommandResponse, createResponse, DeviceType } from "../util";
 import logger from "../logger";
@@ -146,6 +147,10 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     logger.debug(EndpointNames.LOGOUT, `Destroyed ${numSessionsCleaned} dangling sessions`);
 
     orchestrator.removeUser(user);
+
+    socket.removeAllListeners();
+    setupHandlers(socket);
+
     callback?.(createCommandResponse(data, ErrorCodes.OK));
   });
 
