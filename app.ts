@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import { createServer } from "http";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import path from "path";
 
 dotenv.config();
@@ -62,10 +62,7 @@ if (LOG_SERVER) {
   installLogServerHandler(io);
 }
 
-/**
- * Install handler functions once a new socket connects.
- **/
-io.on("connection", async (socket) => {
+export const setupHandlers = async (socket: Socket) => {
   // Install handler for unhandled messages
   onUnhandled(socket, (event, params) => {
     logger.error("Unhandled event", event, "received with params", params);
@@ -92,7 +89,12 @@ io.on("connection", async (socket) => {
   } catch (err) {
     logger.error("Login process failed:", err);
   }
-});
+};
+
+/**
+ * Install handler functions once a new socket connects.
+ **/
+io.on("connection", setupHandlers);
 
 /**
  * Launch server on port given by environment variable PORT
