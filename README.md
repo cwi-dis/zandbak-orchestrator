@@ -1,8 +1,9 @@
-# VR2Gather Orchestrator v2
+# INDUX-R Orchestrator v2
 
-Orchestrator application to go along with the VR2Gather architecture, handling
-user and session management as well as transmission of binary data between
-users over the network.
+Orchestrator application for the INDUX-R project, handling user and session
+management as well as transmission of binary data between users over the
+network. This repository is a fork of the VR2Gather Orchestrator, adapting it
+to the needs of the INDUX-R project.
 
 ## Running the Orchestrator
 
@@ -24,10 +25,6 @@ access to public NTP servers) may be blocked inside some corporate intranets.
 In this case, contact your IT department and enquire whether they host an
 internal NTP server. Otherwise, opt for the `localtime` option described in the
 next paragraph.
-
-Install the required external tools (the Dash and WebRTC SFU's) into `config/packages`.
-There are scripts in `external-packages` to download and install the external tools,
-see [external-packages/README.md](external-packages/README.md).
 
 You can add multiple NTP servers to this config file, they will be tried in
 order until the first one returns a valid response. Adding an entry with the
@@ -86,8 +83,7 @@ run:
 After compiling it, make sure to copy the file `.env-sample` to `.env` and
 update the environment variables as needed. Moreover, copy the file
 `config/config-sample/ntp-config.json` to `config/ntp-config.json` and change
-the hostname/port of your time server if needed. 
-Then you may want to install versions of the Dash and WebRTC SFUs that are compatible with your development machine, and ensure that `dash-config.json` and `webrtc-config.json` have the right pathnames.
+the hostname/port of your time server if needed.
 
 Finally, the application server
 can be launched as follows:
@@ -116,14 +112,10 @@ the `dump` script, passing in the hostname of an orchestrator instance:
 
     node scripts/dump.js localhost:8090
 
-### Terminate orchestrator
+## Admin interface
 
-In order to restart/terminate a remote orchestrator instance, use the
-`terminate` script, passing along the hostname of an instance:
-
-    node scripts/terminate.js localhost:8090
-
-If the orchestrator instance is running inside a Docker container using the
-supplied `docker-compose.yml` configuration, the Docker daemon will relaunch
-the container immediately. All data stored in the orchestrator at the time of
-termination will be lost.
+If you set the environment variables `ADMIN_USER` and `ADMIN_PASSWORD` in your
+`.env`, a web-based debugging tool will be enabled. This interface allows you
+to inspect the current state tree and log messages through a web interface.
+The debugging interface can be accessed by opening `http://localhost:8090/admin`
+(or whatever host/port the Orchestrator is running on) in a web browser.
