@@ -104,7 +104,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         p.title,
         p.description,
         p.presenter._id.toString(),
-        p.slidesUrl
+        p.slidesUrl,
+        p.numSlides
       );
     });
 

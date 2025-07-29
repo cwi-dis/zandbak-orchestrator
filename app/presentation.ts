@@ -7,16 +7,18 @@ class Presentation extends Serializable {
 
   #slidesUrl: string;
   #currentSlide: number = 0;
+  #numSlides: number;
 
   isSharing = false;
 
-  constructor(name: string, description: string, presenter: string, slidesUrl: string) {
+  constructor(name: string, description: string, presenter: string, slidesUrl: string, numSlides: number) {
     super();
 
     this.#name = name;
     this.#description = description;
     this.#presenter = presenter;
     this.#slidesUrl = slidesUrl;
+    this.#numSlides = numSlides;
   }
 
   public get name() {
@@ -39,6 +41,10 @@ class Presentation extends Serializable {
     return this.#currentSlide;
   }
 
+  public get numSlides() {
+    return this.#numSlides;
+  }
+
   public set currentSlide(slide: number) {
     this.#currentSlide = slide;
   }
@@ -50,6 +56,7 @@ class Presentation extends Serializable {
       presenter: this.#presenter,
       slidesUrl: this.#slidesUrl,
       currentSlide: this.#currentSlide,
+      numSlides: this.#numSlides,
       isSharing: this.isSharing
     };
   }

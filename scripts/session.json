@@ -5,7 +5,8 @@
     {
       "title": "Presentation 1",
       "description": "This is the first presentation",
-      "slidesUrl": "URL_TO_SLIDES"
+      "slidesUrl": "URL_TO_SLIDES",
+      "numSlides": 0
     }
   ]
 }

@@ -14,6 +14,7 @@ const sessionSchema = new mongoose.Schema({
       description: { type: String, required: true },
       presenter: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
       slidesUrl: { type: String, required: true },
+      numSlides: { type: Number, min: 0, required: true },
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now }
     }
