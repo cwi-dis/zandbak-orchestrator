@@ -284,6 +284,10 @@ class Session extends Serializable {
       this.currentPresentation.currentSlide = 0;
     }
 
+    if (this.currentPresentation.currentSlide >= this.currentPresentation.numSlides) {
+      this.currentPresentation.currentSlide = this.currentPresentation.numSlides - 1;
+    }
+
     this.sendSessionUpdate("SLIDE_CHANGED", {
       currentPresentation: this.currentPresentation.serialize()
     });
