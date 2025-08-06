@@ -6,7 +6,7 @@ import User from "./user";
 import Transport from "../transport/transport";
 import TransportManager, { TransportType } from "../transport/manager/transport_manager";
 import EmittedEvents, { SessionEvent, SessionEventName } from "./emitted_events";
-import ChatMessage from "./chat_message";
+import ChatMessage, { PrivateMessage } from "./chat_message";
 import Presentation from "./presentation";
 
 
@@ -377,12 +377,8 @@ class Session extends Serializable {
       return;
     }
 
-    const chatMessage = new ChatMessage(fromUser, message);
-
-    toUser.socket.emit(EmittedEvents.MESSAGE_SENT, {
-      ...chatMessage.serialize(),
-      private: true
-    });
+    const privateMessage = new PrivateMessage(fromUser, message);
+    toUser.socket.emit(EmittedEvents.MESSAGE_SENT, privateMessage.serialize());
   }
 
   /**
