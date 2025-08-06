@@ -50,4 +50,11 @@ class ChatMessage extends Serializable {
   }
 }
 
+export class PrivateMessage extends ChatMessage {
+  constructor(sender: User, message: Dict) {
+    super(sender, message);
+    this._private = true;
+  }
+}
+
 export default ChatMessage;
