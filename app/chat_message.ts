@@ -5,18 +5,18 @@ import Serializable from "./serializable";
 import User from "./user";
 
 class ChatMessage extends Serializable {
-  #id: string;
+  #id: string = uuidv4();
+  #timestamp: Date = new Date();
   #sender: User;
   #message: Dict;
-  #timestamp: Date;
+
+  _private: boolean = false;
 
   constructor(sender: User, message: Dict) {
     super();
 
-    this.#id = uuidv4();
     this.#sender = sender;
     this.#message = message;
-    this.#timestamp = new Date();
   }
 
   public get id(): string {
@@ -35,13 +35,25 @@ class ChatMessage extends Serializable {
     return this.#timestamp;
   }
 
+  public get private(): boolean {
+    return this._private;
+  }
+
   public serialize(): Dict {
     return {
       id: this.#id,
       sender: this.#sender.serialize(),
       message: this.#message,
-      timestamp: this.#timestamp
+      timestamp: this.#timestamp,
+      private: this._private
     };
+  }
+}
+
+export class PrivateMessage extends ChatMessage {
+  constructor(sender: User, message: Dict) {
+    super(sender, message);
+    this._private = true;
   }
 }
 
