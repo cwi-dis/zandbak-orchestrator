@@ -35,6 +35,10 @@ class ChatMessage extends Serializable {
     return this.#timestamp;
   }
 
+  public get private(): boolean {
+    return this._private;
+  }
+
   public serialize(): Dict {
     return {
       id: this.#id,
