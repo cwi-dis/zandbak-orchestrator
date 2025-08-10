@@ -226,9 +226,15 @@ class Session extends Serializable {
 
   /**
    * Closes the current session by sending the corresponding event to all users
-   * and removing the session from its transport
+   * and removing the session from its transport. If the property `persistent`
+   * is true, the session is not removed, unless the `override` param is set to
+   * true.
    */
   public closeSession() {
+    if (this.#persistent) {
+      return;
+    }
+
     this.#transport.removeSession(this);
 
     this.#users.forEach((u) => {
