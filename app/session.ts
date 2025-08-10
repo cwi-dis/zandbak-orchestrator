@@ -230,8 +230,8 @@ class Session extends Serializable {
    * is true, the session is not removed, unless the `override` param is set to
    * true.
    */
-  public closeSession() {
-    if (this.#persistent) {
+  public closeSession(override = false) {
+    if (this.#persistent && !override) {
       return;
     }
 
