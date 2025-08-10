@@ -19,6 +19,7 @@ class Session extends Serializable {
   #master?: User;
   #transport: Transport;
   #channels: Array<string>;
+  #persistent: boolean;
 
   #status: string = "scheduled";
   schedule: Array<Presentation> = [];
@@ -30,12 +31,14 @@ class Session extends Serializable {
     public sessionProtocol: TransportType,
     channels: Array<string>,
     transportManager: TransportManager,
-    hostname: string
+    hostname: string,
+    persistent = false
   ) {
     super();
 
     this.#transport = transportManager.assignTransport(sessionProtocol, this, hostname);
     this.#channels = channels.map((c) => this.getInternalChannelName(c));
+    this.#persistent = persistent;
   }
 
   public get id() {
@@ -69,6 +72,10 @@ class Session extends Serializable {
   public set status(status: string) {
     this.#status = status;
     this.sendSessionUpdate("SESSION_STATUS_CHANGED", { status: this.#status });
+  }
+
+  public get persistent() {
+    return this.#persistent;
   }
 
   /**
@@ -515,7 +522,8 @@ class Session extends Serializable {
       sessionRaisedHands: this.getRaisedHands(),
       sessionCurrentPresentation: this.currentPresentation?.serialize(),
       sessionPresentations: this.schedule.map((p) => p.serialize()),
-      sessionStatus: this.#status
+      sessionStatus: this.#status,
+      sessionPersistent: this.#persistent
     };
   }
 }
