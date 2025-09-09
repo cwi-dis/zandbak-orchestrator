@@ -229,10 +229,12 @@ class Session extends Serializable {
    * and removing the session from its transport. If the property `persistent`
    * is true, the session is not removed, unless the `override` param is set to
    * true.
+   *
+   * @return True if the session was removed, false otherwise
    */
-  public closeSession(override = false) {
+  public closeSession(override = false): boolean {
     if (this.#persistent && !override) {
-      return;
+      return false;
     }
 
     this.#transport.removeSession(this);
@@ -240,6 +242,8 @@ class Session extends Serializable {
     this.#users.forEach((u) => {
       u.socket.emit(EmittedEvents.SESSION_CLOSED, {});
     });
+
+    return true;
   }
 
   /**
