@@ -71,6 +71,22 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       userData
     ));
   });
+
+  /**
+   * Updates the `status` property for the current user. The updated status
+   * is returned in the response. A notification is also sent to all session
+   * members.
+  */
+  socket.on(EndpointNames.SET_USER_STATUS, (data, callback) => {
+    const { status } = data;
+    user.status = status;
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      status
+    ));
+  });
 };
 
 export default installHandlers;
