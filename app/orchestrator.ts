@@ -83,15 +83,26 @@ class Orchestrator extends Serializable {
   }
 
   /**
-   * Removes a given session from the orchestrator and clean up any external
-   * transports which have no more sessions.
+   * Closes a given session, removes it from the orchestrator and cleans up any
+   * external transports which have no more sessions. Returns true upon success.
+   * If the session could not be closed, e.g. if the session is marked as
+   * persistent, nothing happens and the method returns false.
    *
    * @param session Session to remove
+   * @param override Delete session even if it is marked as persistent. Optional, defaults to false
+   * @returns True if the session was closed, false otherwise
    */
-  public removeSession(session: Session) {
-    session.closeSession();
-    this.#sessions = this.#sessions.filter((s) => s.id != session.id);
-    this.#transportManager.cleanupTransports();
+  public removeSession(session: Session, override = false) {
+    const sessionClosed = session.closeSession(override);
+
+    if (sessionClosed) {
+      this.#sessions = this.#sessions.filter((s) => s.id != session.id);
+      this.#transportManager.cleanupTransports();
+
+      return true;
+    }
+
+    return false;
   }
 
 

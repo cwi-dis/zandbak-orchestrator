@@ -128,7 +128,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * to be successful.
    */
   socket.on(EndpointNames.DELETE_SESSION, (data, callback) => {
-    const { sessionId } = data;
+    const { sessionId, override = false }: { sessionId: string, override: boolean } = data;
     const session = orchestrator.getSession(sessionId);
 
     if (!session) {
@@ -147,9 +147,14 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_NOT_EMPTY));
     }
 
+    if (session.persistent && !override) {
+      logger.warn(EndpointNames.DELETE_SESSION, "Session", session.name, "is persistent");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_DELETE_UNAUTHORIZED));
+    }
+
     logger.debug(EndpointNames.DELETE_SESSION, "Deleting session", session.name);
 
-    orchestrator.removeSession(session);
+    orchestrator.removeSession(session, override);
     callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
 

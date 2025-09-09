@@ -19,6 +19,7 @@ class Session extends Serializable {
   #master?: User;
   #transport: Transport;
   #channels: Array<string>;
+  #persistent: boolean;
 
   #status: string = "scheduled";
   schedule: Array<Presentation> = [];
@@ -30,12 +31,14 @@ class Session extends Serializable {
     public sessionProtocol: TransportType,
     channels: Array<string>,
     transportManager: TransportManager,
-    hostname: string
+    hostname: string,
+    persistent = false
   ) {
     super();
 
     this.#transport = transportManager.assignTransport(sessionProtocol, this, hostname);
     this.#channels = channels.map((c) => this.getInternalChannelName(c));
+    this.#persistent = persistent;
   }
 
   public get id() {
@@ -69,6 +72,10 @@ class Session extends Serializable {
   public set status(status: string) {
     this.#status = status;
     this.sendSessionUpdate("SESSION_STATUS_CHANGED", { status: this.#status });
+  }
+
+  public get persistent() {
+    return this.#persistent;
   }
 
   /**
@@ -219,14 +226,24 @@ class Session extends Serializable {
 
   /**
    * Closes the current session by sending the corresponding event to all users
-   * and removing the session from its transport
+   * and removing the session from its transport. If the property `persistent`
+   * is true, the session is not removed, unless the `override` param is set to
+   * true.
+   *
+   * @return True if the session was removed, false otherwise
    */
-  public closeSession() {
+  public closeSession(override = false): boolean {
+    if (this.#persistent && !override) {
+      return false;
+    }
+
     this.#transport.removeSession(this);
 
     this.#users.forEach((u) => {
       u.socket.emit(EmittedEvents.SESSION_CLOSED, {});
     });
+
+    return true;
   }
 
   /**
@@ -515,7 +532,8 @@ class Session extends Serializable {
       sessionRaisedHands: this.getRaisedHands(),
       sessionCurrentPresentation: this.currentPresentation?.serialize(),
       sessionPresentations: this.schedule.map((p) => p.serialize()),
-      sessionStatus: this.#status
+      sessionStatus: this.#status,
+      sessionPersistent: this.#persistent
     };
   }
 }
