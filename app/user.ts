@@ -22,6 +22,7 @@ class User extends Serializable {
   public session?: Session;
   public transform?: Transform;
   public isSpeaking: boolean = false;
+  public status: string = "available";
 
   public constructor(public name: string, public socket: io.Socket, public deviceType: DeviceType, id: string | undefined) {
     super();
@@ -233,7 +234,8 @@ class User extends Serializable {
       transform: this.transform,
       deviceType: this.deviceType,
       hasHandRaised: this.hasHandRaised(),
-      isSpeaking: this.isSpeaking
+      isSpeaking: this.isSpeaking,
+      status: this.status
     };
   }
 }
