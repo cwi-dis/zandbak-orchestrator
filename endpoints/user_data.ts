@@ -96,6 +96,29 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       status
     ));
   });
+
+  /**
+   * Returns a serialised version of the user object identified by the given
+   * user ID. If no ID is given the data for the current user is returned. If
+   * an ID is given, but could not be found, an error is returned.
+   */
+  socket.on(EndpointNames.GET_USER_INFO, (data, callback) => {
+    const { userId } = data;
+    const userToReturn = orchestrator.getUser(userId || user.id);
+
+    if (!userToReturn) {
+      logger.debug(EndpointNames.GET_USER_INFO, "No user with ID", userId, "found");
+      return callback(util.createCommandResponse(data, ErrorCodes.USER_DATA_USER_NOT_FOUND));
+    }
+
+    logger.debug(EndpointNames.GET_USER_INFO, "Getting info for user", userId);
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      user.serialize()
+    ));
+  });
 };
 
 export default installHandlers;
