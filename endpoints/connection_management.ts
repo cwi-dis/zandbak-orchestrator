@@ -124,12 +124,18 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   const cleanUpDanglingSessions = () => {
     const administratedSessions = orchestrator.getAdministratedSessions(user);
 
-    administratedSessions.forEach((s) => {
-      s.closeSession();
-      orchestrator.removeSession(s);
-    });
+    const numRemovedSessions = administratedSessions.reduce((count, s) => {
+      const sessionClosed = s.closeSession();
 
-    return administratedSessions.length;
+      if (sessionClosed) {
+        orchestrator.removeSession(s);
+        return count + 1;
+      }
+
+      return count;
+    }, 0);
+
+    return numRemovedSessions;
   };
 
   /**
