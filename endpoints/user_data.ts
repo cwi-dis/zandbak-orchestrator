@@ -79,7 +79,16 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   */
   socket.on(EndpointNames.SET_USER_STATUS, (data, callback) => {
     const { status } = data;
+    const { session } = user;
+
     user.status = status;
+
+    if (session) {
+      session.sendSessionUpdate("USER_STATUS_UPDATED", {
+        userId: user.id,
+        status
+      });
+    }
 
     callback(util.createCommandResponse(
       data,
