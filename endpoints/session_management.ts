@@ -147,6 +147,11 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_NOT_EMPTY));
     }
 
+    if (session.persistent) {
+      logger.warn(EndpointNames.DELETE_SESSION, "Session", session.name, "is persistent");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_DELETE_UNAUTHORIZED));
+    }
+
     logger.debug(EndpointNames.DELETE_SESSION, "Deleting session", session.name);
 
     orchestrator.removeSession(session);
