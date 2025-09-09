@@ -154,7 +154,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
 
     logger.debug(EndpointNames.DELETE_SESSION, "Deleting session", session.name);
 
-    orchestrator.removeSession(session);
+    orchestrator.removeSession(session, override);
     callback(util.createCommandResponse(data, ErrorCodes.OK));
   });
 
