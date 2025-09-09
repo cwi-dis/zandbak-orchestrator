@@ -106,10 +106,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     session?.removeUser(user);
 
     if (session?.administrator.id == user.id) {
-      session.closeSession();
-      orchestrator.removeSession(session);
-
-      return true;
+      return orchestrator.removeSession(session);
     }
 
     return false;
@@ -125,10 +122,9 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const administratedSessions = orchestrator.getAdministratedSessions(user);
 
     const numRemovedSessions = administratedSessions.reduce((count, s) => {
-      const sessionClosed = s.closeSession();
+      const sessionClosed = orchestrator.removeSession(s);
 
       if (sessionClosed) {
-        orchestrator.removeSession(s);
         return count + 1;
       }
 
