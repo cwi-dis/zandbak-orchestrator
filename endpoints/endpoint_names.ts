@@ -17,6 +17,7 @@ enum EndpointNames {
 
   GET_USER_DATA = "GetUserData",
   UPDATE_USER_DATA = "UpdateUserDataJson",
+  SET_USER_STATUS = "SetUserStatus",
 
   SEND_MESSAGE = "SendMessage",
   SEND_MESSAGE_TO_ALL = "SendMessageToAll",
