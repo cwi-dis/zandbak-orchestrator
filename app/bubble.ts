@@ -34,6 +34,25 @@ class Bubble extends Serializable {
     return this.#users;
   }
 
+  /**
+   * Removes the given user from the bubble if it is a member of it. If the
+   * given user is not in this bubble, nothing happens and the method returns
+   * false.
+   *
+   * @param user User to remove
+   * @returns True if the user was removed from the bubble, false otherwise
+   */
+  public removeUser(user: User): boolean {
+    const filteredUsers = this.#users.filter((u) => u.id != user.id);
+
+    if (filteredUsers.length == this.#users.length) {
+      return false;
+    }
+
+    this.#users = filteredUsers;
+    return true;
+  }
+
   public serialize(): Dict {
     return {
       id: this.#id,
