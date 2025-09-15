@@ -3,6 +3,7 @@ enum ErrorCodes {
   MISSING_CREDENTIALS = 204,
   USER_EXISTS = 205,
   INVALID_CREDENTIALS = 206,
+  MISSING_PARAMETER = 207,
 
   SESSION_ADD_FAILED = 404,
   SESSION_DELETE_UNAUTHORIZED = 501,
@@ -36,6 +37,7 @@ export const ErrorMessages: { [key in ErrorCodes]: string } = {
   [ErrorCodes.MISSING_CREDENTIALS]: "The user credentials are missing",
   [ErrorCodes.INVALID_CREDENTIALS]: "The user credentials are invalid",
   [ErrorCodes.USER_EXISTS]: "A user with the same name is already logged in",
+  [ErrorCodes.MISSING_PARAMETER]: "A required parameter was not supplied",
 
   [ErrorCodes.SESSION_ADD_FAILED]: "Could not create session",
   [ErrorCodes.SESSION_NOT_FOUND]: "The session was not found",
