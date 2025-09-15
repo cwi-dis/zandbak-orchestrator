@@ -3,11 +3,10 @@ import logger from "../logger";
 
 import ErrorCodes from "./error_codes";
 import EndpointNames from "./endpoint_names";
-import Orchestrator from "../app/orchestrator";
 import User from "../app/user";
 
 
-const installHandlers = (orchestrator: Orchestrator, user: User) => {
+const installHandlers = (user: User) => {
   const { socket } = user;
 
   /**
