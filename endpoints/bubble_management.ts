@@ -35,6 +35,26 @@ const installHandlers = (user: User) => {
       bubble.serialize()
     ));
   });
+
+  /**
+   * Returns a serialised list of active bubbles in the user's current session.
+   * If the current user is not in any session at the moment, an error is
+   * issued.
+   */
+  socket.on(EndpointNames.LIST_BUBBLES, (data, callback) => {
+    const { session } = user;
+
+    if (!session) {
+      logger.debug(EndpointNames.CREATE_BUBBLE, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      session.bubbles.map((b) => b.serialize())
+    ));
+  });
 };
 
 export default installHandlers;
