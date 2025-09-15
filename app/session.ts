@@ -227,6 +227,22 @@ class Session extends Serializable {
   }
 
   /**
+   * Creates a new bubble and adds it to this session. The bubble is
+   * initialised with a name and a user object who will become the owner of the
+   * bubble. The method returns the newly created bubble.
+   *
+   * @param name Name of the bubble to be created
+   * @param owner A User object representing the user creating the bubble
+   * @returns The newly created bubble
+   */
+  public createBubble(name: string, owner: User): Bubble {
+    const bubble = new Bubble(name, owner);
+    this.#bubbles.push(bubble);
+
+    return bubble;
+  }
+
+  /**
    * Closes the current session by sending the corresponding event to all users
    * and removing the session from its transport. If the property `persistent`
    * is true, the session is not removed, unless the `override` param is set to
