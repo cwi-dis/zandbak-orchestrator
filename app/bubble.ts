@@ -1,8 +1,11 @@
+import { v4 as uuidv4 } from "uuid";
+
 import Serializable from "./serializable";
 import User from "./user";
 import { Dict } from "../util";
 
 class Bubble extends Serializable {
+  #id: string = uuidv4();
   #name: string;
   #owner: User;
   #users: Array<User> = [];
@@ -13,6 +16,10 @@ class Bubble extends Serializable {
     this.#name = name;
     this.#owner = owner;
     this.#users.push(owner);
+  }
+
+  public get id(): string {
+    return this.#id;
   }
 
   public get name(): string {
@@ -29,6 +36,7 @@ class Bubble extends Serializable {
 
   public serialize(): Dict {
     return {
+      id: this.#id,
       name: this.#name,
       owner: this.#owner,
       users: this.#users.map((u) => u.serialize())
