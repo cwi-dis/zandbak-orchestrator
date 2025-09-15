@@ -243,6 +243,18 @@ class Session extends Serializable {
   }
 
   /**
+   * Checks whether a given user is currently member of any bubble.
+   *
+   * @param user User to check
+   * @returns True if the given user is in a bubble, false otherwise
+   */
+  public isInBubble(user: User): boolean {
+    return this.#bubbles.find((b) => {
+      return b.users.find((u) => u.id == user.id) != undefined;
+    }) != undefined;
+  }
+
+  /**
    * Closes the current session by sending the corresponding event to all users
    * and removing the session from its transport. If the property `persistent`
    * is true, the session is not removed, unless the `override` param is set to
