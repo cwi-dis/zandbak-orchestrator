@@ -8,6 +8,7 @@ import TransportManager, { TransportType } from "../transport/manager/transport_
 import EmittedEvents, { SessionEvent, SessionEventName } from "./emitted_events";
 import ChatMessage, { PrivateMessage } from "./chat_message";
 import Presentation from "./presentation";
+import Bubble from "./bubble";
 
 
 class Session extends Serializable {
@@ -19,6 +20,7 @@ class Session extends Serializable {
   #master?: User;
   #transport: Transport;
   #channels: Array<string>;
+  #bubbles: Array<Bubble>;
   #persistent: boolean;
 
   #status: string = "scheduled";
@@ -532,6 +534,7 @@ class Session extends Serializable {
       sessionRaisedHands: this.getRaisedHands(),
       sessionCurrentPresentation: this.currentPresentation?.serialize(),
       sessionPresentations: this.schedule.map((p) => p.serialize()),
+      sessionBubbles: this.#bubbles.map((b) => b.serialize()),
       sessionStatus: this.#status,
       sessionPersistent: this.#persistent
     };
