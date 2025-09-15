@@ -16,6 +16,7 @@ enum EndpointNames {
   IS_SHARING = "IsSharing",
 
   CREATE_BUBBLE = "CreateBubble",
+  LIST_BUBBLES = "ListBubbles",
 
   GET_USER_DATA = "GetUserData",
   UPDATE_USER_DATA = "UpdateUserDataJson",
