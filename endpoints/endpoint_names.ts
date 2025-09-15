@@ -15,6 +15,8 @@ enum EndpointNames {
   CHANGE_SLIDE = "ChangeSlide",
   IS_SHARING = "IsSharing",
 
+  CREATE_BUBBLE = "CreateBubble",
+
   GET_USER_DATA = "GetUserData",
   UPDATE_USER_DATA = "UpdateUserDataJson",
   SET_USER_STATUS = "SetUserStatus",
