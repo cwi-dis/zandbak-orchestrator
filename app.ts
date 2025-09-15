@@ -18,6 +18,7 @@ import installUtilHandlers from "./endpoints/util";
 import installUserDataHandlers from "./endpoints/user_data";
 import installSceneEventHandlers from "./endpoints/scene_events";
 import installStreamHandlers from "./endpoints/data_streams";
+import installBubbleHandlers from "./endpoints/bubble_management";
 
 const [ PORT, MONGODB_CONNECTION ] = getFromEnvironment(["PORT", "MONGODB_CONNECTION"]);
 const [ LOG_SERVER, EXTERNAL_HOSTNAME ] = getFromEnvironment(["LOG_SERVER", "EXTERNAL_HOSTNAME"], null);
@@ -82,6 +83,7 @@ export const setupHandlers = async (socket: Socket) => {
     installUserDataHandlers(orchestrator, user);
     installSceneEventHandlers(user);
     installStreamHandlers(user);
+    installBubbleHandlers(user);
 
     logger.debug("Event handlers installed");
   } catch (err) {

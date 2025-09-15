@@ -81,6 +81,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const { status } = data;
     const { session } = user;
 
+    logger.debug(EndpointNames.SET_USER_STATUS, "Setting user status for", user.name, "to", status);
     user.status = status;
 
     if (session) {

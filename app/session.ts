@@ -8,6 +8,7 @@ import TransportManager, { TransportType } from "../transport/manager/transport_
 import EmittedEvents, { SessionEvent, SessionEventName } from "./emitted_events";
 import ChatMessage, { PrivateMessage } from "./chat_message";
 import Presentation from "./presentation";
+import Bubble from "./bubble";
 
 
 class Session extends Serializable {
@@ -19,6 +20,7 @@ class Session extends Serializable {
   #master?: User;
   #transport: Transport;
   #channels: Array<string>;
+  #bubbles: Array<Bubble>;
   #persistent: boolean;
 
   #status: string = "scheduled";
@@ -222,6 +224,34 @@ class Session extends Serializable {
    */
   public isMaster(user: User): boolean {
     return !!this.#master && user.id == this.#master.id;
+  }
+
+  /**
+   * Creates a new bubble and adds it to this session. The bubble is
+   * initialised with a name and a user object who will become the owner of the
+   * bubble. The method returns the newly created bubble.
+   *
+   * @param name Name of the bubble to be created
+   * @param owner A User object representing the user creating the bubble
+   * @returns The newly created bubble
+   */
+  public createBubble(name: string, owner: User): Bubble {
+    const bubble = new Bubble(name, owner);
+    this.#bubbles.push(bubble);
+
+    return bubble;
+  }
+
+  /**
+   * Checks whether a given user is currently member of any bubble.
+   *
+   * @param user User to check
+   * @returns True if the given user is in a bubble, false otherwise
+   */
+  public isInBubble(user: User): boolean {
+    return this.#bubbles.find((b) => {
+      return b.users.find((u) => u.id == user.id) != undefined;
+    }) != undefined;
   }
 
   /**
@@ -532,6 +562,7 @@ class Session extends Serializable {
       sessionRaisedHands: this.getRaisedHands(),
       sessionCurrentPresentation: this.currentPresentation?.serialize(),
       sessionPresentations: this.schedule.map((p) => p.serialize()),
+      sessionBubbles: this.#bubbles.map((b) => b.serialize()),
       sessionStatus: this.#status,
       sessionPersistent: this.#persistent
     };
