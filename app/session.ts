@@ -255,6 +255,16 @@ class Session extends Serializable {
   }
 
   /**
+   * Returns a list of currently active conversation bubbles within this
+   * session.
+   *
+   * @returns A list of active bubbles in this session
+   */
+  public get bubbles(): Array<Bubble> {
+    return this.#bubbles;
+  }
+
+  /**
    * Closes the current session by sending the corresponding event to all users
    * and removing the session from its transport. If the property `persistent`
    * is true, the session is not removed, unless the `override` param is set to
