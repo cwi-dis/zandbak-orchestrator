@@ -243,6 +243,17 @@ class Session extends Serializable {
   }
 
   /**
+   * Finds a bubble with the given ID in the current session. If there is no
+   * such bubble, `undefined` is returned.
+   *
+   * @param id ID of the bubble to find
+   * @returns The bubble identified by the given ID, or undefined is there is no such bubble
+   */
+  public findBubble(id: string): Optional<Bubble> {
+    return this.#bubbles.find((b) => b.id == id);
+  }
+
+  /**
    * Checks whether a given user is currently member of any bubble.
    *
    * @param user User to check

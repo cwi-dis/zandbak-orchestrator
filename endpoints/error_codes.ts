@@ -3,6 +3,7 @@ enum ErrorCodes {
   MISSING_CREDENTIALS = 204,
   USER_EXISTS = 205,
   INVALID_CREDENTIALS = 206,
+  MISSING_PARAMETER = 207,
 
   SESSION_ADD_FAILED = 404,
   SESSION_DELETE_UNAUTHORIZED = 501,
@@ -16,6 +17,9 @@ enum ErrorCodes {
   SESSION_USER_NOT_IN_SAME_SESSION = 802,
   SESSION_IS_SPEAKING_FLAG_NOT_SET = 803,
   SESSION_IS_SHARING_FLAG_NOT_SET = 804,
+
+  BUBBLE_NOT_FOUND = 805,
+  BUBBLE_DOESNT_HAVE_USER = 806,
 
   USER_DATA_USER_NOT_FOUND = 1301,
   USER_DATA_MISSING_DATA_JSON = 1700,
@@ -36,6 +40,7 @@ export const ErrorMessages: { [key in ErrorCodes]: string } = {
   [ErrorCodes.MISSING_CREDENTIALS]: "The user credentials are missing",
   [ErrorCodes.INVALID_CREDENTIALS]: "The user credentials are invalid",
   [ErrorCodes.USER_EXISTS]: "A user with the same name is already logged in",
+  [ErrorCodes.MISSING_PARAMETER]: "A required parameter was not supplied",
 
   [ErrorCodes.SESSION_ADD_FAILED]: "Could not create session",
   [ErrorCodes.SESSION_NOT_FOUND]: "The session was not found",
@@ -49,6 +54,9 @@ export const ErrorMessages: { [key in ErrorCodes]: string } = {
   [ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED]: "The user is not allowed to perform this action",
   [ErrorCodes.SESSION_IS_SPEAKING_FLAG_NOT_SET]: "isSpeaking parameter is not set",
   [ErrorCodes.SESSION_IS_SHARING_FLAG_NOT_SET]: "isSharing parameter is not set",
+
+  [ErrorCodes.BUBBLE_NOT_FOUND]: "The bubble with the given ID does not exist",
+  [ErrorCodes.BUBBLE_DOESNT_HAVE_USER]: "The given user could not be removed from the bubble because he is not a member",
 
   [ErrorCodes.USER_DATA_USER_NOT_FOUND]: "The user was not found",
   [ErrorCodes.USER_DATA_MISSING_DATA_JSON]: "User data (JSON) missing",
