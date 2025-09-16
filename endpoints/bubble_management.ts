@@ -75,6 +75,11 @@ const installHandlers = (user: User) => {
       return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_DOESNT_HAVE_USER));
     }
 
+    session.sendSessionUpdate("USER_LEFT_BUBBLE", {
+      userId: id,
+      bubbleId: bubble.id
+    });
+
     callback(util.createCommandResponse(
       data,
       ErrorCodes.OK,
