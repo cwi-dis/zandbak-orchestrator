@@ -20,7 +20,7 @@ class Session extends Serializable {
   #master?: User;
   #transport: Transport;
   #channels: Array<string>;
-  #bubbles: Array<Bubble>;
+  #bubbles: Array<Bubble> = [];
   #persistent: boolean;
 
   #status: string = "scheduled";
