@@ -141,12 +141,12 @@ class Session extends Serializable {
    * @param user User to remove from the session
    */
   public removeUser(user: User) {
+    this.sendSessionUpdate("USER_LEFT_SESSION", { userId: user.id });
+
     this.removeUserFromChannels(user);
     this.#users = this.#users.filter((u) => u.id != user.id);
     this.selectMaster();
     user.session = undefined;
-
-    this.sendSessionUpdate("USER_LEFT_SESSION", { userId: user.id });
   }
 
   /**
