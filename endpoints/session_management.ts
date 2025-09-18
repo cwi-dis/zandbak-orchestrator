@@ -268,6 +268,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    */
   socket.on(EndpointNames.LEAVE_SESSION, (data, callback) => {
     const { session } = user;
+    const { userId }: { userId: util.Optional<string> } = data;
 
     if (!session) {
       logger.warn(EndpointNames.LEAVE_SESSION, "User", user.name, "is not in any session");
@@ -278,6 +279,34 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
+    // If userId is set and different from the current user we try to remove that user
+    if (userId && userId !== user.id) {
+      // Only the session owner is allowed to remote other users
+      if (!session.isMaster(user)) {
+        logger.warn(EndpointNames.LEAVE_SESSION, "User", user.name, "is not authorized to perform action");
+        return callback(util.createCommandResponse(
+          data,
+          ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED
+        ));
+      }
+
+      // Find user to remove
+      const userToRemove = session.getUser(userId);
+
+      if (!userToRemove) {
+        logger.warn(EndpointNames.LEAVE_SESSION, "User", userId, "not found in session");
+        return callback(util.createCommandResponse(
+          data,
+          ErrorCodes.SESSION_USER_NOT_IN_SESSION
+        ));
+      }
+
+      session.removeUser(userToRemove);
+      logger.debug(EndpointNames.LEAVE_SESSION, "Removing user", userToRemove.name, "from session", session.name);
+      return callback(util.createCommandResponse(data, ErrorCodes.OK));
+    }
+
+    // Else we remove the current user
     logger.debug(EndpointNames.LEAVE_SESSION, "Removing user", user.name, "from session", session.name);
     callback(util.createCommandResponse(data, ErrorCodes.OK));
     session.removeUser(user);
