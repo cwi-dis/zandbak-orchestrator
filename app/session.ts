@@ -136,12 +136,15 @@ class Session extends Serializable {
 
   /**
    * Removes the given user to the session and notifies all currently joined
-   * users of the change.
+   * users of the change. If the parameter `force` is set to true, the user
+   * should be forcefully removed from the session (e.g. the user was removed
+   * from the session by an admin).
    *
    * @param user User to remove from the session
+   * @param force Forcefully remove the user
    */
-  public removeUser(user: User) {
-    this.sendSessionUpdate("USER_LEFT_SESSION", { userId: user.id });
+  public removeUser(user: User, force = false) {
+    this.sendSessionUpdate("USER_LEFT_SESSION", { userId: user.id, force });
 
     this.removeUserFromChannels(user);
     this.#users = this.#users.filter((u) => u.id != user.id);
