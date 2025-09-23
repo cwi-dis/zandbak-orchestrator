@@ -319,7 +319,9 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     callback(util.createCommandResponse(data, ErrorCodes.OK));
     session.removeUser(user);
 
-    if (session.isEmpty()) {
+    // Check if the session is now empty and remove it if so
+    if (session.isEmpty() && !session.persistent) {
+      logger.debug(EndpointNames.LEAVE_SESSION, "Session", session.name, "is empty, removing it!");
       orchestrator.removeSession(session);
     }
   });
