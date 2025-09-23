@@ -308,7 +308,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         ));
       }
 
-      session.removeUser(userToRemove);
+      // Remove the user and send the event with the param `force` set to true
+      session.removeUser(userToRemove, true);
       logger.debug(EndpointNames.LEAVE_SESSION, "Removing user", userToRemove.name, "from session", session.name);
       return callback(util.createCommandResponse(data, ErrorCodes.OK));
     }
