@@ -19,6 +19,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * Returns a serialised version of the session to the caller upon success.
    */
   socket.on(EndpointNames.ADD_SESSION, (data, callback) => {
+    let { persistent = false } = data;
     const {
       sessionName, sessionDescription, sessionProtocol = "unknown",
       channels = []
@@ -35,13 +36,19 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         logger.debug(EndpointNames.ADD_SESSION, "External hostname:", externalHostname);
       }
 
+      // If the user is a regular user, set persistent to false. Only privileged users can create persistent sessions
+      if (user.userType == "user") {
+        persistent = false;
+      }
+
       const session = new Session(
         sessionName.trim(),
         sessionDescription,
         sessionProtocol,
         channels,
         orchestrator.transportManager,
-        externalHostname
+        externalHostname,
+        persistent
       );
 
       logger.debug(EndpointNames.ADD_SESSION, "Adding user", user.name, "as admin to new session", session.name);
