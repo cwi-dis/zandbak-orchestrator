@@ -1,3 +1,4 @@
+import { Optional } from "../util";
 import Serializable from "./serializable";
 
 class Presentation extends Serializable {
@@ -6,21 +7,21 @@ class Presentation extends Serializable {
   #description: string;
   #presenter: string;
 
-  #slidesUrl: string;
+  #slidesUrl: Optional<string>;
   #currentSlide: number = 0;
   #numSlides: number;
 
   isSharing = false;
 
-  constructor(id: string, name: string, description: string, presenter: string, slidesUrl: string, numSlides: number) {
+  constructor(id: string, name: string, description: string, presenter: string, numSlides: number, slidesUrl?: string) {
     super();
 
     this.#id = id;
     this.#name = name;
     this.#description = description;
     this.#presenter = presenter;
-    this.#slidesUrl = slidesUrl;
     this.#numSlides = numSlides;
+    this.#slidesUrl = slidesUrl;
   }
 
   public get id() {
