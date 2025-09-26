@@ -48,6 +48,7 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(logger.http);
+app.use("/slides", express.static("slides"));
 app.use(routes);
 
 const server = createServer(app);
