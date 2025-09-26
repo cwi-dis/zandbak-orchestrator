@@ -85,3 +85,4 @@ REVISION
 config/*.json
 packages/
 data/
+slides/
