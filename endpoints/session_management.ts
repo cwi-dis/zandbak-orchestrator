@@ -108,6 +108,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     session.status = "ongoing";
     session.schedule = dbSession.presentations.map((p) => {
       return new Presentation(
+        p._id.toString(),
         p.title,
         p.description,
         p.presenter._id.toString(),
