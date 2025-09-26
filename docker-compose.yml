@@ -9,6 +9,7 @@ services:
       - MONGODB_CONNECTION=mongodb://user:pass@mongodb/induxr?authSource=admin
     volumes:
       - ./config/:/code/config
+      - ./slides/:/code/slides
       - ./.env:/code/.env
     ports:
       - "8090:8090"
