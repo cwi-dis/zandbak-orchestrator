@@ -464,7 +464,7 @@ class Session extends Serializable {
       this.#raisedHands.push(user);
     }
 
-    this.sendSessionUpdate( "USER_RAISED_HAND", { userId: user.id });
+    this.sendSessionUpdate("USER_RAISED_HAND", { userId: user.id });
   }
 
   /**

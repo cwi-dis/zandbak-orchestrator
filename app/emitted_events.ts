@@ -1,6 +1,8 @@
 import { Dict } from "../util";
 
 enum EmittedEvents {
+  ORCHESTRATOR_UPDATED = "OrchestratorUpdated",
+
   SESSION_CLOSED = "SessionClosed",
   SESSION_UPDATED = "SessionUpdated",
 
@@ -28,6 +30,13 @@ export type SessionEventName =
 
 export interface SessionEvent {
   eventId: SessionEventName,
+  eventData: Dict
+}
+
+export type OrchestratorEventName = "SESSION_CREATED";
+
+export interface OrchestratorEvent {
+  eventId: OrchestratorEventName,
   eventData: Dict
 }
 
