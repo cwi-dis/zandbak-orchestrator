@@ -5,6 +5,7 @@ import User from "./user";
 import { Optional, Dict } from "../util";
 import TransportManager from "../transport/manager/transport_manager";
 import Serializable from "./serializable";
+import EmittedEvents, { OrchestratorEvent, OrchestratorEventName } from "./emitted_events";
 
 class Orchestrator extends Serializable {
   public id: string = uuidv4();
@@ -60,6 +61,30 @@ class Orchestrator extends Serializable {
    */
   public removeUser(user: User) {
     this.#users = this.#users.filter((u) => u.id != user.id);
+  }
+
+  /**
+   * Sends a given message to all users currently logged in. The message
+   * can be any serialisable object.
+   *
+   * @param message Message to send
+   */
+  private notifyUsers(message: OrchestratorEvent) {
+    this.#users.forEach((u) => {
+      u.socket.emit(EmittedEvents.ORCHESTRATOR_UPDATED, message);
+    });
+  }
+
+  /**
+   * Sends a session update event to all users in the session.
+   *
+   * @param eventId Event ID
+   * @param eventData Event data
+   */
+  public sendOrchestratorUpdate(eventId: OrchestratorEventName, eventData: Dict) {
+    this.notifyUsers({
+      eventId, eventData
+    });
   }
 
   /**
