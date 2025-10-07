@@ -105,6 +105,11 @@ class Orchestrator extends Serializable {
    */
   public addSession(session: Session) {
     this.#sessions.push(session);
+
+    this.sendOrchestratorUpdate(
+      "SESSION_CREATED",
+      session.serialize()
+    );
   }
 
   /**
