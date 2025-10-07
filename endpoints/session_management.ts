@@ -62,11 +62,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         ErrorCodes.OK,
         session.serialize()
       ));
-
-      orchestrator.sendOrchestratorUpdate(
-        "SESSION_CREATED",
-        session.serialize()
-      );
     } catch (err) {
       logger.error(EndpointNames.ADD_SESSION, "Error during session creation:", err.stack);
 
@@ -134,11 +129,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ErrorCodes.OK,
       session.serialize()
     ));
-
-    orchestrator.sendOrchestratorUpdate(
-      "SESSION_CREATED",
-      session.serialize()
-    );
   });
 
   /**

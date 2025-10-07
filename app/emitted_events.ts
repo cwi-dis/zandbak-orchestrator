@@ -33,7 +33,9 @@ export interface SessionEvent {
   eventData: Dict
 }
 
-export type OrchestratorEventName = "SESSION_CREATED";
+export type OrchestratorEventName =
+  "SESSION_CREATED" |
+  "SESSION_DELETED";
 
 export interface OrchestratorEvent {
   eventId: OrchestratorEventName,

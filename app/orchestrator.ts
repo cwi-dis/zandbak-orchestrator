@@ -105,6 +105,11 @@ class Orchestrator extends Serializable {
    */
   public addSession(session: Session) {
     this.#sessions.push(session);
+
+    this.sendOrchestratorUpdate(
+      "SESSION_CREATED",
+      session.serialize()
+    );
   }
 
   /**
@@ -118,11 +123,14 @@ class Orchestrator extends Serializable {
    * @returns True if the session was closed, false otherwise
    */
   public removeSession(session: Session, override = false) {
+    const sessionId = session.id;
     const sessionClosed = session.closeSession(override);
 
     if (sessionClosed) {
       this.#sessions = this.#sessions.filter((s) => s.id != session.id);
       this.#transportManager.cleanupTransports();
+
+      this.sendOrchestratorUpdate("SESSION_DELETED", { sessionId });
 
       return true;
     }
