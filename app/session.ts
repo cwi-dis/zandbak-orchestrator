@@ -147,7 +147,10 @@ class Session extends Serializable {
     this.sendSessionUpdate("USER_LEFT_SESSION", { userId: user.id, force });
 
     this.removeUserFromChannels(user);
+    this.removeUserFromBubbles(user);
+
     this.#users = this.#users.filter((u) => u.id != user.id);
+
     this.selectMaster();
     user.session = undefined;
   }
@@ -536,6 +539,17 @@ class Session extends Serializable {
   private removeUserFromChannels(user: User) {
     this.#channels.forEach((channel) => {
       user.socket.leave(channel);
+    });
+  }
+
+  /**
+   * Removes the given user from all bubbles that they might be a member of
+   * @param user The user to remove from the bubbles
+   */
+  private removeUserFromBubbles(user: User) {
+    this.#bubbles = this.#bubbles.map((b) => {
+      b.removeUser(user);
+      return b;
     });
   }
 
