@@ -18,6 +18,7 @@ enum EndpointNames {
   CREATE_BUBBLE = "CreateBubble",
   LEAVE_BUBBLE = "LeaveBubble",
   LIST_BUBBLES = "ListBubbles",
+  REQUEST_JOIN_BUBBLE = "RequestJoinBubble",
 
   GET_USER_DATA = "GetUserData",
   UPDATE_USER_DATA = "UpdateUserDataJson",
