@@ -46,6 +46,24 @@ class Bubble extends Serializable {
   }
 
   /**
+   * Adds the given user to this bubble.
+   * Returns true if the user was successfully added to the bubble. If the
+   * given user is already a member of this bubble, nothings happens and the
+   * method returns false.
+   *
+   * @param user User to add to this bubble
+   * @returns True if the user was added successfully, false otherwise
+   */
+  public addUser(user: User): boolean {
+    if (this.isInBubble(user)) {
+      return false;
+    }
+
+    this.#users.push(user);
+    return true;
+  }
+
+  /**
    * Removes the given user from the bubble if it is a member of it. If the
    * given user is not in this bubble, nothing happens and the method returns
    * false.
