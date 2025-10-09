@@ -35,13 +35,18 @@ class Bubble extends Serializable {
   }
 
   /**
-   * Checks whether the given user is a member of this bubble.
+   * Checks whether the given user (or user ID) is a member of this bubble.
    * The check is performed by comparing user IDs.
    *
-   * @param user The user to check
+   * @param user The user object or the ID of the user to check
    * @returns True if the given user is in the bubble, false otherwise
    */
-  public isInBubble(user: User): boolean {
+  public isInBubble(user: User | string) {
+    // If the given param is a string, interpret it as a user ID
+    if (typeof user == "string") {
+      return this.#users.find((u) => u.id == user) != undefined;
+    }
+
     return this.#users.find((u) => u.id == user.id) != undefined;
   }
 
