@@ -134,6 +134,54 @@ const installHandlers = (user: User) => {
     // Get bubble owner
     const { owner } = bubbleToJoin;
 
+    // TODO send join request notification to bubble owner
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK
+    ));
+  });
+
+  socket.on(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, (data, callback) => {
+    const { session } = user;
+    const { userId, bubbleId, approve }: { userId: string, bubbleId: string, approve: boolean } = data;
+
+    // User is not in any session
+    if (!session) {
+      logger.debug(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    const bubble = session.findBubble(bubbleId);
+
+    // Bubble with given ID was not found
+    if (!bubble) {
+      logger.debug(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, "Bubble with ID", bubbleId, "not found in this session");
+      return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
+    }
+
+    // Check whether requesting user is owner of this bubble
+    if (bubble.owner.id != user.id) {
+      logger.debug(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, "Current user is not owner of this bubble");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED));
+    }
+
+    // Get user to add from session
+    const userToAdd = session.getUser(userId);
+
+    if (!userToAdd) {
+      logger.debug(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, "User to add not found in this session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    // Add user if `approve` is true
+    if (approve) {
+      bubble.addUser(userToAdd);
+      // TODO send join notification to user
+    } else {
+      // TODO send reject notification to user
+    }
+
     callback(util.createCommandResponse(
       data,
       ErrorCodes.OK
