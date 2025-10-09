@@ -63,7 +63,7 @@ const installHandlers = (user: User) => {
 
     // Return error if bubble is not found
     if (!bubble) {
-      logger.debug(EndpointNames.LEAVE_BUBBLE, "User", user.name, "not in any session");
+      logger.debug(EndpointNames.LEAVE_BUBBLE, "Bubble with ID", id, "not found in this session");
       return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
     }
 
@@ -96,7 +96,7 @@ const installHandlers = (user: User) => {
     const { session } = user;
 
     if (!session) {
-      logger.debug(EndpointNames.CREATE_BUBBLE, "User", user.name, "not in any session");
+      logger.debug(EndpointNames.LIST_BUBBLES, "User", user.name, "not in any session");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
@@ -104,6 +104,39 @@ const installHandlers = (user: User) => {
       data,
       ErrorCodes.OK,
       session.bubbles.map((b) => b.serialize())
+    ));
+  });
+
+  /**
+   * Allows the current user to request the joining of a given bubble,
+   * identified by its ID. After issuing this request, an event is sent to the
+   * owner of the given bubble and they can then approve or reject the request.
+  */
+  socket.on(EndpointNames.REQUEST_JOIN_BUBBLE, (data, callback) => {
+    const { session } = user;
+    const { id: bubbleId } = data;
+
+    // User is not in any session
+    if (!session) {
+      logger.debug(EndpointNames.REQUEST_JOIN_BUBBLE, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    // Find the given bubble
+    const bubbleToJoin = session.findBubble(bubbleId);
+
+    // Bubble with given ID was not found
+    if (!bubbleToJoin) {
+      logger.debug(EndpointNames.REQUEST_JOIN_BUBBLE, "Bubble with ID", bubbleId, "not found in this session");
+      return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
+    }
+
+    // Get bubble owner
+    const { owner } = bubbleToJoin;
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK
     ));
   });
 };
