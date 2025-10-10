@@ -87,6 +87,15 @@ class Bubble extends Serializable {
     return true;
   }
 
+  public sendJoinRequestToOwner(requestingUser: User) {
+    this.owner.sendBubbleUpdate({
+      eventId: "BUBBLE_JOIN_REQUESTED",
+      eventData: {
+        requestingUserId: requestingUser.id
+      },
+    });
+  }
+
   public serialize(): Dict {
     return {
       id: this.#id,
