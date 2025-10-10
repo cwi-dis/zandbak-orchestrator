@@ -131,10 +131,7 @@ const installHandlers = (user: User) => {
       return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
     }
 
-    // Get bubble owner
-    const { owner } = bubbleToJoin;
-
-    // TODO send join request notification to bubble owner
+    bubbleToJoin.sendJoinRequestToOwner(user);
 
     callback(util.createCommandResponse(
       data,
@@ -177,10 +174,15 @@ const installHandlers = (user: User) => {
     // Add user if `approve` is true
     if (approve) {
       bubble.addUser(userToAdd);
-      // TODO send join notification to user
-    } else {
-      // TODO send reject notification to user
     }
+
+    userToAdd.sendBubbleUpdate({
+      eventId: "BUBBLE_JOIN_REQUEST_APPROVED",
+      eventData: {
+        bubbleId: bubble.id,
+        approve
+      }
+    });
 
     callback(util.createCommandResponse(
       data,
