@@ -66,6 +66,11 @@ class Bubble extends Serializable {
     }
 
     this.#users.push(user);
+    this.notifyUsers({
+      eventId: "USER_JOINED_BUBBLE",
+      eventData: user.serialize()
+    });
+
     return true;
   }
 
@@ -85,6 +90,11 @@ class Bubble extends Serializable {
     }
 
     this.#users = filteredUsers;
+    this.notifyUsers({
+      eventId: "USER_JOINED_BUBBLE",
+      eventData: user.serialize()
+    });
+
     return true;
   }
 
