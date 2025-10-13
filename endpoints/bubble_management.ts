@@ -139,6 +139,15 @@ const installHandlers = (user: User) => {
     ));
   });
 
+  /**
+   * Allows the owner of a bubble to approve or reject bubble join requests.
+   * The requesting user ID, the bubble ID and approval status are given as
+   * parameters. If the approval status flag is true, the requesting user is
+   * added to the given bubble and a notification is sent to all members. The
+   * requesting user receives an additional notification that their request
+   * has been granted. If the the reqeust has been denied, only the requesting
+   * user receives a notification.
+  */
   socket.on(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, (data, callback) => {
     const { session } = user;
     const { userId, bubbleId, approve }: { userId: string, bubbleId: string, approve: boolean } = data;
