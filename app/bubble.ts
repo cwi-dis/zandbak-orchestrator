@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Serializable from "./serializable";
 import User from "./user";
 import { Dict } from "../util";
+import { BubbleEvent } from "./emitted_events";
 
 class Bubble extends Serializable {
   #id: string = uuidv4();
@@ -93,6 +94,12 @@ class Bubble extends Serializable {
       eventData: {
         requestingUserId: requestingUser.id
       },
+    });
+  }
+
+  private notifyUsers(event: BubbleEvent) {
+    this.#users.forEach((u) => {
+      u.sendBubbleUpdate(event);
     });
   }
 
