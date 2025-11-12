@@ -445,9 +445,12 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * Sets the current presentation for the user's current session. If the user
    * is not in any session, an error is issued. Only presenters or the session
    * administrator are allowed to set the current presentation.
+   * This endpoint optionally accepts a parameter `presentationIndex` which sets
+   * the current presentation to a given index if available.
    */
   socket.on(EndpointNames.SET_SESSION_PRESENTATION, (data, callback) => {
     const { session } = user;
+    const { presentationIndex }: { presentationIndex?: number } = data;
 
     if (!session) {
       logger.warn(EndpointNames.SET_SESSION_PRESENTATION, "User", user.name, "is not in any session");
@@ -467,7 +470,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
-    const currentPresentation = session.gotoNextPresentation();
+    const currentPresentation = (presentationIndex) ? session.setPresentation(presentationIndex) : session.gotoNextPresentation();
 
     logger.debug(EndpointNames.SET_SESSION_PRESENTATION, "Setting current presentation for session", session.name, "to", currentPresentation?.name);
     callback(util.createCommandResponse(data, ErrorCodes.OK, {
@@ -491,7 +494,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    */
   socket.on(EndpointNames.CHANGE_SLIDE, (data, callback) => {
     const { session } = user;
-    const { slideOffset = 0, slideIndex }: { slideOffset: number, slideIndex: util.Optional<number> } = data;
+    const { slideOffset = 0, slideIndex }: { slideOffset: number, slideIndex?: number } = data;
 
     if (!session) {
       logger.warn(EndpointNames.CHANGE_SLIDE, "User", user.name, "is not in any session");

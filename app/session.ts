@@ -338,6 +338,37 @@ class Session extends Serializable {
   }
 
   /**
+   * Switches the current presentation to the given index in the schedule.
+   * If the index if out of bounds with respect to the number of presentations
+   * of the schedule, nothing happens and the method returns undefined.
+   *
+   * If the current presentation is changed, all users in the session
+   * will be notified of the change.
+   *
+   * @returns The current presentation in the session, or undefined if the
+   * index is out of bounds.
+   */
+  public setPresentation(index: number): Optional<Presentation> {
+    if (this.schedule.length == 0) {
+      return;
+    }
+
+    const nextPresentation = this.schedule.at(index);
+
+    if (nextPresentation) {
+      this.currentPresentation = nextPresentation;
+
+      this.sendSessionUpdate("PRESENTATION_CHANGED", {
+        currentPresentation: this.currentPresentation?.serialize()
+      });
+
+      return this.currentPresentation;
+    }
+
+    return;
+  }
+
+  /**
    * Changes the current slide of the current presentation by the given number
    * of slides. If the current presentation is not set, nothing happens.
    * If the current slide after applying the offset is smaller than zero, the
