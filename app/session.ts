@@ -340,8 +340,10 @@ class Session extends Serializable {
   /**
    * Changes the current slide of the current presentation by the given number
    * of slides. If the current presentation is not set, nothing happens.
-   * If the slide offset is smaller than zero, the current slide will be set to
-   * the first slide.
+   * If the current slide after applying the offset is smaller than zero, the
+   * current slide will be set to the first slide. If the resulting slide index
+   * is larger than the total number of slides, the current slide will be set
+   * to the last slide.
    *
    * @param slideOffset Offset to change the current slide by. If the offset is
    * positive, the slide will be changed to the next one. If it is negative, the
@@ -353,6 +355,37 @@ class Session extends Serializable {
     }
 
     this.currentPresentation.currentSlide += slideOffset;
+
+    if (this.currentPresentation.currentSlide < 0) {
+      this.currentPresentation.currentSlide = 0;
+    }
+
+    if (this.currentPresentation.currentSlide >= this.currentPresentation.numSlides) {
+      this.currentPresentation.currentSlide = this.currentPresentation.numSlides - 1;
+    }
+
+    this.sendSessionUpdate("SLIDE_CHANGED", {
+      currentPresentation: this.currentPresentation.serialize()
+    });
+  }
+
+  /**
+   * Changes the current slide of the current presentation to the given index.
+   * If the current presentation is not set, nothing happens. If the slide
+   * index is smaller than zero, the current slide will be set to
+   * the first slide. If the index is larger than the total number of slides,
+   * the current slide will be set to the last slide.
+   *
+   * @param slideIndex Offset to change the current slide by. If the offset is
+   * positive, the slide will be changed to the next one. If it is negative, the
+   * slide will be changed to the previous one.
+   */
+  public setSlide(slideIndex: number) {
+    if (!this.currentPresentation) {
+      return;
+    }
+
+    this.currentPresentation.currentSlide = slideIndex;
 
     if (this.currentPresentation.currentSlide < 0) {
       this.currentPresentation.currentSlide = 0;
