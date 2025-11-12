@@ -485,6 +485,9 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * current slide index to determine the new slide index. If the offset is
    * negative, the slide index is decreased, if it is positive, the slide index
    * is increased.
+   * Optionally, the endpoint accepts a param `slideIndex`, which sets the
+   * current slide to the number given by the index. Presence of the
+   * `slideIndex` param overrides `slideOffset`
    */
   socket.on(EndpointNames.CHANGE_SLIDE, (data, callback) => {
     const { session } = user;
