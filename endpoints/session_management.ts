@@ -445,6 +445,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * Sets the current presentation for the user's current session. If the user
    * is not in any session, an error is issued. Only presenters or the session
    * administrator are allowed to set the current presentation.
+   * This endpoint optionally accepts a parameter `presentationIndex` which sets
+   * the current presentation to a given index if available.
    */
   socket.on(EndpointNames.SET_SESSION_PRESENTATION, (data, callback) => {
     const { session } = user;
