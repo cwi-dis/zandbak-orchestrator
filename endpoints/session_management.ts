@@ -514,7 +514,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
-    if (slideIndex) {
+    if (slideIndex != undefined) {
       session.setSlide(slideIndex);
     } else {
       session.changeSlide(slideOffset);
