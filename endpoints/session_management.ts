@@ -485,10 +485,13 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * current slide index to determine the new slide index. If the offset is
    * negative, the slide index is decreased, if it is positive, the slide index
    * is increased.
+   * Optionally, the endpoint accepts a param `slideIndex`, which sets the
+   * current slide to the number given by the index. Presence of the
+   * `slideIndex` param overrides `slideOffset`
    */
   socket.on(EndpointNames.CHANGE_SLIDE, (data, callback) => {
     const { session } = user;
-    const { slideOffset = 0 }: { slideOffset: number } = data;
+    const { slideOffset = 0, slideIndex }: { slideOffset: number, slideIndex: util.Optional<number> } = data;
 
     if (!session) {
       logger.warn(EndpointNames.CHANGE_SLIDE, "User", user.name, "is not in any session");
@@ -508,7 +511,11 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       ));
     }
 
-    session.changeSlide(slideOffset);
+    if (slideIndex) {
+      session.setSlide(slideIndex);
+    } else {
+      session.changeSlide(slideOffset);
+    }
 
     logger.debug(EndpointNames.CHANGE_SLIDE, "Setting current presentation slide for session", session.name, "to", session.currentPresentation?.currentSlide);
     callback(util.createCommandResponse(data, ErrorCodes.OK, {
