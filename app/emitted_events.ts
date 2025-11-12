@@ -2,6 +2,7 @@ import { Dict } from "../util";
 
 enum EmittedEvents {
   ORCHESTRATOR_UPDATED = "OrchestratorUpdated",
+  BUBBLE_UPDATED = "BubbleUpdated",
 
   SESSION_CLOSED = "SessionClosed",
   SESSION_UPDATED = "SessionUpdated",
@@ -39,6 +40,17 @@ export type OrchestratorEventName =
 
 export interface OrchestratorEvent {
   eventId: OrchestratorEventName,
+  eventData: Dict
+}
+
+export type BubbleEventName =
+  "BUBBLE_JOIN_REQUESTED" |
+  "BUBBLE_JOIN_REQUEST_APPROVED" |
+  "USER_JOINED_BUBBLE" |
+  "USER_LEFT_BUBBLE";
+
+export interface BubbleEvent {
+  eventId: BubbleEventName,
   eventData: Dict
 }
 

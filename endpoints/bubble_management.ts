@@ -63,7 +63,7 @@ const installHandlers = (user: User) => {
 
     // Return error if bubble is not found
     if (!bubble) {
-      logger.debug(EndpointNames.LEAVE_BUBBLE, "User", user.name, "not in any session");
+      logger.debug(EndpointNames.LEAVE_BUBBLE, "Bubble with ID", id, "not found in this session");
       return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
     }
 
@@ -96,7 +96,7 @@ const installHandlers = (user: User) => {
     const { session } = user;
 
     if (!session) {
-      logger.debug(EndpointNames.CREATE_BUBBLE, "User", user.name, "not in any session");
+      logger.debug(EndpointNames.LIST_BUBBLES, "User", user.name, "not in any session");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
@@ -104,6 +104,98 @@ const installHandlers = (user: User) => {
       data,
       ErrorCodes.OK,
       session.bubbles.map((b) => b.serialize())
+    ));
+  });
+
+  /**
+   * Allows the current user to request the joining of a given bubble,
+   * identified by its ID. After issuing this request, an event is sent to the
+   * owner of the given bubble and they can then approve or reject the request.
+  */
+  socket.on(EndpointNames.REQUEST_JOIN_BUBBLE, (data, callback) => {
+    const { session } = user;
+    const { id: bubbleId } = data;
+
+    // User is not in any session
+    if (!session) {
+      logger.debug(EndpointNames.REQUEST_JOIN_BUBBLE, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    // Find the given bubble
+    const bubbleToJoin = session.findBubble(bubbleId);
+
+    // Bubble with given ID was not found
+    if (!bubbleToJoin) {
+      logger.debug(EndpointNames.REQUEST_JOIN_BUBBLE, "Bubble with ID", bubbleId, "not found in this session");
+      return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
+    }
+
+    bubbleToJoin.sendJoinRequestToOwner(user);
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK
+    ));
+  });
+
+  /**
+   * Allows the owner of a bubble to approve or reject bubble join requests.
+   * The requesting user ID, the bubble ID and approval status are given as
+   * parameters. If the approval status flag is true, the requesting user is
+   * added to the given bubble and a notification is sent to all members. The
+   * requesting user receives an additional notification that their request
+   * has been granted. If the the reqeust has been denied, only the requesting
+   * user receives a notification.
+  */
+  socket.on(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, (data, callback) => {
+    const { session } = user;
+    const { userId, bubbleId, approve }: { userId: string, bubbleId: string, approve: boolean } = data;
+
+    // User is not in any session
+    if (!session) {
+      logger.debug(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    const bubble = session.findBubble(bubbleId);
+
+    // Bubble with given ID was not found
+    if (!bubble) {
+      logger.debug(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, "Bubble with ID", bubbleId, "not found in this session");
+      return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
+    }
+
+    // Check whether requesting user is owner of this bubble
+    if (bubble.owner.id != user.id) {
+      logger.debug(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, "Current user is not owner of this bubble");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED));
+    }
+
+    // Get user to add from session
+    const userToAdd = session.getUser(userId);
+
+    if (!userToAdd) {
+      logger.debug(EndpointNames.APPROVE_BUBBLE_JOIN_REQUEST, "User to add not found in this session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    // Add user if `approve` is true
+    if (approve) {
+      bubble.addUser(userToAdd);
+    }
+
+    userToAdd.sendBubbleUpdate({
+      eventId: "BUBBLE_JOIN_REQUEST_APPROVED",
+      eventData: {
+        bubbleId: bubble.id,
+        approve
+      }
+    });
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK
     ));
   });
 };

@@ -6,7 +6,7 @@ import Serializable from "./serializable";
 import { mapHashToDict, Dict, Transform, DeviceType } from "../util";
 import DataStream from "./data_stream";
 import StreamSubscription from "./stream_subscription";
-import EmittedEvents from "./emitted_events";
+import EmittedEvents, { BubbleEvent } from "./emitted_events";
 
 class User extends Serializable {
   #id: string = uuidv4();
@@ -98,6 +98,20 @@ class User extends Serializable {
   }
 
   /**
+   * Send an event with the given event ID and data to this user.
+   *
+   * @param eventId ID of the event
+   * @param eventData Data to send with the event
+   */
+  public sendUserUpdate(eventId: EmittedEvents, eventData: Dict) {
+    this.socket.emit(eventId, eventData);
+  }
+
+  public sendBubbleUpdate(event: BubbleEvent) {
+    this.sendUserUpdate(EmittedEvents.BUBBLE_UPDATED, event);
+  }
+
+  /**
    * Sends a scene event to this user.
    *
    * @param eventId ID of the scene event
@@ -105,7 +119,7 @@ class User extends Serializable {
    * @param sceneEventData Data associated with the event
    */
   public sendSceneEvent(eventId: EmittedEvents.SCENE_EVENT_TO_MASTER | EmittedEvents.SCENE_EVENT_TO_USER, fromUser: User, sceneEventData: any) {
-    this.socket.emit(eventId, {
+    this.sendUserUpdate(eventId, {
       sceneEventFrom: fromUser.id,
       sceneEventData
     });
