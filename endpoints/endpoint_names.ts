@@ -20,6 +20,7 @@ enum EndpointNames {
   LIST_BUBBLES = "ListBubbles",
   REQUEST_JOIN_BUBBLE = "RequestJoinBubble",
   APPROVE_BUBBLE_JOIN_REQUEST = "ApproveJoinBubble",
+  SEND_BUBBLE_INVITATION = "SendBubbleInvitation",
 
   GET_USER_DATA = "GetUserData",
   UPDATE_USER_DATA = "UpdateUserDataJson",
