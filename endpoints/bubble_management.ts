@@ -234,6 +234,9 @@ const installHandlers = (user: User) => {
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
+    // Store invitation for bubble
+    bubble.addInvitation(userToInvite);
+
     // Send invitation to invited user
     userToInvite.sendBubbleUpdate({
       eventId: "BUBBLE_JOIN_INVITED",
