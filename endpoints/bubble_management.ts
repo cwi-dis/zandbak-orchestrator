@@ -247,6 +247,33 @@ const installHandlers = (user: User) => {
       ErrorCodes.OK
     ));
   });
+
+  socket.on(EndpointNames.JOIN_BUBBLE, (data, callback) => {
+    const { session } = user;
+    const { bubbleId }: { bubbleId: string } = data;
+
+    // User is not in any session
+    if (!session) {
+      logger.debug(EndpointNames.JOIN_BUBBLE, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    const bubble = session.findBubble(bubbleId);
+
+    // Bubble with given ID was not found
+    if (!bubble) {
+      logger.debug(EndpointNames.JOIN_BUBBLE, "Bubble with ID", bubbleId, "not found in this session");
+      return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
+    }
+
+    // Add user and return success
+    bubble.addUser(user);
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK
+    ));
+  });
 };
 
 export default installHandlers;
