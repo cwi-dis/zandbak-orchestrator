@@ -198,6 +198,41 @@ const installHandlers = (user: User) => {
       ErrorCodes.OK
     ));
   });
+
+  socket.on(EndpointNames.SEND_BUBBLE_INVITATION, (data, callback) => {
+    const { userId }: { userId: string } = data;
+    const { session, bubble } = user;
+
+    // User is not in any session
+    if (!session) {
+      logger.debug(EndpointNames.SEND_BUBBLE_INVITATION, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    if (!bubble) {
+      logger.debug(EndpointNames.SEND_BUBBLE_INVITATION, "User is currently not in a bubble");
+      return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
+    }
+
+    const userToInvite = session.getUser(userId);
+
+    if (!userToInvite) {
+      logger.debug(EndpointNames.SEND_BUBBLE_INVITATION, "User to add not found in this session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    userToInvite.sendBubbleUpdate({
+      eventId: "BUBBLE_JOIN_INVITED",
+      eventData: {
+        bubbleId: bubble.id,
+      }
+    });
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK
+    ));
+  });
 };
 
 export default installHandlers;
