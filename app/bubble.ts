@@ -10,6 +10,7 @@ class Bubble extends Serializable {
   #name: string;
   #owner: User;
   #users: Array<User> = [];
+  #invitations: Set<string> = new Set();
 
   public constructor(name: string, owner: User) {
     super();
@@ -17,6 +18,7 @@ class Bubble extends Serializable {
     this.#name = name;
     this.#owner = owner;
     this.#users.push(owner);
+    this.#owner.bubble = this;
   }
 
   public get id(): string {
@@ -65,6 +67,7 @@ class Bubble extends Serializable {
       return false;
     }
 
+    user.bubble = this;
     this.#users.push(user);
     this.notifyUsers({
       eventId: "USER_JOINED_BUBBLE",
@@ -85,17 +88,56 @@ class Bubble extends Serializable {
   public removeUser(user: User): boolean {
     const filteredUsers = this.#users.filter((u) => u.id != user.id);
 
+    if (user.bubble?.id == this.id) {
+      user.bubble == undefined;
+    }
+
     if (filteredUsers.length == this.#users.length) {
       return false;
     }
 
     this.#users = filteredUsers;
     this.notifyUsers({
-      eventId: "USER_JOINED_BUBBLE",
+      eventId: "USER_LEFT_BUBBLE",
       eventData: user.serialize()
     });
 
     return true;
+  }
+
+  /**
+   * Adds the given user to the list of users invited to this bubble.
+   *
+   * @param user User to add to list of invitations
+   */
+  public addInvitation(user: User) {
+    this.#invitations.add(user.id);
+  }
+
+  /**
+   * Checks if the given user has been invited to this bubble.
+   *
+   * @param user User for which we want to check whether they have an invitation
+   * @returns True if the user has been invited to this bubble, false otherwise
+   */
+  public hasInvitation(user: User): boolean {
+    return this.#invitations.has(user.id);
+  }
+
+  /**
+   * Clears the bubble invitation for the given user. Returns true if the
+   * invitation has been cleared. If the given user has not been invited to this
+   * bubble or the invitation could not be cleared, false is returned.
+   *
+   * @param user User for which we want to clear the invitation
+   * @returns True if the invitation has been cleared, false otherwise
+   */
+  public clearInvitation(user: User): boolean {
+    if (!this.hasInvitation(user)) {
+      return false;
+    }
+
+    return this.#invitations.delete(user.id);
   }
 
   public sendJoinRequestToOwner(requestingUser: User) {

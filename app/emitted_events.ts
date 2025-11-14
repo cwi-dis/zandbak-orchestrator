@@ -46,6 +46,7 @@ export interface OrchestratorEvent {
 export type BubbleEventName =
   "BUBBLE_JOIN_REQUESTED" |
   "BUBBLE_JOIN_REQUEST_APPROVED" |
+  "BUBBLE_JOIN_INVITED" |
   "USER_JOINED_BUBBLE" |
   "USER_LEFT_BUBBLE";
 

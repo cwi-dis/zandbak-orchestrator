@@ -20,6 +20,7 @@ enum ErrorCodes {
 
   BUBBLE_NOT_FOUND = 805,
   BUBBLE_DOESNT_HAVE_USER = 806,
+  BUBBLE_INVITE_NOT_FOUND = 807,
 
   USER_DATA_USER_NOT_FOUND = 1301,
   USER_DATA_MISSING_DATA_JSON = 1700,
@@ -57,6 +58,7 @@ export const ErrorMessages: { [key in ErrorCodes]: string } = {
 
   [ErrorCodes.BUBBLE_NOT_FOUND]: "The bubble with the given ID does not exist",
   [ErrorCodes.BUBBLE_DOESNT_HAVE_USER]: "The given user could not be removed from the bubble because he is not a member",
+  [ErrorCodes.BUBBLE_INVITE_NOT_FOUND]: "The given user has not been invited to this bubble",
 
   [ErrorCodes.USER_DATA_USER_NOT_FOUND]: "The user was not found",
   [ErrorCodes.USER_DATA_MISSING_DATA_JSON]: "User data (JSON) missing",
