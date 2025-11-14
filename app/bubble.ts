@@ -91,7 +91,7 @@ class Bubble extends Serializable {
 
     this.#users = filteredUsers;
     this.notifyUsers({
-      eventId: "USER_JOINED_BUBBLE",
+      eventId: "USER_LEFT_BUBBLE",
       eventData: user.serialize()
     });
 
