@@ -251,6 +251,11 @@ const installHandlers = (user: User) => {
     ));
   });
 
+  /**
+   * Allows the current user to join a bubble identified by its bubble ID.
+   * If the requesting user has not previously been invited to the given bubble,
+   * and error is returned.
+  */
   socket.on(EndpointNames.JOIN_BUBBLE, (data, callback) => {
     const { session } = user;
     const { bubbleId }: { bubbleId: string } = data;
