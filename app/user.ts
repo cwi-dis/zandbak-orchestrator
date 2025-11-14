@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import io from "socket.io";
 
+import Bubble from "./bubble";
 import Session from "./session";
 import Serializable from "./serializable";
 import { mapHashToDict, Dict, Transform, DeviceType } from "../util";
@@ -20,6 +21,7 @@ class User extends Serializable {
   _userType: "user" | "presenter" = "user";
 
   public session?: Session;
+  public bubble?: Bubble;
   public transform?: Transform;
   public isSpeaking: boolean = false;
   public status: string = "available";
