@@ -199,28 +199,42 @@ const installHandlers = (user: User) => {
     ));
   });
 
+  /**
+   * Allows the current user to invite another user in the same session to join
+   * the bubble that the current user is in. The user to invite is identified
+   * by their user ID.
+   * If the current user is not in any session or not in any bubble, an error
+   * will be returned and nothing happens. If the invited user could not be
+   * found in the current session, an error will be returned.
+   * Upon success, the invited user will received an invitation event
+   * containing the ID of the bubble they have been invited to.
+  */
   socket.on(EndpointNames.SEND_BUBBLE_INVITATION, (data, callback) => {
     const { userId }: { userId: string } = data;
     const { session, bubble } = user;
 
-    // User is not in any session
+    // Requesting user is not in any session
     if (!session) {
       logger.debug(EndpointNames.SEND_BUBBLE_INVITATION, "User", user.name, "not in any session");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
+    // Requesting user is not in a bubble
     if (!bubble) {
       logger.debug(EndpointNames.SEND_BUBBLE_INVITATION, "User is currently not in a bubble");
       return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
     }
 
+    // Find user to invite
     const userToInvite = session.getUser(userId);
 
+    // Invited user not found
     if (!userToInvite) {
       logger.debug(EndpointNames.SEND_BUBBLE_INVITATION, "User to add not found in this session");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
+    // Send invitation to invited user
     userToInvite.sendBubbleUpdate({
       eventId: "BUBBLE_JOIN_INVITED",
       eventData: {
