@@ -17,6 +17,7 @@ class Bubble extends Serializable {
     this.#name = name;
     this.#owner = owner;
     this.#users.push(owner);
+    this.#owner.bubble = this;
   }
 
   public get id(): string {
@@ -65,6 +66,7 @@ class Bubble extends Serializable {
       return false;
     }
 
+    user.bubble = this;
     this.#users.push(user);
     this.notifyUsers({
       eventId: "USER_JOINED_BUBBLE",
@@ -84,6 +86,10 @@ class Bubble extends Serializable {
    */
   public removeUser(user: User): boolean {
     const filteredUsers = this.#users.filter((u) => u.id != user.id);
+
+    if (user.bubble?.id == this.id) {
+      user.bubble == undefined;
+    }
 
     if (filteredUsers.length == this.#users.length) {
       return false;
