@@ -269,8 +269,15 @@ const installHandlers = (user: User) => {
       return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
     }
 
-    // Add user and return success
+    // Check if user is invited to bubble
+    if (!bubble.hasInvitation(user)) {
+      logger.debug(EndpointNames.JOIN_BUBBLE, "User has not been invited to this bubble");
+      return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_INVITE_NOT_FOUND));
+    }
+
+    // Add user, clear invitation and return success
     bubble.addUser(user);
+    bubble.clearInvitation(user);
 
     callback(util.createCommandResponse(
       data,
