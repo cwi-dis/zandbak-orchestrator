@@ -245,6 +245,8 @@ class Session extends Serializable {
     const bubble = new Bubble(name, owner);
     this.#bubbles.push(bubble);
 
+    this.sendSessionUpdate("BUBBLE_CREATED", bubble.serialize());
+
     return bubble;
   }
 
