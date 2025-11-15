@@ -245,6 +245,8 @@ class Session extends Serializable {
     const bubble = new Bubble(name, owner);
     this.#bubbles.push(bubble);
 
+    this.sendSessionUpdate("BUBBLE_CREATED", bubble.serialize());
+
     return bubble;
   }
 
@@ -269,6 +271,19 @@ class Session extends Serializable {
     return this.#bubbles.find((b) => {
       return b.users.find((u) => u.id == user.id) != undefined;
     }) != undefined;
+  }
+
+  /**
+   * Removes the given bubble from this session. Also clears the User.bubble
+   * property of all users within the given bubble.
+   *
+   * @param bubbleToRemove Bubble to be removed
+   */
+  public removeBubble(bubbleToRemove: Bubble) {
+    // Clear .bubble property of all users in bubble
+    bubbleToRemove.users.forEach((u) => u.bubble = (u.bubble?.id == bubbleToRemove.id) ? undefined : u.bubble);
+    // Remove bubble from session
+    this.#bubbles = this.#bubbles.filter((b) => b.id != bubbleToRemove.id);
   }
 
   /**
