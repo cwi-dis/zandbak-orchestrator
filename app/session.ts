@@ -274,6 +274,19 @@ class Session extends Serializable {
   }
 
   /**
+   * Removes the given bubble from this session. Also clears the User.bubble
+   * property of all users within the given bubble.
+   *
+   * @param bubbleToRemove Bubble to be removed
+   */
+  public removeBubble(bubbleToRemove: Bubble) {
+    // Clear .bubble property of all users in bubble
+    bubbleToRemove.users.forEach((u) => u.bubble = (u.bubble?.id == bubbleToRemove.id) ? undefined : u.bubble);
+    // Remove bubble from session
+    this.#bubbles = this.#bubbles.filter((b) => b.id != bubbleToRemove.id);
+  }
+
+  /**
    * Returns a list of currently active conversation bubbles within this
    * session.
    *
