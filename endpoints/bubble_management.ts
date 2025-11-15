@@ -83,6 +83,10 @@ const installHandlers = (user: User) => {
     // Removing bubble altogether if bubble is empty
     if (bubble.users.length == 0) {
       session.removeBubble(bubble);
+
+      session.sendSessionUpdate("BUBBLE_REMOVED", {
+        bubbleId: bubble.id
+      });
     }
 
     callback(util.createCommandResponse(

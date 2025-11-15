@@ -28,7 +28,8 @@ export type SessionEventName =
   "USER_LEFT_BUBBLE" |
   "SLIDE_CHANGED" |
   "USER_IS_SPEAKING" |
-  "BUBBLE_CREATED";
+  "BUBBLE_CREATED" |
+  "BUBBLE_REMOVED";
 
 export interface SessionEvent {
   eventId: SessionEventName,
