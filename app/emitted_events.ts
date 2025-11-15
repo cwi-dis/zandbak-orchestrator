@@ -27,7 +27,8 @@ export type SessionEventName =
   "PRESENTATION_IS_SHARING" |
   "USER_LEFT_BUBBLE" |
   "SLIDE_CHANGED" |
-  "USER_IS_SPEAKING";
+  "USER_IS_SPEAKING" |
+  "BUBBLE_CREATED";
 
 export interface SessionEvent {
   eventId: SessionEventName,
