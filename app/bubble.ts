@@ -141,7 +141,7 @@ class Bubble extends Serializable {
   }
 
   public sendJoinRequestToOwner(requestingUser: User) {
-    this.owner.sendBubbleUpdate({
+    this.owner.sendSessionUpdate({
       eventId: "BUBBLE_JOIN_REQUESTED",
       eventData: {
         requestingUserId: requestingUser.id

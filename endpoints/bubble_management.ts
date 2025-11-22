@@ -5,7 +5,6 @@ import ErrorCodes from "./error_codes";
 import EndpointNames from "./endpoint_names";
 import User from "../app/user";
 
-
 const installHandlers = (user: User) => {
   const { socket } = user;
 
@@ -194,7 +193,7 @@ const installHandlers = (user: User) => {
       bubble.addUser(userToAdd);
     }
 
-    userToAdd.sendBubbleUpdate({
+    userToAdd.sendSessionUpdate({
       eventId: "BUBBLE_JOIN_REQUEST_APPROVED",
       eventData: {
         bubbleId: bubble.id,
@@ -247,10 +246,10 @@ const installHandlers = (user: User) => {
     bubble.addInvitation(userToInvite);
 
     // Send invitation to invited user
-    userToInvite.sendBubbleUpdate({
+    userToInvite.sendSessionUpdate({
       eventId: "BUBBLE_JOIN_INVITED",
       eventData: {
-        bubbleId: bubble.id,
+        bubbleId: bubble.id
       }
     });
 
