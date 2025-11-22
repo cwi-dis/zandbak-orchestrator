@@ -29,7 +29,10 @@ export type SessionEventName =
   "SLIDE_CHANGED" |
   "USER_IS_SPEAKING" |
   "BUBBLE_CREATED" |
-  "BUBBLE_REMOVED";
+  "BUBBLE_REMOVED" |
+  "BUBBLE_JOIN_REQUESTED" |
+  "BUBBLE_JOIN_REQUEST_APPROVED" |
+  "BUBBLE_JOIN_INVITED";
 
 export interface SessionEvent {
   eventId: SessionEventName,
@@ -46,9 +49,6 @@ export interface OrchestratorEvent {
 }
 
 export type BubbleEventName =
-  "BUBBLE_JOIN_REQUESTED" |
-  "BUBBLE_JOIN_REQUEST_APPROVED" |
-  "BUBBLE_JOIN_INVITED" |
   "USER_JOINED_BUBBLE" |
   "USER_LEFT_BUBBLE";
 
