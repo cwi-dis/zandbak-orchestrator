@@ -7,7 +7,7 @@ import Serializable from "./serializable";
 import { mapHashToDict, Dict, Transform, DeviceType } from "../util";
 import DataStream from "./data_stream";
 import StreamSubscription from "./stream_subscription";
-import EmittedEvents, { BubbleEvent } from "./emitted_events";
+import EmittedEvents, { BubbleEvent, SessionEvent } from "./emitted_events";
 
 class User extends Serializable {
   #id: string = uuidv4();
@@ -107,6 +107,10 @@ class User extends Serializable {
    */
   public sendUserUpdate(eventId: EmittedEvents, eventData: Dict) {
     this.socket.emit(eventId, eventData);
+  }
+
+  public sendSessionUpdate(event: SessionEvent) {
+    this.sendUserUpdate(EmittedEvents.SESSION_UPDATED, event);
   }
 
   public sendBubbleUpdate(event: BubbleEvent) {
