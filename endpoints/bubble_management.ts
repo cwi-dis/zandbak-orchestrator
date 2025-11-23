@@ -36,6 +36,36 @@ const installHandlers = (user: User) => {
   });
 
   /**
+   * Retrieves a bubble given its ID. If the user is not in any session of if
+   * the bubble with the given ID cannot be found, an error is returned.
+   *
+   * Upon success, a serialised version of the bubble is returned to the caller.
+   */
+  socket.on(EndpointNames.GET_BUBBLE, (data, callback) => {
+    const { session } = user;
+    const { bubbleId } = data;
+
+    if (!session) {
+      logger.debug(EndpointNames.CREATE_BUBBLE, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    const bubble = session.findBubble(bubbleId);
+
+    // Return error if bubble is not found
+    if (!bubble) {
+      logger.debug(EndpointNames.LEAVE_BUBBLE, "Bubble with ID", bubbleId, "not found in this session");
+      return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
+    }
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      bubble.serialize()
+    ));
+  });
+
+  /**
    * Removes the current user from a bubble identified by a given parameter
    * named `id`. The bubble identified by the given ID must be part of the
    * user's current session. If the user is not in any session, no ID is given,
