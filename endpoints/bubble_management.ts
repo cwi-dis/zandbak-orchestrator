@@ -66,33 +66,27 @@ const installHandlers = (user: User) => {
   });
 
   /**
-   * Removes the current user from a bubble identified by a given parameter
-   * named `id`. The bubble identified by the given ID must be part of the
-   * user's current session. If the user is not in any session, no ID is given,
-   * the bubble could not be found or the current user is not a member of the
-   * given bubble, an error is issued. Upon success a serialised version of the
-   * updated bubble is returned.
+   * Removes the current user from their current bubble. If the user is not in
+   * any session, the bubble could not be found or the current user is not a
+   * member of any bubble, an error is issued. Upon success a serialised version
+   * of the updated bubble is returned.
+   *
+   * If the bubble becomes empty after removing the user, it is deleted as well.
    */
   socket.on(EndpointNames.LEAVE_BUBBLE, (data, callback) => {
     const { session } = user;
-    const { id } = data;
 
     if (!session) {
       logger.debug(EndpointNames.LEAVE_BUBBLE, "User", user.name, "not in any session");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
-    if (!id) {
-      logger.debug(EndpointNames.LEAVE_BUBBLE, "No parameter `id` supplied");
-      return callback(util.createCommandResponse(data, ErrorCodes.MISSING_PARAMETER));
-    }
-
     // Search for bubble in session
-    const bubble = session.findBubble(id);
+    const { bubble } = user;
 
     // Return error if bubble is not found
     if (!bubble) {
-      logger.debug(EndpointNames.LEAVE_BUBBLE, "Bubble with ID", id, "not found in this session");
+      logger.debug(EndpointNames.LEAVE_BUBBLE, "User is not in any bubble");
       return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
     }
 
@@ -105,7 +99,7 @@ const installHandlers = (user: User) => {
     }
 
     session.sendSessionUpdate("USER_LEFT_BUBBLE", {
-      userId: id,
+      userId: user.id,
       bubbleId: bubble.id
     });
 
