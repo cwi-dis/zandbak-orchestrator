@@ -77,7 +77,7 @@ const installHandlers = (user: User) => {
     const { session } = user;
 
     if (!session) {
-      logger.debug(EndpointNames.LEAVE_BUBBLE, "User", user.name, "not in any session");
+      logger.error(EndpointNames.LEAVE_BUBBLE, "User", user.name, "not in any session");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
@@ -86,15 +86,17 @@ const installHandlers = (user: User) => {
 
     // Return error if bubble is not found
     if (!bubble) {
-      logger.debug(EndpointNames.LEAVE_BUBBLE, "User is not in any bubble");
+      logger.error(EndpointNames.LEAVE_BUBBLE, "User is not in any bubble");
       return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_NOT_FOUND));
     }
+
+    logger.debug(EndpointNames.LEAVE_BUBBLE, "Removing", user.name, "from bubble", bubble.name);
 
     // Try and remove user from bubble
     const wasRemoved = bubble.removeUser(user);
 
     if (!wasRemoved) {
-      logger.debug(EndpointNames.LEAVE_BUBBLE, "User", user.name, "is not a member of the given bubble");
+      logger.error(EndpointNames.LEAVE_BUBBLE, "User", user.name, "is not a member of the given bubble");
       return callback(util.createCommandResponse(data, ErrorCodes.BUBBLE_DOESNT_HAVE_USER));
     }
 
@@ -105,6 +107,7 @@ const installHandlers = (user: User) => {
 
     // Removing bubble altogether if bubble is empty
     if (bubble.users.length == 0) {
+      logger.debug(EndpointNames.LEAVE_BUBBLE, "Bubble", bubble.name, "has become empty, removing...");
       session.removeBubble(bubble);
 
       session.sendSessionUpdate("BUBBLE_REMOVED", {
