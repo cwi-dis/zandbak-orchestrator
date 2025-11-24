@@ -149,7 +149,7 @@ const installHandlers = (user: User) => {
   */
   socket.on(EndpointNames.REQUEST_JOIN_BUBBLE, (data, callback) => {
     const { session } = user;
-    const { id: bubbleId } = data;
+    const { bubbleId } = data;
 
     // User is not in any session
     if (!session) {
