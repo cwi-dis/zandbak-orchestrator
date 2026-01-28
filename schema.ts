@@ -81,6 +81,13 @@ sessionSchema.set("toJSON", {
   virtuals: true
 });
 
+const eventSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  sessions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Session" }]
+});
+
 export const User = mongoose.model("User", userSchema);
 export const Room = mongoose.model("Room", roomSchema);
 export const Session = mongoose.model("Session", sessionSchema);
+export const Event = mongoose.model("Event", eventSchema);
