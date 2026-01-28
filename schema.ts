@@ -46,10 +46,18 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+const roomSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: { type: String },
+  filename: { type: String },
+  identifier: { type: String }
+});
+
 const sessionSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   moderator: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  room: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
   status: { type: String, enum: ["scheduled", "ongoing", "completed"], default: "scheduled" },
   startTime: { type: Date, required: true },
   endTime: { type: Date, required: true },
