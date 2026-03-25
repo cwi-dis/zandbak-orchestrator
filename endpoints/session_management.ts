@@ -1,7 +1,7 @@
 import * as util from "../util";
 import logger from "../logger";
 
-import { Session as SessionModel } from "../schema";
+import { Session as SessionModel, Room as RoomModel } from "../schema";
 import EndpointNames from "./endpoint_names";
 import Orchestrator from "../app/orchestrator";
 import User from "../app/user";
@@ -186,6 +186,24 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       data,
       ErrorCodes.OK,
       orchestrator.sessions
+    ));
+  });
+
+  /**
+   * Returns a serialised object of available rooms to the caller indexed by
+   * room ID.
+   */
+  socket.on(EndpointNames.GET_ROOMS, async (data, callback) => {
+    logger.debug(EndpointNames.GET_ROOMS, "Getting all rooms");
+
+    const dbRooms = await RoomModel.find({}, {
+      __v: 0
+    });
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      dbRooms
     ));
   });
 
