@@ -8,6 +8,7 @@ enum EndpointNames {
   LEAVE_SESSION = "LeaveSession",
   GET_SESSION_INFO = "GetSessionInfo",
   GET_SESSIONS = "GetSessions",
+  GET_ROOMS = "GetRooms",
   GET_SCHEDULED_SESSIONS = "GetScheduledSessions",
   SET_SESSION_STATUS = "SetSessionStatus",
   SET_SESSION_PRESENTATION = "SetSessionPresentation",
