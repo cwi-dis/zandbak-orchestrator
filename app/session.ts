@@ -35,13 +35,15 @@ class Session extends Serializable {
     channels: Array<string>,
     transportManager: TransportManager,
     hostname: string,
-    persistent = false
+    persistent = false,
+    room?: Room
   ) {
     super();
 
     this.#transport = transportManager.assignTransport(sessionProtocol, this, hostname);
     this.#channels = channels.map((c) => this.getInternalChannelName(c));
     this.#persistent = persistent;
+    this.#room = room;
   }
 
   public get id() {
@@ -79,6 +81,10 @@ class Session extends Serializable {
 
   public get persistent() {
     return this.#persistent;
+  }
+
+  public get room() {
+    return this.#room;
   }
 
   /**
