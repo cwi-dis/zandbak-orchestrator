@@ -8,6 +8,7 @@ import User from "../app/user";
 import ErrorCodes  from "./error_codes";
 import Session from "../app/session";
 import Presentation from "../app/presentation";
+import Room from "../app/room";
 
 const [ EXTERNAL_HOSTNAME ] = util.getFromEnvironment(["EXTERNAL_HOSTNAME"], null);
 
@@ -81,7 +82,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const { sessionId } = data;
 
     logger.debug(EndpointNames.SCHEDULE_SESSION, "Searching for session", sessionId);
-    const dbSession = await SessionModel.findById(sessionId);
+    const dbSession = await SessionModel.findById(sessionId).populate<{ room: Room }>("room");
 
     if (!dbSession) {
       logger.warn(EndpointNames.SCHEDULE_SESSION, "Session with ID", sessionId, "not found");
@@ -102,7 +103,14 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       "socketio",
       ["transform"],
       orchestrator.transportManager,
-      externalHostname
+      externalHostname,
+      false,
+      new Room(
+        dbSession.room.id,
+        dbSession.room.name,
+        dbSession.room.description,
+        dbSession.room.filename
+      )
     );
 
     session.status = "ongoing";
