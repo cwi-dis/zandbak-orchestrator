@@ -7,6 +7,15 @@ class Room extends Serializable {
   #description: string;
   #filename: string;
 
+  public constructor(id: string, name: string, description = "", filename = "") {
+    super();
+
+    this.#id = id;
+    this.#name = name;
+    this.#description = description;
+    this.#filename = filename;
+  }
+
   public get id() {
     return this.#id;
   }
