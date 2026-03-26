@@ -246,7 +246,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       status: { $ne: "completed" }
     }, {
       __v: 0
-    });
+    }).populate<{ room: Room }>("room");
 
     callback(util.createCommandResponse(
       data,
