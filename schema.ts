@@ -50,7 +50,10 @@ const roomSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String },
   filename: { type: String },
-  identifier: { type: String }
+});
+
+roomSchema.set("toJSON", {
+  virtuals: true
 });
 
 const sessionSchema = new mongoose.Schema({
