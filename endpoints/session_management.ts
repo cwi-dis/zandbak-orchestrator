@@ -19,10 +19,10 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
    * Endpoint invoked for the user to create a new session with the given data.
    * Returns a serialised version of the session to the caller upon success.
    */
-  socket.on(EndpointNames.ADD_SESSION, (data, callback) => {
+  socket.on(EndpointNames.ADD_SESSION, async (data, callback) => {
     let { persistent = false } = data;
     const {
-      sessionName, sessionDescription, sessionProtocol = "unknown",
+      sessionName, sessionDescription, sessionRoom, sessionProtocol = "unknown",
       channels = []
     } = data;
 
@@ -37,6 +37,17 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         logger.debug(EndpointNames.ADD_SESSION, "External hostname:", externalHostname);
       }
 
+      const roomDocument = await RoomModel.findById(sessionRoom);
+
+      if (!roomDocument) {
+        logger.error(EndpointNames.ADD_SESSION, "Room with ID", sessionRoom, "does not exist");
+
+        return callback(util.createCommandResponse(
+          data,
+          ErrorCodes.SESSION_ROOM_DOES_NOT_EXIST
+        ));
+      }
+
       // If the user is a regular user, set persistent to false. Only privileged users can create persistent sessions
       if (user.userType == "user") {
         persistent = false;
@@ -49,7 +60,13 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         channels,
         orchestrator.transportManager,
         externalHostname,
-        persistent
+        persistent,
+        new Room(
+          roomDocument.id,
+          roomDocument.name,
+          roomDocument.description || "",
+          roomDocument.filename || ""
+        )
       );
 
       logger.debug(EndpointNames.ADD_SESSION, "Adding user", user.name, "as admin to new session", session.name);
