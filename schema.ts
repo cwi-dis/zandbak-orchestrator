@@ -49,7 +49,7 @@ userSchema.pre("save", async function (next) {
 const roomSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String },
-  filename: { type: String },
+  model: { type: String },
 });
 
 roomSchema.set("toJSON", {

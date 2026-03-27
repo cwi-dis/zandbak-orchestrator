@@ -5,7 +5,7 @@ class Room extends Serializable {
   #id: string;
   #name: string;
   #description: string;
-  #filename: string;
+  #model: string;
 
   public constructor(id: string, name: string, description = "", filename = "") {
     super();
@@ -13,7 +13,7 @@ class Room extends Serializable {
     this.#id = id;
     this.#name = name;
     this.#description = description;
-    this.#filename = filename;
+    this.#model = filename;
   }
 
   public get id() {
@@ -29,7 +29,7 @@ class Room extends Serializable {
   }
 
   public get filename() {
-    return this.#filename;
+    return this.#model;
   }
 
   public serialize(): Dict {
@@ -37,7 +37,7 @@ class Room extends Serializable {
       id: this.#id,
       name: this.#name,
       description: this.#description,
-      filename: this.#filename,
+      model: this.#model,
     };
   }
 }

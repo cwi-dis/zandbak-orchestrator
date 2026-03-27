@@ -65,7 +65,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
           roomDocument.id,
           roomDocument.name,
           roomDocument.description || "",
-          roomDocument.filename || ""
+          roomDocument.model || ""
         )
       );
 
