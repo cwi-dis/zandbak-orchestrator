@@ -17,6 +17,7 @@ enum ErrorCodes {
   SESSION_USER_NOT_IN_SAME_SESSION = 802,
   SESSION_IS_SPEAKING_FLAG_NOT_SET = 803,
   SESSION_IS_SHARING_FLAG_NOT_SET = 804,
+  SESSION_ROOM_DOES_NOT_EXIST = 701,
 
   BUBBLE_NOT_FOUND = 805,
   BUBBLE_DOESNT_HAVE_USER = 806,
@@ -55,6 +56,7 @@ export const ErrorMessages: { [key in ErrorCodes]: string } = {
   [ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED]: "The user is not allowed to perform this action",
   [ErrorCodes.SESSION_IS_SPEAKING_FLAG_NOT_SET]: "isSpeaking parameter is not set",
   [ErrorCodes.SESSION_IS_SHARING_FLAG_NOT_SET]: "isSharing parameter is not set",
+  [ErrorCodes.SESSION_ROOM_DOES_NOT_EXIST]: "Selected room for session does not exist",
 
   [ErrorCodes.BUBBLE_NOT_FOUND]: "The bubble with the given ID does not exist",
   [ErrorCodes.BUBBLE_DOESNT_HAVE_USER]: "The given user could not be removed from the bubble because he is not a member",

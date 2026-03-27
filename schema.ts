@@ -46,10 +46,22 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+const roomSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: { type: String },
+  model: { type: String },
+});
+
+roomSchema.set("toJSON", {
+  virtuals: true
+});
+
 const sessionSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   moderator: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  room: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
+  default: { type: Boolean },
   status: { type: String, enum: ["scheduled", "ongoing", "completed"], default: "scheduled" },
   startTime: { type: Date, required: true },
   endTime: { type: Date, required: true },
@@ -72,5 +84,13 @@ sessionSchema.set("toJSON", {
   virtuals: true
 });
 
+const eventSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  sessions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Session" }]
+});
+
 export const User = mongoose.model("User", userSchema);
+export const Room = mongoose.model("Room", roomSchema);
 export const Session = mongoose.model("Session", sessionSchema);
+export const Event = mongoose.model("Event", eventSchema);

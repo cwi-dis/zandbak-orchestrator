@@ -9,7 +9,7 @@ import EmittedEvents, { SessionEvent, SessionEventName } from "./emitted_events"
 import ChatMessage, { PrivateMessage } from "./chat_message";
 import Presentation from "./presentation";
 import Bubble from "./bubble";
-
+import Room from "./room";
 
 class Session extends Serializable {
   #id: string = uuidv4();
@@ -21,6 +21,7 @@ class Session extends Serializable {
   #transport: Transport;
   #channels: Array<string>;
   #bubbles: Array<Bubble> = [];
+  #room: Room;
   #persistent: boolean;
 
   #status: string = "scheduled";
@@ -34,13 +35,15 @@ class Session extends Serializable {
     channels: Array<string>,
     transportManager: TransportManager,
     hostname: string,
-    persistent = false
+    persistent = false,
+    room: Room
   ) {
     super();
 
     this.#transport = transportManager.assignTransport(sessionProtocol, this, hostname);
     this.#channels = channels.map((c) => this.getInternalChannelName(c));
     this.#persistent = persistent;
+    this.#room = room;
   }
 
   public get id() {
@@ -78,6 +81,10 @@ class Session extends Serializable {
 
   public get persistent() {
     return this.#persistent;
+  }
+
+  public get room() {
+    return this.#room;
   }
 
   /**
@@ -681,7 +688,8 @@ class Session extends Serializable {
       sessionPresentations: this.schedule.map((p) => p.serialize()),
       sessionBubbles: this.#bubbles.map((b) => b.serialize()),
       sessionStatus: this.#status,
-      sessionPersistent: this.#persistent
+      sessionPersistent: this.#persistent,
+      sessionRoom: this.#room
     };
   }
 }
