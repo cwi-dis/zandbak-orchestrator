@@ -21,7 +21,7 @@ class Session extends Serializable {
   #transport: Transport;
   #channels: Array<string>;
   #bubbles: Array<Bubble> = [];
-  #room?: Room;
+  #room: Room;
   #persistent: boolean;
 
   #status: string = "scheduled";
@@ -36,7 +36,7 @@ class Session extends Serializable {
     transportManager: TransportManager,
     hostname: string,
     persistent = false,
-    room?: Room
+    room: Room
   ) {
     super();
 

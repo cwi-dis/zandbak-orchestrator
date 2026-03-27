@@ -60,7 +60,7 @@ const sessionSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   moderator: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  room: { type: mongoose.Schema.Types.ObjectId, ref: "Room" },
+  room: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
   default: { type: Boolean },
   status: { type: String, enum: ["scheduled", "ongoing", "completed"], default: "scheduled" },
   startTime: { type: Date, required: true },
