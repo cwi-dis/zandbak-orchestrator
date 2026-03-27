@@ -3,20 +3,19 @@ const mongoose = require("mongoose");
 const roomSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String },
-  filename: { type: String },
-  identifier: { type: String }
+  model: { type: String },
 });
 
 const Room = mongoose.model("Room", roomSchema);
 
-if (process.argv.length < 4) {
+if (process.argv.length < 5) {
   const [ command, script ] = process.argv;
-  console.log("USAGE:", command, script, "db_url room_name");
+  console.log("USAGE:", command, script, "db_url room_name model_name");
 
   process.exit(1);
 }
 
-const [,, dbUrl, roomName ] = process.argv;
+const [,, dbUrl, roomName, modelName ] = process.argv;
 
 mongoose.connect(dbUrl).then(() => {
   console.log("MongoDB connection established");
@@ -24,7 +23,7 @@ mongoose.connect(dbUrl).then(() => {
   const roomData = {
     name: roomName,
     description: "",
-    filename: "model"
+    model: modelName
   };
 
   console.log("Creating new room with name", roomData.name);

@@ -1,6 +1,7 @@
 {
   "title": "Session 1",
   "description": "This is a test session",
+  "room": "MODEL_ID",
   "presentations": [
     {
       "title": "Presentation 1",
