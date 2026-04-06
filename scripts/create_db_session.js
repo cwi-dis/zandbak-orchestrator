@@ -26,14 +26,14 @@ const sessionSchema = new mongoose.Schema({
 
 const Session = mongoose.model("Session", sessionSchema);
 
-if (process.argv.length < 5) {
+if (process.argv.length < 6) {
   const [ command, script ] = process.argv;
-  console.log("USAGE:", command, script, "db_url user_id session_json");
+  console.log("USAGE:", command, script, "db_url user_id room_id session_json");
 
   process.exit(1);
 }
 
-const [,, dbUrl, userId, sessionJson ] = process.argv;
+const [,, dbUrl, userId, roomId, sessionJson ] = process.argv;
 
 mongoose.connect(dbUrl).then(() => {
   console.log("MongoDB connection established");
@@ -41,6 +41,7 @@ mongoose.connect(dbUrl).then(() => {
   const sessionData = JSON.parse(fs.readFileSync(sessionJson, "utf8"));
 
   sessionData.moderator = userId;
+  sessionDate.room = roomId;
   sessionData.startTime = Date.now();
   sessionData.endTime = Date.now() + 3600;
   sessionData.presentations = sessionData.presentations.map((p) => {
