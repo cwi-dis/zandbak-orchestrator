@@ -8,6 +8,7 @@ const sessionSchema = new mongoose.Schema({
   status: { type: String, enum: ["scheduled", "ongoing", "completed"], default: "scheduled" },
   startTime: { type: Date, required: true },
   endTime: { type: Date, required: true },
+  room: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
   presentations: [
     {
       title: { type: String, required: true },
