@@ -174,10 +174,6 @@ class Session extends Serializable {
     return this.#users.find((u) => u.id == userId);
   }
 
-  public getObject(id: string): Optional<SharedObject> {
-    return this.#objects.find((o) => o.id == id);
-  }
-
   /**
    * Checks whether a given user is in this session.
    *
@@ -243,6 +239,26 @@ class Session extends Serializable {
    */
   public isMaster(user: User): boolean {
     return !!this.#master && user.id == this.#master.id;
+  }
+
+  /**
+   * Adds a shared object to the session.
+   *
+   * @param obj Shared object to add to the session
+   */
+  public addObject(obj: SharedObject) {
+    this.#objects.push(obj);
+  }
+
+  /**
+   * Tries to find a shared object with the given ID in the session and returns
+   * it. If no object with the given ID exists, undefined is returned.
+   *
+   * @param id ID of shared object to get
+   * @returns The shared object with the given ID or undefined
+   */
+  public getObject(id: string): Optional<SharedObject> {
+    return this.#objects.find((o) => o.id == id);
   }
 
   /**
