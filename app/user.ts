@@ -4,7 +4,7 @@ import io from "socket.io";
 import Bubble from "./bubble";
 import Session from "./session";
 import Serializable from "./serializable";
-import { mapHashToDict, Dict, Transform, DeviceType } from "../util";
+import { mapHashToDict, Dict, UserTransform, DeviceType } from "../util";
 import DataStream from "./data_stream";
 import StreamSubscription from "./stream_subscription";
 import EmittedEvents, { BubbleEvent, SessionEvent } from "./emitted_events";
@@ -22,7 +22,7 @@ class User extends Serializable {
 
   public session?: Session;
   public bubble?: Bubble;
-  public transform?: Transform;
+  public transform?: UserTransform;
   public isSpeaking: boolean = false;
   public status: string = "available";
 

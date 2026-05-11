@@ -247,6 +247,9 @@ export type Transform = {
   timestamp: number;
   position: Vector3;
   rotation: Quaternion;
+};
+
+export type UserTransform = Transform & {
   bones: {
     [name: string]: { pos: Vector3, rot: Quaternion }
   }
