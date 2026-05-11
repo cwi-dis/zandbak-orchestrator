@@ -174,6 +174,10 @@ class Session extends Serializable {
     return this.#users.find((u) => u.id == userId);
   }
 
+  public getObject(id: string): Optional<SharedObject> {
+    return this.#objects.find((o) => o.id == id);
+  }
+
   /**
    * Checks whether a given user is in this session.
    *
