@@ -228,7 +228,7 @@ const installHandlers = (user: User) => {
     }
 
     if (channel == "transform") {
-      const transform: util.Transform = JSON.parse(data);
+      const transform: util.UserTransform = JSON.parse(data);
       const user = session.getUser(transform.userId);
 
       if (user) {
