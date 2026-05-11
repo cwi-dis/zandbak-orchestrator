@@ -58,6 +58,7 @@ enum EndpointNames {
   IS_SPEAKING = "IsSpeaking",
 
   REGISTER_SHARED_OBJECT = "RegisterSharedObject",
+  CLAIM_OBJECT_OWNERSHIP = "ClaimObjectOwnership"
 }
 
 export default EndpointNames;
