@@ -7,9 +7,7 @@ import { Dict, ObjectTransform } from "../util";
 class SharedObject extends Serializable {
   #id: string = uuidv4();
 
-  public transform?: ObjectTransform;
-
-  public constructor(public owner: User) {
+  public constructor(public owner: User, public transform?: ObjectTransform) {
     super();
   }
 
