@@ -2,13 +2,22 @@ import { v4 as uuidv4 } from "uuid";
 
 import Serializable from "./serializable";
 import User from "./user";
-import { Dict, ObjectTransform } from "../util";
+import { Dict, Transform, ObjectTransform } from "../util";
 
 class SharedObject extends Serializable {
   #id: string = uuidv4();
 
-  public constructor(public owner: User, public transform?: ObjectTransform) {
+  public transform?: ObjectTransform;
+
+  public constructor(public owner: User, public initialTransform?: Transform) {
     super();
+
+    if (initialTransform) {
+      this.transform = {
+        ...initialTransform,
+        id: this.#id,
+      };
+    }
   }
 
   public get id() {
