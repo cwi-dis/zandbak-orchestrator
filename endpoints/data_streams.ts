@@ -234,6 +234,13 @@ const installHandlers = (user: User) => {
       if (user) {
         user.transform = transform;
       }
+    } else if (channel == "objectTransform") {
+      const transform: util.ObjectTransform = JSON.parse(data);
+      const object = session.getObject(transform.id);
+
+      if (object) {
+        object.transform = transform;
+      }
     }
 
     session.broadcast(user, channel, data);
