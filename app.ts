@@ -23,8 +23,8 @@ import installBubbleHandlers from "./endpoints/bubble_management";
 const [ PORT, MONGODB_CONNECTION ] = getFromEnvironment(["PORT", "MONGODB_CONNECTION"]);
 const [ LOG_SERVER, EXTERNAL_HOSTNAME ] = getFromEnvironment(["LOG_SERVER", "EXTERNAL_HOSTNAME"], null);
 
-mongoose.connect(MONGODB_CONNECTION).then((connection) => {
-  logger.info("MongoDB connection established:", connection);
+mongoose.connect(MONGODB_CONNECTION).then(() => {
+  logger.info("MongoDB connection established");
 });
 
 /**

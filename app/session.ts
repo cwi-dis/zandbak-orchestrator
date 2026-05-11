@@ -10,11 +10,13 @@ import ChatMessage, { PrivateMessage } from "./chat_message";
 import Presentation from "./presentation";
 import Bubble from "./bubble";
 import Room from "./room";
+import SharedObject from "./shared_object";
 
 class Session extends Serializable {
   #id: string = uuidv4();
   #users: Array<User> = [];
   #administrator: User;
+  #objects: Array<SharedObject> = [];
   #chat: Array<ChatMessage> = [];
   #raisedHands: Array<User> = [];
   #master?: User;
@@ -680,6 +682,7 @@ class Session extends Serializable {
       sessionMaster: this.#master && this.#master.id,
       sessionUsers: this.#users.map((u) => u.id),
       sessionUserDefinitions: this.#users.map((u) => u.serialize()),
+      sessionObjects: this.#objects.map((o) => o.serialize()),
       sessionProtocol: this.sessionProtocol,
       sessionChannels: this.channels,
       sessionChat: this.getMessages(),
