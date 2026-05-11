@@ -21,7 +21,7 @@ class Session extends Serializable {
   #raisedHands: Array<User> = [];
   #master?: User;
   #transport: Transport;
-  #channels: Array<string>;
+  #channels: Array<string> = ["transform", "objectTransform"];
   #bubbles: Array<Bubble> = [];
   #room: Room;
   #persistent: boolean;
@@ -43,9 +43,11 @@ class Session extends Serializable {
     super();
 
     this.#transport = transportManager.assignTransport(sessionProtocol, this, hostname);
-    this.#channels = channels.map((c) => this.getInternalChannelName(c));
     this.#persistent = persistent;
     this.#room = room;
+
+    const combinedChannels = Array.from(new Set(this.#channels.concat(channels)));
+    this.#channels = combinedChannels.map((c) => this.getInternalChannelName(c));
   }
 
   public get id() {

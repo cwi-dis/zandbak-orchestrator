@@ -80,7 +80,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         ErrorCodes.OK,
         session.serialize()
       ));
-    } catch (err) {
+    } catch (err: any) {
       logger.error(EndpointNames.ADD_SESSION, "Error during session creation:", err.stack);
 
       return callback(util.createCommandResponse(
@@ -171,7 +171,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     }
 
     const { administrator } = session;
-    if (administrator.id != user.id) {
+    if (!administrator || administrator.id != user.id) {
       logger.warn(EndpointNames.DELETE_SESSION, "User", user.name, "is not the admin of session", session.name);
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_DELETE_UNAUTHORIZED));
     }
