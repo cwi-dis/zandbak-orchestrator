@@ -23,7 +23,7 @@ class Session extends Serializable {
   #raisedHands: Array<User> = [];
   #master?: User;
   #transport: Transport;
-  #channels: Array<string> = ["transform", "objectTransform"];
+  #channels: Array<string> = ["transform", "objectTransform", "trigger"];
   #bubbles: Array<Bubble> = [];
   #room: Room;
   #persistent: boolean;
