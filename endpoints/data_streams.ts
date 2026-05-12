@@ -241,6 +241,13 @@ const installHandlers = (user: User) => {
       if (object) {
         object.transform = transform;
       }
+    } else if (channel == "trigger") {
+      const value: util.Dict = JSON.parse(data);
+      const trigger = session.getTrigger(value.id);
+
+      if (trigger) {
+        trigger.value = value;
+      }
     }
 
     session.broadcast(user, channel, data);
