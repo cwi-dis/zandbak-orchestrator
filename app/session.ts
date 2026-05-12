@@ -23,7 +23,7 @@ class Session extends Serializable {
   #raisedHands: Array<User> = [];
   #master?: User;
   #transport: Transport;
-  #channels: Array<string> = ["transform", "objectTransform", "trigger"];
+  #channels: Map<string, (data: string) => void> = new Map();
   #bubbles: Array<Bubble> = [];
   #room: Room;
   #persistent: boolean;
@@ -68,7 +68,7 @@ class Session extends Serializable {
   }
 
   public get channels() {
-    return this.#channels.map((channel) => channel.split("/")[1]);
+    return Array.from(this.#channels.keys()).map((channel) => channel.split("/")[1]);
   }
 
   public get raisedHands() {
@@ -658,8 +658,8 @@ class Session extends Serializable {
    * @param user The user to add to the channels
    */
   private addUserToChannels(user: User) {
-    this.#channels.forEach((channel) => {
-      user.socket.join(channel);
+    this.#channels.forEach((_, channelName) => {
+      user.socket.join(channelName);
     });
   }
 
@@ -668,8 +668,8 @@ class Session extends Serializable {
    * @param user The user to remove from the channels
    */
   private removeUserFromChannels(user: User) {
-    this.#channels.forEach((channel) => {
-      user.socket.leave(channel);
+    this.#channels.forEach((_, channelName) => {
+      user.socket.leave(channelName);
     });
   }
 
@@ -706,7 +706,7 @@ class Session extends Serializable {
   public broadcast(fromUser: User, channel: string, data: any) {
     const internalName = this.getInternalChannelName(channel);
 
-    if (this.#channels.includes(internalName)) {
+    if (this.#channels.has(internalName)) {
       fromUser.socket.to(internalName).emit(EmittedEvents.BROADCAST, channel, data);
     }
   }
