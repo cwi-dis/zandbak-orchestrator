@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { Dict, Optional } from "../util";
+import { Dict, Optional, ObjectTransform, UserTransform } from "../util";
 import Serializable from "./serializable";
 import User from "./user";
 import Transport from "../transport/transport";
@@ -47,8 +47,32 @@ class Session extends Serializable {
     this.#persistent = persistent;
     this.#room = room;
 
-    const combinedChannels = Array.from(new Set(this.#channels.concat(channels)));
-    this.#channels = combinedChannels.map((c) => this.getInternalChannelName(c));
+    this.#channels.set(this.getInternalChannelName("transform"), (data) => {
+      const transform: UserTransform = JSON.parse(data);
+      const user = this.getUser(transform.userId);
+
+      if (user) {
+        user.transform = transform;
+      }
+    });
+
+    this.#channels.set(this.getInternalChannelName("objectTransform"), (data) => {
+      const transform: ObjectTransform = JSON.parse(data);
+      const object = this.getObject(transform.id);
+
+      if (object) {
+        object.transform = transform;
+      }
+    });
+
+    this.#channels.set(this.getInternalChannelName("trigger"), (data) => {
+      const value: Dict = JSON.parse(data);
+      const trigger = this.getTrigger(value.id);
+
+      if (trigger) {
+        trigger.value = value;
+      }
+    });
   }
 
   public get id() {
@@ -707,6 +731,7 @@ class Session extends Serializable {
     const internalName = this.getInternalChannelName(channel);
 
     if (this.#channels.has(internalName)) {
+      this.#channels.get(internalName)?.(data);
       fromUser.socket.to(internalName).emit(EmittedEvents.BROADCAST, channel, data);
     }
   }

@@ -227,29 +227,6 @@ const installHandlers = (user: User) => {
       return;
     }
 
-    if (channel == "transform") {
-      const transform: util.UserTransform = JSON.parse(data);
-      const user = session.getUser(transform.userId);
-
-      if (user) {
-        user.transform = transform;
-      }
-    } else if (channel == "objectTransform") {
-      const transform: util.ObjectTransform = JSON.parse(data);
-      const object = session.getObject(transform.id);
-
-      if (object) {
-        object.transform = transform;
-      }
-    } else if (channel == "trigger") {
-      const value: util.Dict = JSON.parse(data);
-      const trigger = session.getTrigger(value.id);
-
-      if (trigger) {
-        trigger.value = value;
-      }
-    }
-
     session.broadcast(user, channel, data);
   });
 };
