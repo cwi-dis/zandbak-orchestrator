@@ -266,6 +266,26 @@ class Session extends Serializable {
   }
 
   /**
+   * Adds a trigger to the session.
+   *
+   * @param t Trigger to add to the session
+   */
+  public addTrigger(t: Trigger) {
+    this.#triggers.push(t);
+  }
+
+  /**
+   * Tries to find a trigger object with the given ID in the session and returns
+   * it. If no object with the given ID exists, undefined is returned.
+   *
+   * @param id ID of trigger object to get
+   * @returns The trigger object with the given ID or undefined
+   */
+  public getTrigger(id: string): Optional<Trigger> {
+    return this.#triggers.find((t) => t.id == id);
+  }
+
+  /**
    * Creates a new bubble and adds it to this session. The bubble is
    * initialised with a name and a user object who will become the owner of the
    * bubble. The method returns the newly created bubble.
