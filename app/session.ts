@@ -11,12 +11,14 @@ import Presentation from "./presentation";
 import Bubble from "./bubble";
 import Room from "./room";
 import SharedObject from "./shared_object";
+import Trigger from "./trigger";
 
 class Session extends Serializable {
   #id: string = uuidv4();
   #users: Array<User> = [];
   #administrator?: User;
   #objects: Array<SharedObject> = [];
+  #triggers: Array<Trigger> = [];
   #chat: Array<ChatMessage> = [];
   #raisedHands: Array<User> = [];
   #master?: User;
@@ -705,6 +707,7 @@ class Session extends Serializable {
       sessionUsers: this.#users.map((u) => u.id),
       sessionUserDefinitions: this.#users.map((u) => u.serialize()),
       sessionObjects: this.#objects.map((o) => o.serialize()),
+      sessionTriggers: this.#triggers.map((t) => t.serialize()),
       sessionProtocol: this.sessionProtocol,
       sessionChannels: this.channels,
       sessionChat: this.getMessages(),
