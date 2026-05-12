@@ -22,8 +22,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
   socket.on(EndpointNames.ADD_SESSION, async (data, callback) => {
     let { persistent = false } = data;
     const {
-      sessionName, sessionDescription, sessionRoom, sessionProtocol = "unknown",
-      channels = []
+      sessionName, sessionDescription, sessionRoom, sessionProtocol = "unknown"
     } = data;
 
     logger.debug(EndpointNames.ADD_SESSION, "Creating new session with name", sessionName);
@@ -57,7 +56,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         sessionName.trim(),
         sessionDescription,
         sessionProtocol,
-        channels,
         orchestrator.transportManager,
         externalHostname,
         persistent,
@@ -118,7 +116,6 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
       dbSession.title,
       dbSession.description,
       "socketio",
-      ["transform"],
       orchestrator.transportManager,
       externalHostname,
       false,

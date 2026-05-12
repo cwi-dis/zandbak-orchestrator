@@ -36,7 +36,6 @@ class Session extends Serializable {
     public name: string,
     public description: string,
     public sessionProtocol: TransportType,
-    channels: Array<string>,
     transportManager: TransportManager,
     hostname: string,
     persistent = false,
