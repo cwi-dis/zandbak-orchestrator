@@ -4,7 +4,6 @@ import User from "../app/user";
 class DashTransport extends ExternalTransport {
   protected type = "Dash";
   protected cmdLine: Array<string> = this.transportConfig.commandLine;
-  protected port: number;
 
   private buildUrl(urlTemplate: string, user: User) {
     return urlTemplate.replace(

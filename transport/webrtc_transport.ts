@@ -5,7 +5,6 @@ import User from "../app/user";
 class WebRTCTransport extends ExternalTransport {
   protected type = "WebRTC";
   protected cmdLine: Array<string> = Array();
-  protected port: number;
 
   public constructor(externalHostname: string, transportConfig: TransportConfig, port: number) {
     super(externalHostname, transportConfig, port);
