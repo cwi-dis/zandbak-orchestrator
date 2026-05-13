@@ -58,6 +58,7 @@ enum EndpointNames {
   IS_SPEAKING = "IsSpeaking",
 
   REGISTER_SHARED_OBJECT = "RegisterSharedObject",
+  REGISTER_TRIGGER = "RegisterTrigger",
   CLAIM_OBJECT_OWNERSHIP = "ClaimObjectOwnership"
 }
 
