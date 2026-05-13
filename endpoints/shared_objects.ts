@@ -82,7 +82,7 @@ const installHandlers = (user: User) => {
    * object, nothing happens.
    */
   socket.on(EndpointNames.CLAIM_OBJECT_OWNERSHIP, (data, callback) => {
-    const { objectId }: { objectId: string } = data;
+    const { objectId, type }: { objectId: string, type: "object" | "trigger" } = data;
     const { session } = user;
 
     if (!session) {
@@ -90,7 +90,7 @@ const installHandlers = (user: User) => {
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
-    const obj = session.getObject(objectId);
+    const obj = (type == "object") ? session.getObject(objectId) : session.getTrigger(objectId);
 
     if (!obj) {
       logger.debug(EndpointNames.CLAIM_OBJECT_OWNERSHIP, "Session has no object with id", objectId);
@@ -104,7 +104,8 @@ const installHandlers = (user: User) => {
       session.sendSessionUpdate("OBJECT_OWNERSHIP_CHANGED", {
         id: obj.id,
         oldOwner: oldOwnerId,
-        newOwner: user.id
+        newOwner: user.id,
+        type
       });
     }
 
