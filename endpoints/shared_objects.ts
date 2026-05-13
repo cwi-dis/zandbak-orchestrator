@@ -81,19 +81,19 @@ const installHandlers = (user: User) => {
    * session participants. If the current user is already the owner of the
    * object, nothing happens.
    */
-  socket.on(EndpointNames.CLAIM_OBJECT_OWNERSHIP, (data, callback) => {
+  socket.on(EndpointNames.CLAIM_OWNERSHIP, (data, callback) => {
     const { objectId, type }: { objectId: string, type: "object" | "trigger" } = data;
     const { session } = user;
 
     if (!session) {
-      logger.debug(EndpointNames.CLAIM_OBJECT_OWNERSHIP, "User", user.name, "not in any session");
+      logger.debug(EndpointNames.CLAIM_OWNERSHIP, "User", user.name, "not in any session");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
     const obj = (type == "object") ? session.getObject(objectId) : session.getTrigger(objectId);
 
     if (!obj) {
-      logger.debug(EndpointNames.CLAIM_OBJECT_OWNERSHIP, "Session has no object with id", objectId);
+      logger.debug(EndpointNames.CLAIM_OWNERSHIP, "Session has no object with id", objectId);
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_OBJECT_DOES_NOT_EXIST));
     }
 
