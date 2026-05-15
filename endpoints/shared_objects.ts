@@ -21,7 +21,7 @@ const installHandlers = (user: User) => {
    * object as it will be used to identify broadcast messages.
   */
   socket.on(EndpointNames.REGISTER_SHARED_OBJECT, (data, callback) => {
-    const { position, rotation }: { position: util.Vector3, rotation: util.Quaternion } = data;
+    const { id, position, rotation }: { id: string, position: util.Vector3, rotation: util.Quaternion } = data;
     const { session } = user;
 
     if (!session) {
@@ -29,7 +29,7 @@ const installHandlers = (user: User) => {
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
-    const obj = new SharedObject(user, {
+    const obj = new SharedObject(id, user, {
       position, rotation, timestamp: Date.now()
     });
 
