@@ -98,15 +98,8 @@ const installHandlers = (user: User) => {
     }
 
     if (obj.owner.id != user.id) {
-      const oldOwnerId = obj.owner.id;
       obj.owner = user;
-
-      session.sendSessionUpdate("OBJECT_OWNERSHIP_CHANGED", {
-        id: obj.id,
-        oldOwner: oldOwnerId,
-        newOwner: user.id,
-        type
-      });
+      session.sendSessionUpdate("OBJECT_OWNERSHIP_CHANGED", obj.serialize());
     }
 
     callback(util.createCommandResponse(
