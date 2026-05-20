@@ -34,6 +34,7 @@ const installHandlers = (user: User) => {
     });
 
     session.addObject(obj);
+    session.sendSessionUpdate("OBJECT_REGISTERED", obj.serialize());
 
     callback(util.createCommandResponse(
       data,
