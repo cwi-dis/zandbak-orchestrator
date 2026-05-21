@@ -46,15 +46,10 @@ const installHandlers = (user: User) => {
   /**
    * Registers a new trigger object within the user's current session. If the
    * current user is not in any session, the call fails. The endpoint expects
-   * the trigger object's initial data value.
-   *
-   * The object instance will receive a randomly generated ID, this ID, wrapped
-   * in a serialised form of the object which will be returned to the caller.
-   * The caller is expected to store this ID with their local copy of the
-   * object as it will be used to identify broadcast messages.
+   * the trigger object's initial data value and ID.
   */
   socket.on(EndpointNames.REGISTER_TRIGGER, (data, callback) => {
-    const { value } = data;
+    const { id, initialValue } = data;
     const { session } = user;
 
     if (!session) {
@@ -62,7 +57,7 @@ const installHandlers = (user: User) => {
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
-    const trigger = new Trigger(user, value);
+    const trigger = new Trigger(id, user, initialValue);
     session.addTrigger(trigger);
 
     callback(util.createCommandResponse(
