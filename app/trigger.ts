@@ -1,14 +1,13 @@
-import { v4 as uuidv4 } from "uuid";
-
 import Serializable from "./serializable";
 import User from "./user";
 import { Dict } from "../util";
 
 class Trigger extends Serializable {
-  #id: string = uuidv4();
+  #id: string;
 
-  public constructor(public owner: User, public value?: Dict) {
+  public constructor(id: string, public owner: User, public value?: Dict) {
     super();
+    this.#id = id;
   }
 
   public get id() {
