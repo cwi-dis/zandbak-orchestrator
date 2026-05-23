@@ -47,6 +47,8 @@ class Session extends Serializable {
     this.#persistent = persistent;
     this.#room = room;
 
+    this.#channels.set(this.getInternalChannelName("voice"), () => {});
+
     this.#channels.set(this.getInternalChannelName("transform"), (data) => {
       const transform: UserTransform = JSON.parse(data);
       const user = this.getUser(transform.userId);

@@ -36,6 +36,8 @@ const installHandlers = (user: User) => {
     session.addObject(obj);
     session.sendSessionUpdate("OBJECT_REGISTERED", obj.serialize());
 
+    logger.debug(EndpointNames.REGISTER_SHARED_OBJECT, "Shared object with ID", id, "registered");
+
     callback(util.createCommandResponse(
       data,
       ErrorCodes.OK,
