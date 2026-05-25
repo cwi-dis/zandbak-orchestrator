@@ -7,7 +7,7 @@ class SharedObject extends Serializable {
 
   public transform?: ObjectTransform;
 
-  public constructor(id: string, public owner: User, public initialTransform?: Transform) {
+  public constructor(id: string, public owner: User, public initialTransform?: Transform, public prefabName?: string) {
     super();
     this.#id = id;
 
@@ -26,7 +26,8 @@ class SharedObject extends Serializable {
     return {
       id: this.#id,
       owner: this.owner.serialize(),
-      transform: this.transform
+      transform: this.transform,
+      prefabName: this.prefabName
     };
   }
 }
