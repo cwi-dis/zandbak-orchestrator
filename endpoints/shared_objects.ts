@@ -121,7 +121,9 @@ const installHandlers = (user: User) => {
     const obj = new SharedObject(id, user, {
       position, rotation, timestamp: Date.now()
     }, prefabName);
+
     session.addObject(obj);
+    session.sendSessionUpdate("OBJECT_SPAWNED", obj.serialize());
 
     logger.debug(EndpointNames.SPAWN_SHARED_OBJECT, "Shared object with ID", id, "spawned");
 
