@@ -280,6 +280,16 @@ class Session extends Serializable {
   }
 
   /**
+   * Destroys the given shared object by removing it from the list of shared
+   * objects.
+   *
+   * @param objectToRemove Shared object to remove
+   */
+  public removeObject(objectToRemove: SharedObject) {
+    this.#objects = this.#objects.filter((b) => b.id != objectToRemove.id);
+  }
+
+  /**
    * Tries to find a shared object with the given ID in the session and returns
    * it. If no object with the given ID exists, undefined is returned.
    *
