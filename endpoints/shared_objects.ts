@@ -13,12 +13,7 @@ const installHandlers = (user: User) => {
   /**
    * Registers a new shared object within the user's current session. If the
    * current user is not in any session, the call fails. The endpoint expects
-   * the shared object's initial position and rotation as parameters.
-   *
-   * The object instance will receive a randomly generated ID, this ID, wrapped
-   * in a serialised form of the object which will be returned to the caller.
-   * The caller is expected to store this ID with their local copy of the
-   * object as it will be used to identify broadcast messages.
+   * the shared object's ID, initial position and rotation as parameters.
   */
   socket.on(EndpointNames.REGISTER_SHARED_OBJECT, (data, callback) => {
     const { id, position, rotation }: { id: string, position: util.Vector3, rotation: util.Quaternion } = data;
@@ -100,6 +95,35 @@ const installHandlers = (user: User) => {
       obj.owner = user;
       session.sendSessionUpdate("OBJECT_OWNERSHIP_CHANGED", obj.serialize());
     }
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      obj.serialize()
+    ));
+  });
+
+  /**
+   * Spawns a new shared object within the user's current session. If the
+   * current user is not in any session, the call fails. The endpoint expects
+   * the shared object's ID, initial position and rotation and the name of the
+   * prefab to be spawned as parameters.
+  */
+  socket.on(EndpointNames.SPAWN_SHARED_OBJECT, (data, callback) => {
+    const { id, position, rotation, prefabName }: { id: string, position: util.Vector3, rotation: util.Quaternion, prefabName: string } = data;
+    const { session } = user;
+
+    if (!session) {
+      logger.debug(EndpointNames.SPAWN_SHARED_OBJECT, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    const obj = new SharedObject(id, user, {
+      position, rotation, timestamp: Date.now()
+    }, prefabName);
+    session.addObject(obj);
+
+    logger.debug(EndpointNames.SPAWN_SHARED_OBJECT, "Shared object with ID", id, "spawned");
 
     callback(util.createCommandResponse(
       data,
