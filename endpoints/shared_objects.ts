@@ -133,6 +133,42 @@ const installHandlers = (user: User) => {
       obj.serialize()
     ));
   });
+
+  /**
+   * Destroys the shared object with the given ID in the user's current session.
+   * If the current user is not in any session, the call fails. The endpoint
+   * expects the ID of the object to be destroyed as parameter.
+   *
+   * If no object with the given ID could be found in the current session, the
+   * call fails.
+  */
+  socket.on(EndpointNames.DESTROY_SHARED_OBJECT, (data, callback) => {
+    const { id }: { id: string } = data;
+    const { session } = user;
+
+    if (!session) {
+      logger.debug(EndpointNames.DESTROY_SHARED_OBJECT, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    const objectToRemove = session.getObject(id);
+
+    if (!objectToRemove) {
+      logger.debug(EndpointNames.DESTROY_SHARED_OBJECT, "No object with ID", id, "found");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_OBJECT_DOES_NOT_EXIST));
+    }
+
+    session.removeObject(objectToRemove);
+    session.sendSessionUpdate("OBJECT_DESTROYED", objectToRemove.serialize());
+
+    logger.debug(EndpointNames.DESTROY_SHARED_OBJECT, "Shared object with ID", id, "destroyed");
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      objectToRemove.serialize()
+    ));
+  });
 };
 
 export default installHandlers;
