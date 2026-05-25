@@ -61,6 +61,7 @@ const installHandlers = (user: User) => {
 
     const trigger = new Trigger(id, user, initialValue);
     session.addTrigger(trigger);
+    session.sendSessionUpdate("TRIGGER_REGISTERED", trigger.serialize());
 
     callback(util.createCommandResponse(
       data,
