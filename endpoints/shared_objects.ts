@@ -24,6 +24,11 @@ const installHandlers = (user: User) => {
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
     }
 
+    if (session.getObject(id)) {
+      logger.debug(EndpointNames.REGISTER_SHARED_OBJECT, "Shared object with id", id, "already registered");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_OBJECT_ALREADY_REGISTERED));
+    }
+
     const obj = new SharedObject(id, user, {
       position, rotation, timestamp: Date.now()
     });
