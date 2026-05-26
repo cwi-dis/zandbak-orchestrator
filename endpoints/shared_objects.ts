@@ -55,8 +55,13 @@ const installHandlers = (user: User) => {
     const { session } = user;
 
     if (!session) {
-      logger.debug(EndpointNames.REGISTER_SHARED_OBJECT, "User", user.name, "not in any session");
+      logger.debug(EndpointNames.REGISTER_TRIGGER, "User", user.name, "not in any session");
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    if (session.getTrigger(id)) {
+      logger.debug(EndpointNames.REGISTER_TRIGGER, "Trigger object with id", id, "already registered");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_OBJECT_ALREADY_REGISTERED));
     }
 
     const trigger = new Trigger(id, user, initialValue);
