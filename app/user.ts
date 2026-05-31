@@ -26,7 +26,7 @@ class User extends Serializable {
   public isSpeaking: boolean = false;
   public status: string = "available";
 
-  public constructor(public name: string, public socket: io.Socket, public deviceType: DeviceType, id: string | undefined) {
+  public constructor(public name: string, public socket: io.Socket, public deviceType: DeviceType, public prefabName: string = "default", id?: string) {
     super();
 
     if (id) {
@@ -255,14 +255,15 @@ class User extends Serializable {
       deviceType: this.deviceType,
       hasHandRaised: this.hasHandRaised(),
       isSpeaking: this.isSpeaking,
-      status: this.status
+      status: this.status,
+      prefabName: this.prefabName
     };
   }
 }
 
 export class Presenter extends User {
-  public constructor(name: string, socket: io.Socket, deviceType: DeviceType, id?: string) {
-    super(name, socket, deviceType, id);
+  public constructor(name: string, socket: io.Socket, deviceType: DeviceType, prefabName: string, id?: string) {
+    super(name, socket, deviceType, prefabName, id);
     this._userType = "presenter";
   }
 }
