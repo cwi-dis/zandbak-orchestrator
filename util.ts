@@ -250,7 +250,7 @@ export type Transform = {
 
 export type UserTransform = Transform & {
   userId: string;
-  bones: {
+  transforms: {
     [name: string]: { pos: Vector3, rot: Quaternion }
   }
 };
