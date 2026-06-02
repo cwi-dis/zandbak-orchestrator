@@ -738,12 +738,20 @@ class Session extends Serializable {
    * @param fromUser User from which the broadcast originates
    * @param channel Channel the broadcast shall be sent to
    * @param data Data that shall be sent
+   * @param deliverToCaller Boolean which specifies whether the broadcast should be delivered to the caller as well
    */
-  public broadcast(fromUser: User, channel: string, data: any) {
+  public broadcast(fromUser: User, channel: string, data: any, deliverToCaller: boolean = false) {
     const internalName = this.getInternalChannelName(channel);
 
     if (this.#channels.has(internalName)) {
       this.#channels.get(internalName)?.(data);
+
+      // Deliver message to caller if deliverToCaller is true
+      if (deliverToCaller) {
+        fromUser.socket.emit(EmittedEvents.BROADCAST, channel, data);
+      }
+
+      // Broadcast to all users in the given channel
       fromUser.socket.to(internalName).emit(EmittedEvents.BROADCAST, channel, data);
     }
   }
