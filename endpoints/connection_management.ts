@@ -105,7 +105,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const { session } = user;
     session?.removeUser(user);
 
-    if (session?.administrator.id == user.id) {
+    if (session?.administrator?.id == user.id) {
       return orchestrator.removeSession(session);
     }
 

@@ -14,7 +14,7 @@ import Room from "./room";
 class Session extends Serializable {
   #id: string = uuidv4();
   #users: Array<User> = [];
-  #administrator: User;
+  #administrator?: User;
   #chat: Array<ChatMessage> = [];
   #raisedHands: Array<User> = [];
   #master?: User;
@@ -676,7 +676,7 @@ class Session extends Serializable {
       sessionId: this.#id,
       sessionName: this.name,
       sessionDescription: this.description,
-      sessionAdministrator: this.#administrator.id,
+      sessionAdministrator: this.#administrator?.id,
       sessionMaster: this.#master && this.#master.id,
       sessionUsers: this.#users.map((u) => u.id),
       sessionUserDefinitions: this.#users.map((u) => u.serialize()),

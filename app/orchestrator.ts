@@ -146,7 +146,7 @@ class Orchestrator extends Serializable {
    * @returns Sessions which the given user is an admin of
    */
   public getAdministratedSessions(user: User): Array<Session> {
-    return this.#sessions.filter((s) => s.administrator.id == user.id);
+    return this.#sessions.filter((s) => s.administrator?.id == user.id);
   }
 
   /**
