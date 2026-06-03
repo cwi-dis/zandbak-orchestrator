@@ -38,12 +38,12 @@ getRevision().then((revision) => {
 /**
  * Create new orchestrator instance.
  **/
-const orchestrator = new Orchestrator();
+export const orchestrator = new Orchestrator();
 
 /**
  * Set up express app and create HTTP server.
  */
-const app = express();
+export const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -51,12 +51,12 @@ app.use(logger.http);
 app.use("/slides", express.static("slides"));
 app.use(routes);
 
-const server = createServer(app);
+export const server = createServer(app);
 
 /**
  * Set up Socket.IO server
  **/
-const io = new Server(server);
+export const io = new Server(server);
 
 // Install handler for forwarding log messages if LOG_SERVER variable is set
 if (LOG_SERVER) {
@@ -103,10 +103,12 @@ io.on("connection", (socket) => {
 /**
  * Launch server on port given by environment variable PORT
  */
-server.listen(PORT, () => {
-  logger.info("Socket.io server listening on port", PORT);
+if (process.env.NODE_ENV !== "test") {
+  server.listen(PORT, () => {
+    logger.info("Socket.io server listening on port", PORT);
 
-  if (EXTERNAL_HOSTNAME) {
-    logger.info("Server available under external hostname:", EXTERNAL_HOSTNAME);
-  }
-});
+    if (EXTERNAL_HOSTNAME) {
+      logger.info("Server available under external hostname:", EXTERNAL_HOSTNAME);
+    }
+  });
+}
