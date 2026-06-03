@@ -20,11 +20,14 @@ import installSceneEventHandlers from "./endpoints/scene_events";
 import installStreamHandlers from "./endpoints/data_streams";
 import installBubbleHandlers from "./endpoints/bubble_management";
 
-const [ PORT, MONGODB_CONNECTION ] = getFromEnvironment(["PORT", "MONGODB_CONNECTION"]);
+const [ PORT ] = getFromEnvironment(["PORT"]);
+const [ MONGODB_CONNECTION ] = getFromEnvironment(["MONGODB_CONNECTION"], "");
 const [ LOG_SERVER, EXTERNAL_HOSTNAME ] = getFromEnvironment(["LOG_SERVER", "EXTERNAL_HOSTNAME"], null);
 
 mongoose.connect(MONGODB_CONNECTION).then((connection) => {
   logger.info("MongoDB connection established:", connection);
+}).catch((err) => {
+  logger.error("MongoDB connection failed:", err);
 });
 
 /**
