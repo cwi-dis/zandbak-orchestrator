@@ -6,7 +6,8 @@
     "build": "webpack",
     "lint": "eslint .",
     "dump": "node scripts/dump.js",
-    "logs": "node scripts/logreader.js"
+    "logs": "node scripts/logreader.js",
+    "test": "NODE_ENV=test PORT=0 LOG_SERVER= LOG_LEVEL=error jest --silent --forceExit"
   },
   "author": "Thomas Röggla",
   "license": "BSD-2-Clause",
