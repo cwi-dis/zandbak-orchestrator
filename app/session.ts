@@ -1,7 +1,7 @@
+import { EventEmitter } from "events";
 import { v4 as uuidv4 } from "uuid";
 
 import { Dict, Optional, ObjectTransform, UserTransform } from "../util";
-import Serializable from "./serializable";
 import User from "./user";
 import Transport from "../transport/transport";
 import TransportManager, { TransportType } from "../transport/manager/transport_manager";
@@ -13,7 +13,7 @@ import Room from "./room";
 import SharedObject from "./shared_object";
 import Trigger from "./trigger";
 
-class Session extends Serializable {
+class Session extends EventEmitter {
   #id: string = uuidv4();
   #users: Array<User> = [];
   #administrator?: User;
@@ -401,6 +401,7 @@ class Session extends Serializable {
 
     this.#users.forEach((u) => {
       u.socket.emit(EmittedEvents.SESSION_CLOSED, {});
+      u.session = undefined;
     });
 
     return true;
@@ -569,6 +570,7 @@ class Session extends Serializable {
     this.notifyUsers({
       eventId, eventData
     });
+    this.emit(eventId, eventData);
   }
 
   /**
@@ -603,6 +605,7 @@ class Session extends Serializable {
     this.#users.forEach((u) => {
       u.socket.emit(EmittedEvents.MESSAGE_SENT, chatMessage.serialize());
     });
+    this.emit(EmittedEvents.MESSAGE_SENT, chatMessage.serialize());
   }
 
   /**
@@ -687,6 +690,7 @@ class Session extends Serializable {
         u.socket.emit(EmittedEvents.DATA_RECEIVED, fromUser.id, type, data);
       }
     });
+    this.emit(EmittedEvents.DATA_RECEIVED, { fromUserId: fromUser.id, type, data });
   }
 
   /**
@@ -753,6 +757,7 @@ class Session extends Serializable {
 
       // Broadcast to all users in the given channel
       fromUser.socket.to(internalName).emit(EmittedEvents.BROADCAST, channel, data);
+      this.emit(EmittedEvents.BROADCAST, { fromUserId: fromUser.id, channel, data });
     }
   }
 
@@ -783,6 +788,10 @@ class Session extends Serializable {
       sessionPersistent: this.#persistent,
       sessionRoom: this.#room
     };
+  }
+
+  public toJSON(): Dict {
+    return this.serialize();
   }
 }
 
