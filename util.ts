@@ -237,7 +237,7 @@ export function getExternalHostname(socket: Socket): string {
   throw Error("Client headers don't contain server hostname");
 }
 
-export type DeviceType = "vr" | "ar" | "unknown";
+export type DeviceType = "vr" | "ar" | "headless" | "unknown";
 
 export type Vector3 = { x: number, y: number, z: number };
 export type Quaternion = { x: number, y: number, z: number, w: number };
