@@ -4,7 +4,7 @@ import io from "socket.io";
 import Bubble from "./bubble";
 import Session from "./session";
 import Serializable from "./serializable";
-import { mapHashToDict, Dict, Transform, DeviceType } from "../util";
+import { mapHashToDict, Dict, UserTransform, DeviceType } from "../util";
 import DataStream from "./data_stream";
 import StreamSubscription from "./stream_subscription";
 import EmittedEvents, { BubbleEvent, SessionEvent } from "./emitted_events";
@@ -22,11 +22,11 @@ class User extends Serializable {
 
   public session?: Session;
   public bubble?: Bubble;
-  public transform?: Transform;
+  public transform?: UserTransform;
   public isSpeaking: boolean = false;
   public status: string = "available";
 
-  public constructor(public name: string, public socket: io.Socket, public deviceType: DeviceType, id: string | undefined) {
+  public constructor(public name: string, public socket: io.Socket, public deviceType: DeviceType, public prefabName: string = "default", id?: string) {
     super();
 
     if (id) {
@@ -255,14 +255,15 @@ class User extends Serializable {
       deviceType: this.deviceType,
       hasHandRaised: this.hasHandRaised(),
       isSpeaking: this.isSpeaking,
-      status: this.status
+      status: this.status,
+      prefabName: this.prefabName
     };
   }
 }
 
 export class Presenter extends User {
-  public constructor(name: string, socket: io.Socket, deviceType: DeviceType, id?: string) {
-    super(name, socket, deviceType, id);
+  public constructor(name: string, socket: io.Socket, deviceType: DeviceType, prefabName: string, id?: string) {
+    super(name, socket, deviceType, prefabName, id);
     this._userType = "presenter";
   }
 }

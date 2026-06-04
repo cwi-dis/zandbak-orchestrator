@@ -19,12 +19,13 @@ import installUserDataHandlers from "./endpoints/user_data";
 import installSceneEventHandlers from "./endpoints/scene_events";
 import installStreamHandlers from "./endpoints/data_streams";
 import installBubbleHandlers from "./endpoints/bubble_management";
+import installSharedObjectHandlers from "./endpoints/shared_objects";
 
 const [ PORT, MONGODB_CONNECTION ] = getFromEnvironment(["PORT", "MONGODB_CONNECTION"]);
 const [ LOG_SERVER, EXTERNAL_HOSTNAME ] = getFromEnvironment(["LOG_SERVER", "EXTERNAL_HOSTNAME"], null);
 
-mongoose.connect(MONGODB_CONNECTION).then((connection) => {
-  logger.info("MongoDB connection established:", connection);
+mongoose.connect(MONGODB_CONNECTION).then(() => {
+  logger.info("MongoDB connection established");
 });
 
 /**
@@ -85,6 +86,7 @@ export const setupHandlers = async (socket: Socket) => {
     installSceneEventHandlers(user);
     installStreamHandlers(user);
     installBubbleHandlers(user);
+    installSharedObjectHandlers(user);
 
     logger.debug("Event handlers installed");
   } catch (err) {

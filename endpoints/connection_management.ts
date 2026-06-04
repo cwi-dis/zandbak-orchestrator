@@ -26,7 +26,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
      * the promise to reject.
      */
     socket.on(EndpointNames.LOGIN, async (data, callback) => {
-      const { userName, password, deviceType, id }: { userName: Optional<string>, password: Optional<string>, deviceType: Optional<DeviceType>, id: Optional<string> } = data;
+      const { userName, password, deviceType, prefabName, id }: { userName: Optional<string>, password: Optional<string>, deviceType: Optional<DeviceType>, prefabName: Optional<string>, id: Optional<string> } = data;
       logger.debug(EndpointNames.LOGIN, "Starting login process with username", userName);
 
       if (!userName) {
@@ -76,7 +76,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
       }
 
       // Create a new user without database authentication
-      const user = new User(userName, socket, deviceType || "unknown", id);
+      const user = new User(userName, socket, deviceType || "unknown", prefabName, id);
       orchestrator.addUser(user);
 
       logger.debug(EndpointNames.LOGIN, "Added user", user.name, "to orchestrator");
@@ -105,7 +105,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     const { session } = user;
     session?.removeUser(user);
 
-    if (session?.administrator.id == user.id) {
+    if (session?.administrator?.id == user.id) {
       return orchestrator.removeSession(session);
     }
 

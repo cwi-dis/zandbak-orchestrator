@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { Dict, Optional } from "../util";
+import { Dict, Optional, ObjectTransform, UserTransform } from "../util";
 import Serializable from "./serializable";
 import User from "./user";
 import Transport from "../transport/transport";
@@ -10,16 +10,20 @@ import ChatMessage, { PrivateMessage } from "./chat_message";
 import Presentation from "./presentation";
 import Bubble from "./bubble";
 import Room from "./room";
+import SharedObject from "./shared_object";
+import Trigger from "./trigger";
 
 class Session extends Serializable {
   #id: string = uuidv4();
   #users: Array<User> = [];
-  #administrator: User;
+  #administrator?: User;
+  #objects: Array<SharedObject> = [];
+  #triggers: Array<Trigger> = [];
   #chat: Array<ChatMessage> = [];
   #raisedHands: Array<User> = [];
   #master?: User;
   #transport: Transport;
-  #channels: Array<string>;
+  #channels: Map<string, (data: string) => void> = new Map();
   #bubbles: Array<Bubble> = [];
   #room: Room;
   #persistent: boolean;
@@ -32,7 +36,6 @@ class Session extends Serializable {
     public name: string,
     public description: string,
     public sessionProtocol: TransportType,
-    channels: Array<string>,
     transportManager: TransportManager,
     hostname: string,
     persistent = false,
@@ -41,9 +44,37 @@ class Session extends Serializable {
     super();
 
     this.#transport = transportManager.assignTransport(sessionProtocol, this, hostname);
-    this.#channels = channels.map((c) => this.getInternalChannelName(c));
     this.#persistent = persistent;
     this.#room = room;
+
+    this.#channels.set(this.getInternalChannelName("voice"), () => {});
+
+    this.#channels.set(this.getInternalChannelName("transform"), (data) => {
+      const transform: UserTransform = JSON.parse(data);
+      const user = this.getUser(transform.userId);
+
+      if (user) {
+        user.transform = transform;
+      }
+    });
+
+    this.#channels.set(this.getInternalChannelName("objectTransform"), (data) => {
+      const transform: ObjectTransform = JSON.parse(data);
+      const object = this.getObject(transform.id);
+
+      if (object) {
+        object.transform = transform;
+      }
+    });
+
+    this.#channels.set(this.getInternalChannelName("trigger"), (data) => {
+      const value: Dict = JSON.parse(data);
+      const trigger = this.getTrigger(value.id);
+
+      if (trigger) {
+        trigger.value = value;
+      }
+    });
   }
 
   public get id() {
@@ -63,7 +94,7 @@ class Session extends Serializable {
   }
 
   public get channels() {
-    return this.#channels.map((channel) => channel.split("/")[1]);
+    return Array.from(this.#channels.keys()).map((channel) => channel.split("/")[1]);
   }
 
   public get raisedHands() {
@@ -237,6 +268,56 @@ class Session extends Serializable {
    */
   public isMaster(user: User): boolean {
     return !!this.#master && user.id == this.#master.id;
+  }
+
+  /**
+   * Adds a shared object to the session.
+   *
+   * @param obj Shared object to add to the session
+   */
+  public addObject(obj: SharedObject) {
+    this.#objects.push(obj);
+  }
+
+  /**
+   * Destroys the given shared object by removing it from the list of shared
+   * objects.
+   *
+   * @param objectToRemove Shared object to remove
+   */
+  public removeObject(objectToRemove: SharedObject) {
+    this.#objects = this.#objects.filter((b) => b.id != objectToRemove.id);
+  }
+
+  /**
+   * Tries to find a shared object with the given ID in the session and returns
+   * it. If no object with the given ID exists, undefined is returned.
+   *
+   * @param id ID of shared object to get
+   * @returns The shared object with the given ID or undefined
+   */
+  public getObject(id: string): Optional<SharedObject> {
+    return this.#objects.find((o) => o.id == id);
+  }
+
+  /**
+   * Adds a trigger to the session.
+   *
+   * @param t Trigger to add to the session
+   */
+  public addTrigger(t: Trigger) {
+    this.#triggers.push(t);
+  }
+
+  /**
+   * Tries to find a trigger object with the given ID in the session and returns
+   * it. If no object with the given ID exists, undefined is returned.
+   *
+   * @param id ID of trigger object to get
+   * @returns The trigger object with the given ID or undefined
+   */
+  public getTrigger(id: string): Optional<Trigger> {
+    return this.#triggers.find((t) => t.id == id);
   }
 
   /**
@@ -613,8 +694,8 @@ class Session extends Serializable {
    * @param user The user to add to the channels
    */
   private addUserToChannels(user: User) {
-    this.#channels.forEach((channel) => {
-      user.socket.join(channel);
+    this.#channels.forEach((_, channelName) => {
+      user.socket.join(channelName);
     });
   }
 
@@ -623,8 +704,8 @@ class Session extends Serializable {
    * @param user The user to remove from the channels
    */
   private removeUserFromChannels(user: User) {
-    this.#channels.forEach((channel) => {
-      user.socket.leave(channel);
+    this.#channels.forEach((_, channelName) => {
+      user.socket.leave(channelName);
     });
   }
 
@@ -657,11 +738,20 @@ class Session extends Serializable {
    * @param fromUser User from which the broadcast originates
    * @param channel Channel the broadcast shall be sent to
    * @param data Data that shall be sent
+   * @param deliverToCaller Boolean which specifies whether the broadcast should be delivered to the caller as well
    */
-  public broadcast(fromUser: User, channel: string, data: any) {
+  public broadcast(fromUser: User, channel: string, data: any, deliverToCaller: boolean = false) {
     const internalName = this.getInternalChannelName(channel);
 
-    if (this.#channels.includes(internalName)) {
+    if (this.#channels.has(internalName)) {
+      this.#channels.get(internalName)?.(data);
+
+      // Deliver message to caller if deliverToCaller is true
+      if (deliverToCaller) {
+        fromUser.socket.emit(EmittedEvents.BROADCAST, channel, data);
+      }
+
+      // Broadcast to all users in the given channel
       fromUser.socket.to(internalName).emit(EmittedEvents.BROADCAST, channel, data);
     }
   }
@@ -676,10 +766,12 @@ class Session extends Serializable {
       sessionId: this.#id,
       sessionName: this.name,
       sessionDescription: this.description,
-      sessionAdministrator: this.#administrator.id,
+      sessionAdministrator: this.#administrator?.id,
       sessionMaster: this.#master && this.#master.id,
       sessionUsers: this.#users.map((u) => u.id),
       sessionUserDefinitions: this.#users.map((u) => u.serialize()),
+      sessionObjects: this.#objects.map((o) => o.serialize()),
+      sessionTriggers: this.#triggers.map((t) => t.serialize()),
       sessionProtocol: this.sessionProtocol,
       sessionChannels: this.channels,
       sessionChat: this.getMessages(),

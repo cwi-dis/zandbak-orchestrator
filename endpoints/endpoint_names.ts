@@ -55,7 +55,13 @@ enum EndpointNames {
   DUMP_DATA = "DumpData",
   TERMINATE_ORCHESTRATOR = "TerminateOrchestrator",
 
-  IS_SPEAKING = "IsSpeaking"
+  IS_SPEAKING = "IsSpeaking",
+
+  REGISTER_SHARED_OBJECT = "RegisterSharedObject",
+  REGISTER_TRIGGER = "RegisterTrigger",
+  CLAIM_OWNERSHIP = "ClaimOwnership",
+  SPAWN_SHARED_OBJECT = "SpawnSharedObject",
+  DESTROY_SHARED_OBJECT = "DestroySharedObject"
 }
 
 export default EndpointNames;

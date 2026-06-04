@@ -212,9 +212,10 @@ const installHandlers = (user: User) => {
 
   /**
    * Sends data from the current user to all users in the same session, on the
-   * given broadcast channel.
+   * given broadcast channel. If the third parameter is true, the broadcast is
+   * also delivered to the original caller.
    */
-  socket.on(EndpointNames.BROADCAST, (channel, data) => {
+  socket.on(EndpointNames.BROADCAST, (channel, data, deliverToCaller = false) => {
     const { session } = user;
 
     if (!session) {
@@ -227,16 +228,7 @@ const installHandlers = (user: User) => {
       return;
     }
 
-    if (channel == "transform") {
-      const transform: util.Transform = JSON.parse(data);
-      const user = session.getUser(transform.userId);
-
-      if (user) {
-        user.transform = transform;
-      }
-    }
-
-    session.broadcast(user, channel, data);
+    session.broadcast(user, channel, data, deliverToCaller);
   });
 };
 
