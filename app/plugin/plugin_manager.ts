@@ -64,7 +64,7 @@ class PluginManager {
       // We use eval('import(...)') to prevent Webpack from trying to bundle the dynamic import
       const pluginModule = await (0, eval)(`import("file://${filePath}")`);
       let PluginClass = pluginModule.default || pluginModule;
-      
+
       // Handle potential double default wrapping from interop
       while (PluginClass && PluginClass.default && typeof PluginClass.init !== "function") {
         PluginClass = PluginClass.default;
@@ -93,7 +93,7 @@ class PluginManager {
         logger.info("PLUGIN_MANAGER", `Loaded plugin: ${plugin.name}`);
       } else {
         logger.warn("PLUGIN_MANAGER", `Module at ${filePath} does not implement Plugin interface.`);
-        logger.debug("PLUGIN_MANAGER", `Plugin object:`, plugin);
+        logger.debug("PLUGIN_MANAGER", "Plugin object:", plugin);
       }
     } catch (err) {
       logger.error("PLUGIN_MANAGER", `Failed to load plugin from ${filePath}:`, err);
