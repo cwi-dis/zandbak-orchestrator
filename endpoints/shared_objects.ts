@@ -78,11 +78,13 @@ const installHandlers = (user: User) => {
   /**
    * Returns the trigger object with the given ID. If the current user is not in
    * any session or the trigger with the given ID does not exist, the call fails.
-   * The endpoint expects the trigger ID as a parameter.
+   * The endpoint expects the trigger's ID as a parameter.
    */
   socket.on(EndpointNames.GET_TRIGGER, (data, callback) => {
     const { id } = data;
     const { session } = user;
+
+    logger.debug(EndpointNames.GET_TRIGGER, "Getting trigger with ID:", id);
 
     if (!session) {
       logger.debug(EndpointNames.GET_TRIGGER, "User", user.name, "not in any session");
@@ -100,6 +102,36 @@ const installHandlers = (user: User) => {
       data,
       ErrorCodes.OK,
       trigger.serialize()
+    ));
+  });
+
+  /**
+   * Returns the shared object with the given ID. If the current user is not in
+   * any session or the shared object with the given ID does not exist, the call
+   * fails. The endpoint expects the shared object's ID as a parameter.
+   */
+  socket.on(EndpointNames.GET_SHARED_OBJECT, (data, callback) => {
+    const { id } = data;
+    const { session } = user;
+
+    logger.debug(EndpointNames.GET_SHARED_OBJECT, "Getting shared object with ID:", id);
+
+    if (!session) {
+      logger.debug(EndpointNames.GET_SHARED_OBJECT, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    const sharedObject = session.getObject(id);
+
+    if (!sharedObject) {
+      logger.debug(EndpointNames.GET_SHARED_OBJECT, "Shared object with id", id, "does not exist");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_OBJECT_DOES_NOT_EXIST));
+    }
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      sharedObject.serialize()
     ));
   });
 
