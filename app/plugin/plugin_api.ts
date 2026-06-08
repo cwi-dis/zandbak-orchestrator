@@ -135,7 +135,7 @@ export default class PluginAPI {
   }
 
   public getTrigger(id: string) {
-    return this.emit(EndpointNames.REGISTER_TRIGGER, { id });
+    return this.emit(EndpointNames.GET_TRIGGER, { id });
   }
 
   public claimOwnership(objectId: string, type: "object" | "trigger") {
