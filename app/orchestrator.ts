@@ -1,21 +1,31 @@
+import { EventEmitter } from "events";
 import { v4 as uuidv4 } from "uuid";
 
+import PluginManager from "./plugin/plugin_manager";
 import Session from "./session";
 import User from "./user";
 import { Optional, Dict } from "../util";
 import TransportManager from "../transport/manager/transport_manager";
-import Serializable from "./serializable";
 import EmittedEvents, { OrchestratorEvent, OrchestratorEventName } from "./emitted_events";
 
-class Orchestrator extends Serializable {
+class Orchestrator extends EventEmitter {
   public id: string = uuidv4();
 
   #sessions: Array<Session> = [];
   #users: Array<User> = [];
   #transportManager = new TransportManager();
+  #pluginManager = new PluginManager(this);
+
+  constructor() {
+    super();
+  }
 
   public get transportManager() {
     return this.#transportManager;
+  }
+
+  public get pluginManager() {
+    return this.#pluginManager;
   }
 
   /**
@@ -85,6 +95,7 @@ class Orchestrator extends Serializable {
     this.notifyUsers({
       eventId, eventData
     });
+    this.emit(eventId, eventData);
   }
 
   /**
@@ -169,6 +180,10 @@ class Orchestrator extends Serializable {
       }),
       users: this.#users.map((u) => u.serialize())
     };
+  }
+
+  public toJSON() {
+    return this.serialize();
   }
 }
 

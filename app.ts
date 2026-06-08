@@ -37,9 +37,10 @@ getRevision().then((revision) => {
 });
 
 /**
- * Create new orchestrator instance.
+ * Create new orchestrator instance and load plugins.
  **/
 const orchestrator = new Orchestrator();
+orchestrator.pluginManager.loadPlugins();
 
 /**
  * Set up express app and create HTTP server.
