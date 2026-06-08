@@ -138,6 +138,10 @@ export default class PluginAPI {
     return this.emit(EndpointNames.GET_TRIGGER, { id });
   }
 
+  public getSharedObject(id: string) {
+    return this.emit(EndpointNames.GET_SHARED_OBJECT, { id });
+  }
+
   public claimOwnership(objectId: string, type: "object" | "trigger") {
     return this.emit(EndpointNames.CLAIM_OWNERSHIP, { objectId, type });
   }
