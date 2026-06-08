@@ -2,12 +2,12 @@ import Orchestrator from "../app/orchestrator";
 import logger from "../logger";
 import { Plugin } from "../app/plugin/plugin";
 
-export default class ExamplePlugin implements Plugin {
-  public name = "ExamplePlugin";
-  public description = "An example plugin that automatically joins sessions and spawns objects.";
+export default class WelcomePlugin implements Plugin {
+  public name = "WelcomePlugin";
+  public description = "An example plugin that automatically joins sessions and sends a welcome message.";
 
   public init(orchestrator: Orchestrator) {
-    const pluginUser = orchestrator.pluginManager.createPluginUser("ExamplePluginUser");
+    const pluginUser = orchestrator.pluginManager.createPluginUser("spectator");
     const { api } = pluginUser;
 
     orchestrator.on("SESSION_CREATED", async (sessionData: any) => {
@@ -19,15 +19,13 @@ export default class ExamplePlugin implements Plugin {
 
       if (response.error === 0) {
         logger.info("EXAMPLE_PLUGIN", `Joined session ${sessionId}`);
+        const session = orchestrator.getSession(sessionId);
 
-        // Spawn a shared object
-        const spawnResponse = await pluginUser.api.spawnSharedObject(
-          "cube",
-          { x: 0, y: 1, z: 0 },
-          { x: 0, y: 0, z: 0, w: 1 },
-          "Cube"
-        );
-        logger.info("EXAMPLE_PLUGIN", `Spawned cube with ID ${spawnResponse.body.id}`);
+        session?.on("USER_JOINED_SESSION", (user) => {
+          setTimeout(() => {
+            api.sendMessageToAll(`Welcome to '${session.name}' user '${user.userData.userName}'`);
+          }, 1000);
+        });
       } else {
         logger.error("EXAMPLE_PLUGIN", `Failed to join session: ${response.message}`);
       }
