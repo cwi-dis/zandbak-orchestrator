@@ -76,6 +76,34 @@ const installHandlers = (user: User) => {
   });
 
   /**
+   * Returns the trigger object with the given ID. If the current user is not in
+   * any session or the trigger with the given ID does not exist, the call fails.
+   * The endpoint expects the trigger ID as a parameter.
+   */
+  socket.on(EndpointNames.GET_TRIGGER, (data, callback) => {
+    const { id } = data;
+    const { session } = user;
+
+    if (!session) {
+      logger.debug(EndpointNames.GET_TRIGGER, "User", user.name, "not in any session");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_USER_NOT_IN_SESSION));
+    }
+
+    const trigger = session.getTrigger(id);
+
+    if (!trigger) {
+      logger.debug(EndpointNames.GET_TRIGGER, "Trigger object with id", id, "does not exist");
+      return callback(util.createCommandResponse(data, ErrorCodes.SESSION_OBJECT_DOES_NOT_EXIST));
+    }
+
+    callback(util.createCommandResponse(
+      data,
+      ErrorCodes.OK,
+      trigger.serialize()
+    ));
+  });
+
+  /**
    * Changes ownership of the object with the given ID to the current user
    * within the current session. If the current user is not in any session or
    * object with the given ID does not exist in the session, the call fails.

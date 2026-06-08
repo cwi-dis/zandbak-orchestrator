@@ -59,6 +59,7 @@ enum EndpointNames {
 
   REGISTER_SHARED_OBJECT = "RegisterSharedObject",
   REGISTER_TRIGGER = "RegisterTrigger",
+  GET_TRIGGER = "GetTrigger",
   CLAIM_OWNERSHIP = "ClaimOwnership",
   SPAWN_SHARED_OBJECT = "SpawnSharedObject",
   DESTROY_SHARED_OBJECT = "DestroySharedObject"
