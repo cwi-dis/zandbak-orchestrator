@@ -65,7 +65,15 @@
             const { message, body } = data;
 
             if (message == "OK") {
-              treeContainer.innerHTML = `<pre>${JSON.stringify(body, null, 2)}</pre>`
+              const tree = JSON.stringify(body, (k, v) => {
+                if (k == "transforms") {
+                  return "[Transform data omitted]";
+                }
+
+                return v;
+              }, 2);
+
+              treeContainer.innerHTML = `<pre>${tree}</pre>`
               lastUpdate.textContent = new Date().toLocaleString();
             }
           });
