@@ -54,7 +54,7 @@ export const installLoginHandler =  async (orchestrator: Orchestrator, socket: i
         }
 
         logger.debug(EndpointNames.LOGIN, "User", userName, "authenticated with database");
-        const user = new Presenter(userName, socket, deviceType || "unknown", account._id.toString());
+        const user = new Presenter(userName, socket, deviceType || "unknown", prefabName || "default", account._id.toString());
         orchestrator.addUser(user);
 
         resolve(user);
