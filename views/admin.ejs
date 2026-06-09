@@ -10,7 +10,7 @@
 
     <style>
       #log {
-        height: 400px;
+        height: 70vh;
         overflow-y: auto;
         background-color: #F4F5F6;
         padding: 10px;
@@ -55,7 +55,12 @@
         const connectedTag = document.querySelector("#connected-tag");
         const disconnectedTag = document.querySelector("#disconnected-tag");
 
-        if (!treeContainer || !lastUpdate || !logContainer || !connectedTag || !disconnectedTag) {
+        const stateTreeTab = document.querySelector("#state-tree-tab");
+        const debugLogTab = document.querySelector("#debug-log-tab");
+        const stateTreeContent = document.querySelector("#state-tree-content");
+        const debugLogContent = document.querySelector("#debug-log-content");
+
+        if (!treeContainer || !lastUpdate || !logContainer || !connectedTag || !disconnectedTag || !stateTreeTab || !debugLogTab || !stateTreeContent || !debugLogContent) {
           console.error("Required elements not found in the DOM.");
           return;
         }
@@ -120,6 +125,21 @@
             });
           }
         });
+
+        stateTreeTab.addEventListener("click", () => {
+          stateTreeTab.classList.add("is-active");
+          debugLogTab.classList.remove("is-active");
+          stateTreeContent.classList.remove("is-hidden");
+          debugLogContent.classList.add("is-hidden");
+        });
+
+        debugLogTab.addEventListener("click", () => {
+          debugLogTab.classList.add("is-active");
+          stateTreeTab.classList.remove("is-active");
+          debugLogContent.classList.remove("is-hidden");
+          stateTreeContent.classList.add("is-hidden");
+          logContainer.scrollTop = logContainer.scrollHeight;
+        });
       });
     </script>
   </head>
@@ -134,13 +154,20 @@
           <span id="disconnected-tag" class="tag is-danger is-hidden">Disconnected</span>
         </div>
 
-        <div class="block">
+        <div class="tabs is-centered">
+          <ul>
+            <li id="state-tree-tab" class="is-active"><a>State Tree</a></li>
+            <li id="debug-log-tab"><a>Debug Log</a></li>
+          </ul>
+        </div>
+
+        <div id="state-tree-content" class="block">
           <h2 class="title is-4">State Tree</h2>
           <p>Last Update: <span id="last-update"></span></p>
           <div id="tree" class="block"></div>
         </div>
 
-        <div class="block">
+        <div id="debug-log-content" class="block is-hidden">
           <h2 class="title is-4">Debug Log</h2>
           <div id="log" class="block"></div>
         </div>
