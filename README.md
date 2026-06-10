@@ -79,7 +79,7 @@ can be launched as follows:
 The Orchestrator is meant as a orchestration and session management engine and
 goes together with the Zandbak Client Library for Unity. This is intended to
 be the main mode of interaction with it. However, all socket endpoints are
-documented in the file ENDPOINTS.md in this repository.
+documented in the file [ENDPOINTS.md](ENDPOINTS.md) in this repository.
 
 ## Plugin System
 
