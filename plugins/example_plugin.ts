@@ -5,6 +5,7 @@ import { Plugin } from "../app/plugin/plugin";
 export default class WelcomePlugin implements Plugin {
   public name = "WelcomePlugin";
   public description = "An example plugin that automatically joins sessions and sends a welcome message.";
+  public enabled = true;
 
   public init(orchestrator: Orchestrator) {
     const pluginUser = orchestrator.pluginManager.createPluginUser("spectator");
