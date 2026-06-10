@@ -36,10 +36,12 @@ After setting up the config, simply build and start the container by running
     docker compose up
 
 This will build the container if it hasn't already been built and launch it on
-port 8090 (or whatever port you set in `.env`). If this fails, try calling
-`docker-compose` instead of `docker compose`. Though this means you are running
-an older version of Docker and you should consider upgrading. Also, please
-refer to the next section.
+port 8090 (or whatever port you set in `.env`). It will also set up a MongoDB
+database for storing user accounts and scheduled sessions.
+
+If this fails, try calling `docker-compose` instead of `docker compose`. Though
+this means you are running an older version of Docker and you should consider
+upgrading. Also, please refer to the next section.
 
 ### Note for Ubuntu users
 
