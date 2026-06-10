@@ -178,3 +178,8 @@ The debugging interface can be accessed by opening `http://localhost:8090/admin`
 (or whatever host/port the Orchestrator is running on) in a web browser.
 
 Leaving these environment variables unset disables the web admin interface.
+
+## Acknowledgements
+
+This work is supported by the European Union as part of the Horizon Europe
+Framework Program under grant agreement No. 101135556 (INDUX-R).
