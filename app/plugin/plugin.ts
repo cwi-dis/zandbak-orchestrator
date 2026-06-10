@@ -7,6 +7,11 @@ export interface Plugin {
   name: string;
 
   /**
+   * Property which controls whether the plugin is enabled.
+   */
+  enabled: boolean;
+
+  /**
    * Optional description of the plugin.
    */
   description?: string;
