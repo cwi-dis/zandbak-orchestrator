@@ -3,7 +3,9 @@
 Orchestrator application for the Zandbak framework, handling user and session
 management as well as transmission of binary data between users over the
 network. This project is a descendant of the VR2Gather Orchestrator, adapting
-it to the needs of the INDUX-R project.
+it to the needs of the INDUX-R project. It is intended to work in tandem with
+the [Zandbak Client Library](https://github.com/cwi-dis/zandbak-client) for
+Unity.
 
 ## Running the Orchestrator
 
