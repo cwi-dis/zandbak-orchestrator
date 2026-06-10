@@ -1,4 +1,4 @@
-# Zandbak Orchestrator
+![](views/orchestrator_logo.png)
 
 Orchestrator application for the Zandbak framework, handling user and session
 management as well as transmission of binary data between users over the
