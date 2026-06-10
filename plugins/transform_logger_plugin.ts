@@ -54,8 +54,9 @@ export default class TransformLoggerPlugin implements Plugin {
         timestamp: new Date().toISOString(),
         sessionId: sessionId,
         fromUserId: event.fromUserId,
-        data: utfDecoder.decode(buffer)
+        data: JSON.parse(utfDecoder.decode(buffer))
       };
+
       this.logStream.write(JSON.stringify(logEntry) + "\n");
     }
   }
