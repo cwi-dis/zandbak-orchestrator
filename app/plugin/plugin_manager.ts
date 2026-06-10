@@ -88,6 +88,10 @@ class PluginManager {
       }
 
       if (this.isPlugin(plugin)) {
+        if (!plugin.enabled) {
+          return;
+        }
+
         plugin.init(this.orchestrator);
         this.plugins.push(plugin);
         logger.info("PLUGIN_MANAGER", `Loaded plugin: ${plugin.name}`);
