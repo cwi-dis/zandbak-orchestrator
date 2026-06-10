@@ -1,4 +1,4 @@
-# VR2Gather Orchestrator
+# InduXR Orchestrator Endpoints
 
 This document specifies all the endpoints that the Orchestrator exposes to its
 clients through Socket.IO. The corresponding code can be found in the files
@@ -15,7 +15,8 @@ suggestions for horizontal scaling of the application.
 
 Creates a new user with the given username which is stored in the
 enclosing promise. If the received data contained no username, causes
-the promise to reject.
+the promise to reject. Supports optional password for database authentication,
+`deviceType`, `prefabName`, and a specific `id`.
 
 #### `LOGOUT`
 
@@ -36,12 +37,28 @@ data object is returned in the response. A notification is also sent to
 all session members. If the request does not contain the field
 `userDataJson`, an error is issued.
 
+#### `SET_USER_STATUS`
+
+Updates the `status` property for the current user. A notification is also sent
+to all session members.
+
+#### `GET_USER_INFO`
+
+Returns a serialised version of the user object identified by the given
+user ID. If no ID is given, the data for the current user is returned.
+
 ### Session Management
 
 #### `ADD_SESSION`
 
 Endpoint invoked for the user to create a new session with the given data.
 Returns a serialised version of the session to the caller upon success.
+
+#### `SCHEDULE_SESSION`
+
+Schedules a session from a session defined in the database by passing the
+session ID as parameter. The creating user is added as an administrator to
+the session.
 
 #### `DELETE_SESSION`
 
@@ -54,6 +71,16 @@ to be successful.
 Returns a serialised object of active sessions to the caller indexed by
 session ID.
 
+#### `GET_ROOMS`
+
+Returns a serialised object of available rooms from the database, indexed by
+room ID.
+
+#### `GET_SCHEDULED_SESSIONS`
+
+Returns a list of scheduled sessions from the database that are not yet
+completed. Only users of type `presenter` are allowed to call this endpoint.
+
 #### `JOIN_SESSION`
 
 Adds the current user to an existing session identified by the given
@@ -62,14 +89,123 @@ session), an error is issued.
 
 #### `LEAVE_SESSION`
 
-Removes the user from their current session. If the user is not in an
-session, an error is issued.
+Removes the user from their current session. If a `userId` is provided and the
+caller is the session master, it removes that user instead. If the user is not
+in a session, an error is issued.
 
 #### `GET_SESSION_INFO`
 
 Returns a serialised version of the user's current session or the session
 that this user is an admin of. If the user is not in any session or not an
 admin of any session, an error is issued.
+
+#### `SET_SESSION_STATUS`
+
+Sets the status of the user's current session. Only presenters or session
+administrators are allowed to perform this action.
+
+#### `SET_SESSION_PRESENTATION`
+
+Sets the current presentation for the session. Optionally accepts a
+`presentationIndex`. Only presenters or session administrators are allowed.
+
+#### `CHANGE_SLIDE`
+
+Changes the current presentation slide. Accepts `slideOffset` or `slideIndex`.
+Only presenters or session administrators are allowed.
+
+#### `IS_SHARING`
+
+Sets the `isSharing` flag of the current presentation. Only presenters and
+session admins are allowed.
+
+#### `RAISE_HAND`
+
+Sets the raised hand status for the current user in their current session.
+
+#### `CLEAR_RAISED_HAND`
+
+Clears the raised hand status for a user. Users can clear their own status,
+while session masters or presenters can clear it for anyone.
+
+#### `GET_RAISED_HANDS`
+
+Returns a list of all users with their raised hand status in the current
+session.
+
+#### `IS_SPEAKING`
+
+Sets the `isSpeaking` flag for the current user.
+
+### Bubble Management
+
+#### `CREATE_BUBBLE`
+
+Creates a new conversation bubble within the user's current session. The
+creator is added as the owner.
+
+#### `GET_BUBBLE`
+
+Retrieves a serialised version of a bubble given its ID.
+
+#### `JOIN_BUBBLE`
+
+Allows a user to join a bubble if they have a pending invitation.
+
+#### `LEAVE_BUBBLE`
+
+Removes the current user from their current bubble. If the bubble becomes
+empty, it is deleted.
+
+#### `LIST_BUBBLES`
+
+Returns a serialised list of active bubbles in the user's current session.
+
+#### `REQUEST_JOIN_BUBBLE`
+
+Allows a user to request to join a specific bubble. The request is sent to
+the bubble's owner.
+
+#### `APPROVE_BUBBLE_JOIN_REQUEST`
+
+Allows the owner of a bubble to approve or reject a join request from another
+user.
+
+#### `SEND_BUBBLE_INVITATION`
+
+Allows a user to invite another user in the same session to join their
+current bubble.
+
+### Shared Objects
+
+#### `REGISTER_SHARED_OBJECT`
+
+Registers a new shared object in the session with an ID, position, and
+rotation.
+
+#### `REGISTER_TRIGGER`
+
+Registers a new trigger object in the session with an ID and initial value.
+
+#### `GET_SHARED_OBJECT`
+
+Returns the serialised shared object with the given ID.
+
+#### `GET_TRIGGER`
+
+Returns the serialised trigger object with the given ID.
+
+#### `CLAIM_OWNERSHIP`
+
+Changes ownership of a shared object or trigger to the current user.
+
+#### `SPAWN_SHARED_OBJECT`
+
+Spawns a new shared object with a specific prefab name.
+
+#### `DESTROY_SHARED_OBJECT`
+
+Destroys a shared object with the given ID.
 
 ### Data Streams
 
@@ -98,42 +234,40 @@ the given ID and the given stream type.
 #### `SEND_DATA`
 
 Sends data from the current user to all users in the same session,
-provided they are registered for the given stream type. If either the
-stream type of the data are not provided, nothing happens.
+provided they are registered for the given stream type.
+
+#### `BROADCAST`
+
+Sends data from the current user to all users in the same session on a
+specific channel. Optionally delivers it back to the caller.
 
 ### Messaging
 
 #### `SEND_MESSAGE`
 
 Sends a given message from the current user to the user identified by the
-given user ID. If the receiver is not in the same session or the sender is
-not in any session, an error is issued.
+given user ID.
 
 #### `SEND_MESSAGE_TO_ALL`
 
-Sends a given message to all users in the user's current session. This also
-includes the sender itself. If the user not in any session, an error is
-issued.
+Sends a given message to all users in the user's current session.
+
+#### `GET_MESSAGES`
+
+Returns a serialised version of the last messages (default 100) in the
+user's current session.
 
 #### `SEND_SCENE_EVENT_TO_USER`
 
-Sends a scene event from a session master to a regular user. If the
-master is not in any session or the request data is empty, an error is
-issued. An error is also returned if the calling user is not the master of
-their session.
+Sends a scene event from a session master to a regular user.
 
 #### `SEND_SCENE_EVENT_TO_MASTER`
 
-Sends a scene event to the master of the user's current session. If the
-user is not in any session, the request data is empty or the session has
-no master, an error is issued.
+Sends a scene event to the master of the user's current session.
 
 #### `SEND_SCENE_EVENT_TO_ALL`
 
-Sends a scene event from a session master to all users of the session. If
-the master is not in any session or the request data is empty, an error is
-issued. An error is also returned if the calling user is not the master of
-their session.
+Sends a scene event from a session master to all users of the session.
 
 ### Utility Requests
 
@@ -151,7 +285,7 @@ Returns the version of the orchestrator inside a JSON object.
 
 #### `TERMINATE_ORCHESTRATOR`
 
-Terminates the orchestrator process.
+Terminates the orchestrator process (if implemented).
 
 ## Performance Considerations
 
