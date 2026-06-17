@@ -86,3 +86,4 @@ config/*.json
 packages/
 data/
 slides/
+.DS_Store

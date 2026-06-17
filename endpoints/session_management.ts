@@ -168,7 +168,7 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
     }
 
     const { administrator } = session;
-    if (!administrator || administrator.id != user.id) {
+    if (administrator == undefined || administrator.id != user.id) {
       logger.warn(EndpointNames.DELETE_SESSION, "User", user.name, "is not the admin of session", session.name);
       return callback(util.createCommandResponse(data, ErrorCodes.SESSION_DELETE_UNAUTHORIZED));
     }

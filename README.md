@@ -149,6 +149,18 @@ actually started.
 If you add or change a plugin, you have to restart the server in order for your
 changes to take effect.
 
+## Testing
+
+To run the test suite, use:
+
+    yarn test
+
+To run the tests and generate a coverage report, use:
+
+    yarn test:coverage
+
+The coverage report will be generated in the `coverage/` directory.
+
 ## Utilities
 
 The orchestrator comes with a series of utilities which may come in handy for

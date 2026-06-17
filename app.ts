@@ -21,12 +21,17 @@ import installStreamHandlers from "./endpoints/data_streams";
 import installBubbleHandlers from "./endpoints/bubble_management";
 import installSharedObjectHandlers from "./endpoints/shared_objects";
 
-const [ PORT, MONGODB_CONNECTION ] = getFromEnvironment(["PORT", "MONGODB_CONNECTION"]);
+const [ PORT ] = getFromEnvironment(["PORT"]);
+const [ MONGODB_CONNECTION ] = getFromEnvironment(["MONGODB_CONNECTION"], "");
 const [ LOG_SERVER, EXTERNAL_HOSTNAME ] = getFromEnvironment(["LOG_SERVER", "EXTERNAL_HOSTNAME"], null);
 
-mongoose.connect(MONGODB_CONNECTION).then(() => {
-  logger.info("MongoDB connection established");
-});
+if (process.env.NODE_ENV !== "test") {
+  mongoose.connect(MONGODB_CONNECTION).then((connection) => {
+    logger.info("MongoDB connection established:", connection);
+  }).catch((err: any) => {
+    logger.error("MongoDB connection failed:", err);
+  });
+}
 
 /**
  * Print version information and current HEAD revision if available.
@@ -39,13 +44,13 @@ getRevision().then((revision) => {
 /**
  * Create new orchestrator instance and load plugins.
  **/
-const orchestrator = new Orchestrator();
+export const orchestrator = new Orchestrator();
 orchestrator.pluginManager.loadPlugins();
 
 /**
  * Set up express app and create HTTP server.
  */
-const app = express();
+export const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -53,12 +58,12 @@ app.use(logger.http);
 app.use("/slides", express.static("slides"));
 app.use(routes);
 
-const server = createServer(app);
+export const server = createServer(app);
 
 /**
  * Set up Socket.IO server
  **/
-const io = new Server(server);
+export const io = new Server(server);
 
 // Install handler for forwarding log messages if LOG_SERVER variable is set
 if (LOG_SERVER) {
@@ -106,10 +111,12 @@ io.on("connection", (socket) => {
 /**
  * Launch server on port given by environment variable PORT
  */
-server.listen(PORT, () => {
-  logger.info("Socket.io server listening on port", PORT);
+if (process.env.NODE_ENV !== "test") {
+  server.listen(PORT, () => {
+    logger.info("Socket.io server listening on port", PORT);
 
-  if (EXTERNAL_HOSTNAME) {
-    logger.info("Server available under external hostname:", EXTERNAL_HOSTNAME);
-  }
-});
+    if (EXTERNAL_HOSTNAME) {
+      logger.info("Server available under external hostname:", EXTERNAL_HOSTNAME);
+    }
+  });
+}
