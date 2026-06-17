@@ -24,11 +24,13 @@ const [ PORT ] = getFromEnvironment(["PORT"]);
 const [ MONGODB_CONNECTION ] = getFromEnvironment(["MONGODB_CONNECTION"], "");
 const [ LOG_SERVER, EXTERNAL_HOSTNAME ] = getFromEnvironment(["LOG_SERVER", "EXTERNAL_HOSTNAME"], null);
 
-mongoose.connect(MONGODB_CONNECTION).then((connection) => {
-  logger.info("MongoDB connection established:", connection);
-}).catch((err) => {
-  logger.error("MongoDB connection failed:", err);
-});
+if (process.env.NODE_ENV !== "test") {
+  mongoose.connect(MONGODB_CONNECTION).then((connection) => {
+    logger.info("MongoDB connection established:", connection);
+  }).catch((err) => {
+    logger.error("MongoDB connection failed:", err);
+  });
+}
 
 /**
  * Print version information and current HEAD revision if available.
