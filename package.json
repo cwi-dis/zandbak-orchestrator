@@ -7,7 +7,8 @@
     "lint": "eslint .",
     "dump": "node scripts/dump.js",
     "logs": "node scripts/logreader.js",
-    "test": "NODE_ENV=test PORT=0 LOG_SERVER= LOG_LEVEL=error MONGODB_CONNECTION=mongodb://localhost jest --silent"
+    "test": "NODE_ENV=test PORT=0 LOG_SERVER= LOG_LEVEL=none MONGODB_CONNECTION=mongodb://localhost jest --silent",
+    "test:coverage": "yarn test --coverage"
   },
   "author": "Thomas Röggla",
   "license": "BSD-2-Clause",

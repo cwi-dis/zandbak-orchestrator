@@ -9,4 +9,16 @@ module.exports = {
     ...tsJestTransformCfg,
   },
   setupFilesAfterEnv: ["<rootDir>/test/setup.ts"],
+  collectCoverageFrom: [
+    "**/*.ts",
+    "!**/node_modules/**",
+    "!**/test/**",
+    "!**/bin/**",
+    "!**/dist/**",
+    "!jest.config.js",
+    "!webpack.config.js",
+    "!eslint.config.mjs",
+  ],
+  coverageDirectory: "coverage",
+  coverageReporters: ["text", "lcov", "clover"],
 };

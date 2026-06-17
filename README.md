@@ -90,6 +90,18 @@ can be launched as follows:
 
     yarn start
 
+### Testing
+
+To run the test suite, use:
+
+    yarn test
+
+To run the tests and generate a coverage report, use:
+
+    yarn test:coverage
+
+The coverage report will be generated in the `coverage/` directory.
+
 ## Utilities
 
 The orchestrator comes with a series of utilities which may come in handy for
