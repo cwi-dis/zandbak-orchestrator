@@ -40,10 +40,26 @@ describe("Util Endpoints", () => {
   });
 
   test("should get orchestrator version", (done) => {
-    clientSocket.emit(EndpointNames.GET_ORCHESTRATOR_VERSION, { commandId: "test-1" }, (response: any) => {
-      expect(response.commandId).toBe("test-1");
+    clientSocket.emit(EndpointNames.GET_ORCHESTRATOR_VERSION, {}, (response: any) => {
       expect(response.error).toBe(0);
+
       expect(response.body).toHaveProperty("orchestratorVersion");
+      expect(response.body).toHaveProperty("revision");
+
+      done();
+    });
+  });
+
+  test("should return the entire state tree", (done) => {
+    clientSocket.emit(EndpointNames.DUMP_DATA, {}, (response: any) => {
+      expect(response.error).toBe(0);
+
+      expect(response.body).toHaveProperty("id");
+      expect(response.body).toHaveProperty("sessions");
+      expect(response.body).toHaveProperty("users");
+
+      expect(response.body.sessions).toEqual([]);
+      expect(response.body.users).toEqual([]);
 
       done();
     });
