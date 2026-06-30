@@ -76,4 +76,58 @@ describe("Session management", () => {
       done();
     });
   });
+
+  test("should return a list of rooms", (done) => {
+    clientSocket.emit(EndpointNames.GET_ROOMS, {}, (response: any) => {
+      expect(response.error).toBe(ErrorCodes.OK);
+
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body.length).toBe(1);
+      expect(response.body[0].name).toBe("Room 1");
+
+      done();
+    });
+  });
+
+  test("should return an empty list sessions", (done) => {
+    clientSocket.emit(EndpointNames.GET_SESSIONS, {}, (response: any) => {
+      expect(response.error).toBe(ErrorCodes.OK);
+      expect(response.body).toBeInstanceOf(Object);
+
+      const sessions = new Map(Object.entries(response.body));
+      expect(Array.from(sessions.keys()).length).toBe(0);
+
+      done();
+    });
+  });
+
+  test("should return a list of sessions with one entry", (done) => {
+    clientSocket.emit(EndpointNames.ADD_SESSION, { sessionName: "new test session", sessionRoom: roomId }, (response: any) => {
+      expect(response.error).toBe(ErrorCodes.OK);
+      const createdSession = response.body;
+
+      clientSocket.emit(EndpointNames.GET_SESSIONS, {}, (response: any) => {
+        expect(response.error).toBe(ErrorCodes.OK);
+        expect(response.body).toBeInstanceOf(Object);
+
+        const sessions = new Map(Object.entries(response.body));
+        expect(Array.from(sessions.keys()).length).toBe(1);
+        expect(sessions.get(createdSession.sessionId)).toBeDefined();
+
+        const session = sessions.get(createdSession.sessionId) as any;
+        expect(session.sessionName).toBe("new test session");
+
+        done();
+      });
+    });
+  });
+
+  test("should return an error for getting session info if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.GET_SESSION_INFO, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_SESSION);
+
+      done();
+    });
+  });
 });
