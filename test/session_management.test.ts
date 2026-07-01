@@ -130,4 +130,103 @@ describe("Session management", () => {
       done();
     });
   });
+
+  test("should return an error for getting messages if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.GET_MESSAGES, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for getting raised hands if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.GET_MESSAGES, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for sending message if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.SEND_MESSAGE, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for sending message to all if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.SEND_MESSAGE_TO_ALL, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for leaving session if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.LEAVE_SESSION, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for deleting session if session does not exist", (done) => {
+    clientSocket.emit(EndpointNames.DELETE_SESSION, { sessionId: "does_not_exist" }, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_NOT_FOUND);
+
+      done();
+    });
+  });
+
+  test("should return an error for joining session if session does not exist", (done) => {
+    clientSocket.emit(EndpointNames.JOIN_SESSION, { sessionId: "does_not_exist" }, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_NOT_FOUND);
+
+      done();
+    });
+  });
+
+  test("should return an error for setting sharing flag if parameter is not provided", (done) => {
+    clientSocket.emit(EndpointNames.IS_SHARING, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_IS_SPEAKING_FLAG_NOT_SET);
+
+      done();
+    });
+  });
+
+  test("should return an error for setting sharing flag if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.IS_SHARING, { isSharing: true }, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for setting speaking flag if parameter is not provided", (done) => {
+    clientSocket.emit(EndpointNames.IS_SPEAKING, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_IS_SPEAKING_FLAG_NOT_SET);
+
+      done();
+    });
+  });
+
+  test("should return an error for setting sharing flag if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.IS_SPEAKING, { isSpeaking: true }, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
 });
