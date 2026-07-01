@@ -229,4 +229,58 @@ describe("Session management", () => {
       done();
     });
   });
+
+  test("should return an error for setting session status if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.SET_SESSION_STATUS, { status: "ongoing" }, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for setting current presentation if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.SET_SESSION_PRESENTATION, { presentationIndex: 1 }, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for changing slide if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.CHANGE_SLIDE, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for raising hand if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.RAISE_HAND, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for clearing raised hand if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.CLEAR_RAISED_HAND, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
+
+  test("should return an error for getting raised hands if user is not in any session", (done) => {
+    clientSocket.emit(EndpointNames.GET_RAISED_HANDS, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_NOT_IN_ANY_SESSION);
+
+      done();
+    });
+  });
 });
