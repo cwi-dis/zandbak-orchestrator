@@ -283,4 +283,36 @@ describe("Session management", () => {
       done();
     });
   });
+
+  test("should return an error for getting scheduled sessions as a normal user", (done) => {
+    clientSocket.emit(EndpointNames.GET_SCHEDULED_SESSIONS, {}, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_USER_ACTION_NOT_ALLOWED);
+
+      done();
+    });
+  });
+
+  test("should return an error when trying to join current session again", (done) => {
+    clientSocket.emit(EndpointNames.ADD_SESSION, { sessionName: "new test session", sessionRoom: roomId }, (response: any) => {
+      expect(response.error).toBe(ErrorCodes.OK);
+      const createdSession = response.body;
+
+      clientSocket.emit(EndpointNames.JOIN_SESSION, { sessionId: createdSession.sessionId }, (response: any) => {
+        expect(response.error).not.toBe(ErrorCodes.OK);
+        expect(response.error).toBe(ErrorCodes.SESSION_USER_ALREADY_IN_SESSION);
+
+        done();
+      });
+    });
+  });
+
+  test("should not allow to create a persistent session as a regular user", (done) => {
+    clientSocket.emit(EndpointNames.ADD_SESSION, { sessionName: "new test session", sessionRoom: roomId, persistent: true }, (response: any) => {
+      expect(response.error).toBe(ErrorCodes.OK);
+      expect(response.body.sessionPersistent).toBe(false);
+
+      done();
+    });
+  });
 });
