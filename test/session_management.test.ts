@@ -122,6 +122,33 @@ describe("Session management", () => {
     });
   });
 
+  test("should return information about the current session", (done) => {
+    clientSocket.emit(EndpointNames.ADD_SESSION, { sessionName: "new test session", sessionRoom: roomId }, (response: any) => {
+      expect(response.error).toBe(ErrorCodes.OK);
+      const createdSession = response.body;
+
+      clientSocket.emit(EndpointNames.GET_SESSION_INFO, {}, (response: any) => {
+        expect(response.error).toBe(ErrorCodes.OK);
+        expect(response.body).toBeInstanceOf(Object);
+
+        const session = response.body;
+        expect(session.sessionName).toBe(createdSession.sessionName);
+        expect(session.sessionId).toBe(createdSession.sessionId);
+
+        done();
+      });
+    });
+  });
+
+  test("should return an error when name is undefined", (done) => {
+    clientSocket.emit(EndpointNames.ADD_SESSION, { sessionRoom: roomId }, (response: any) => {
+      expect(response.error).not.toBe(ErrorCodes.OK);
+      expect(response.error).toBe(ErrorCodes.SESSION_ADD_FAILED);
+
+      done();
+    });
+  });
+
   test("should return an error for getting session info if user is not in any session", (done) => {
     clientSocket.emit(EndpointNames.GET_SESSION_INFO, {}, (response: any) => {
       expect(response.error).not.toBe(ErrorCodes.OK);
