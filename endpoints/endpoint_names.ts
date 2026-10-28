@@ -29,6 +29,7 @@ enum EndpointNames {
   UPDATE_USER_DATA = "UpdateUserDataJson",
   SET_USER_STATUS = "SetUserStatus",
   GET_USER_INFO = "GetUserInfo",
+  REPORT_TELEMETRY = "ReportTelemetry",
 
   SEND_MESSAGE = "SendMessage",
   SEND_MESSAGE_TO_ALL = "SendMessageToAll",
