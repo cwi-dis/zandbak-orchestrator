@@ -25,6 +25,7 @@ import installTelemetryHandlers from "./endpoints/telemetry";
 const [ PORT ] = getFromEnvironment(["PORT"]);
 const [ MONGODB_CONNECTION ] = getFromEnvironment(["MONGODB_CONNECTION"], "");
 const [ LOG_SERVER, EXTERNAL_HOSTNAME ] = getFromEnvironment(["LOG_SERVER", "EXTERNAL_HOSTNAME"], null);
+const [ QOE_ENABLED ] = getFromEnvironment(["QOE_ENABLED"], "false");
 
 if (process.env.NODE_ENV !== "test") {
   mongoose.connect(MONGODB_CONNECTION).then((connection) => {
@@ -46,6 +47,7 @@ getRevision().then((revision) => {
  * Create new orchestrator instance and load plugins.
  **/
 export const orchestrator = new Orchestrator();
+orchestrator.qoeEnabled = QOE_ENABLED === "true";
 orchestrator.pluginManager.loadPlugins();
 
 /**

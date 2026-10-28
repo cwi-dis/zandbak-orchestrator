@@ -30,6 +30,7 @@ enum EndpointNames {
   SET_USER_STATUS = "SetUserStatus",
   GET_USER_INFO = "GetUserInfo",
   REPORT_TELEMETRY = "ReportTelemetry",
+  QUALITY_TARGET = "QualityTarget",
 
   SEND_MESSAGE = "SendMessage",
   SEND_MESSAGE_TO_ALL = "SendMessageToAll",

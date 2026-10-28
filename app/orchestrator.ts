@@ -10,6 +10,7 @@ import EmittedEvents, { OrchestratorEvent, OrchestratorEventName } from "./emitt
 
 class Orchestrator extends EventEmitter {
   public id: string = uuidv4();
+  public qoeEnabled: boolean = false;
 
   #sessions: Array<Session> = [];
   #users: Array<User> = [];

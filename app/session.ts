@@ -1,8 +1,9 @@
 import { EventEmitter } from "events";
 import { v4 as uuidv4 } from "uuid";
 
-import { Dict, Optional, ObjectTransform, UserTransform } from "../util";
+import { Dict, Optional, ObjectTransform, UserTransform, QualityTarget } from "../util";
 import User from "./user";
+import EndpointNames from "../endpoints/endpoint_names";
 import Transport from "../transport/transport";
 import TransportManager, { TransportType } from "../transport/manager/transport_manager";
 import EmittedEvents, { SessionEvent, SessionEventName } from "./emitted_events";
@@ -27,6 +28,8 @@ class Session extends EventEmitter {
   #bubbles: Array<Bubble> = [];
   #room: Room;
   #persistent: boolean;
+  #qoeEnabled: boolean;
+  #healthMonitorInterval?: NodeJS.Timeout;
 
   #status: string = "scheduled";
   schedule: Array<Presentation> = [];
@@ -39,13 +42,19 @@ class Session extends EventEmitter {
     transportManager: TransportManager,
     hostname: string,
     persistent = false,
-    room: Room
+    room: Room,
+    qoeEnabled = false
   ) {
     super();
 
     this.#transport = transportManager.assignTransport(sessionProtocol, this, hostname);
     this.#persistent = persistent;
     this.#room = room;
+    this.#qoeEnabled = qoeEnabled;
+
+    if (this.#qoeEnabled) {
+      this.startHealthMonitor();
+    }
 
     this.#channels.set(this.getInternalChannelName("voice"), () => {});
 
@@ -398,6 +407,7 @@ class Session extends EventEmitter {
     }
 
     this.#transport.removeSession(this);
+    this.stopHealthMonitor();
 
     this.#users.forEach((u) => {
       u.socket.emit(EmittedEvents.SESSION_CLOSED, {});
@@ -787,6 +797,7 @@ class Session extends EventEmitter {
       sessionStatus: this.#status,
       sessionPersistent: this.#persistent,
       sessionRoom: this.#room,
+      sessionQoeEnabled: this.#qoeEnabled,
       sessionTelemetry: this.#users.map((u) => ({
         userId: u.id,
         userName: u.name,
@@ -797,6 +808,65 @@ class Session extends EventEmitter {
 
   public toJSON(): Dict {
     return this.serialize();
+  }
+
+  private startHealthMonitor() {
+    if (this.#healthMonitorInterval) return;
+
+    this.#healthMonitorInterval = setInterval(() => {
+      this.monitorHealth();
+    }, 5000);
+  }
+
+  private stopHealthMonitor() {
+    if (this.#healthMonitorInterval) {
+      clearInterval(this.#healthMonitorInterval);
+      this.#healthMonitorInterval = undefined;
+    }
+  }
+
+  private monitorHealth() {
+    // Collect and analyze telemetry
+    const usersWithTelemetry = this.#users.filter(u => u.telemetry);
+    if (usersWithTelemetry.length === 0) return;
+
+    const avgRtt = usersWithTelemetry.reduce((acc, u) => acc + (u.telemetry?.rttMs || 0), 0) / usersWithTelemetry.length;
+    const avgLoss = usersWithTelemetry.reduce((acc, u) => acc + (u.telemetry?.packetLossRate || 0), 0) / usersWithTelemetry.length;
+
+    // Thresholds for congestion
+    const IS_CONGESTED = avgLoss > 0.05 || avgRtt > 200;
+
+    this.#users.forEach(user => {
+      const target: QualityTarget = {};
+
+      if (IS_CONGESTED) {
+        if (user.userType === "presenter") {
+          // Prioritize presenters: maintain high quality
+          target.poseUpdateRate = 10;
+          target.voiceBitrate = 24000;
+          target.interpolationBufferMs = 100;
+        } else {
+          // Regular users get reduced quality to save bandwidth
+          target.poseUpdateRate = 5;
+          target.voiceBitrate = 12000;
+          target.interpolationBufferMs = 200;
+        }
+      } else {
+        // Normal conditions: use production defaults
+        target.poseUpdateRate = 10;
+        target.voiceBitrate = 24000;
+        target.interpolationBufferMs = 100;
+      }
+
+      // Check if user's own network is particularly bad
+      if (user.telemetry && (user.telemetry.rttMs > 300 || user.telemetry.packetLossRate > 0.1)) {
+        target.poseUpdateRate = Math.min(target.poseUpdateRate || 10, 5);
+        target.interpolationBufferMs = Math.max(target.interpolationBufferMs || 100, 300);
+      }
+
+      // Broadcast target to client
+      user.socket.emit(EndpointNames.QUALITY_TARGET, target);
+    });
   }
 }
 

@@ -258,3 +258,9 @@ export type UserTransform = Transform & {
 export type ObjectTransform = Transform & {
   id: string;
 };
+
+export interface QualityTarget {
+  poseUpdateRate?: number; // Hz
+  voiceBitrate?: number; // bps
+  interpolationBufferMs?: number;
+}

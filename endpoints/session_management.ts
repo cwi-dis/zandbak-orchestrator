@@ -64,7 +64,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
           roomDocument.name,
           roomDocument.description || "",
           roomDocument.model || ""
-        )
+        ),
+        orchestrator.qoeEnabled
       );
 
       logger.debug(EndpointNames.ADD_SESSION, "Adding user", user.name, "as admin to new session", session.name);
@@ -124,7 +125,8 @@ const installHandlers = (orchestrator: Orchestrator, user: User) => {
         dbSession.room.name,
         dbSession.room.description,
         dbSession.room.filename
-      )
+      ),
+      orchestrator.qoeEnabled
     );
 
     session.status = "ongoing";
