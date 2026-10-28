@@ -6,6 +6,7 @@ import Session from "./session";
 import Serializable from "./serializable";
 import { mapHashToDict, Dict, UserTransform, DeviceType } from "../util";
 import DataStream from "./data_stream";
+import { TelemetryData } from "./telemetry";
 import StreamSubscription from "./stream_subscription";
 import EmittedEvents, { BubbleEvent, SessionEvent } from "./emitted_events";
 
@@ -17,6 +18,7 @@ class User extends Serializable {
 
   #dataStreams: Map<string, DataStream>;
   #streamSubscriptions: Map<string, StreamSubscription>;
+  #telemetry?: TelemetryData;
 
   _userType: "user" | "presenter" = "user";
 
@@ -56,6 +58,14 @@ class User extends Serializable {
 
   public get userType() {
     return this._userType;
+  }
+
+  public get telemetry() {
+    return this.#telemetry;
+  }
+
+  public set telemetry(telemetry: TelemetryData | undefined) {
+    this.#telemetry = telemetry;
   }
 
   public get dataStreams() {
@@ -256,7 +266,8 @@ class User extends Serializable {
       hasHandRaised: this.hasHandRaised(),
       isSpeaking: this.isSpeaking,
       status: this.status,
-      prefabName: this.prefabName
+      prefabName: this.prefabName,
+      telemetry: this.#telemetry
     };
   }
 }
