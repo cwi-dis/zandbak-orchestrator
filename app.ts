@@ -20,6 +20,7 @@ import installSceneEventHandlers from "./endpoints/scene_events";
 import installStreamHandlers from "./endpoints/data_streams";
 import installBubbleHandlers from "./endpoints/bubble_management";
 import installSharedObjectHandlers from "./endpoints/shared_objects";
+import installTelemetryHandlers from "./endpoints/telemetry";
 
 const [ PORT ] = getFromEnvironment(["PORT"]);
 const [ MONGODB_CONNECTION ] = getFromEnvironment(["MONGODB_CONNECTION"], "");
@@ -93,6 +94,7 @@ export const setupHandlers = async (socket: Socket) => {
     installStreamHandlers(user);
     installBubbleHandlers(user);
     installSharedObjectHandlers(user);
+    installTelemetryHandlers(orchestrator, user);
 
     logger.debug("Event handlers installed");
   } catch (err) {
