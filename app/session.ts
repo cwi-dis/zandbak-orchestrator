@@ -786,7 +786,12 @@ class Session extends EventEmitter {
       sessionBubbles: this.#bubbles.map((b) => b.serialize()),
       sessionStatus: this.#status,
       sessionPersistent: this.#persistent,
-      sessionRoom: this.#room
+      sessionRoom: this.#room,
+      sessionTelemetry: this.#users.map((u) => ({
+        userId: u.id,
+        userName: u.name,
+        telemetry: u.telemetry
+      }))
     };
   }
 
